@@ -1,0 +1,8 @@
+// Add your dependencies here
+
+dependencies {
+    compile 'org.jetbrains:annotations:23.0.0'
+
+    compile("com.github.GTNewHorizons:CodeChickenLib:1.1.5.3:dev")
+    compile("com.github.GTNewHorizons:NotEnoughItems:2.3.1-GTNH:dev")
+}

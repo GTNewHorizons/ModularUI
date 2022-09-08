@@ -1,0 +1,21 @@
+{
+	"modListVersion": 2,
+	"modList": [{
+		"modid": "${modId}",
+		"name": "${modName}",
+		"description": "WIP",
+		"version": "${modVersion}",
+		"mcversion": "${minecraftVersion}",
+		"url": "none",
+		"updateUrl": "",
+		"authorList": ["Quarri6343, miozune"],
+		"credits": "",
+		"logoFile": "",
+		"screenshots": [],
+		"parent": "",
+		"requiredMods": [],
+		"dependencies": [],
+		"dependants": [],
+		"useDependencyInformation": true
+	}]
+}
