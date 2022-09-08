@@ -4,7 +4,6 @@ package com.gtnewhorizons.modularui.api.forge;
 // (powered by FernFlower decompiler)
 //
 
-import javax.annotation.Nonnull;
 import net.minecraft.item.ItemStack;
 
 public interface IItemHandler {

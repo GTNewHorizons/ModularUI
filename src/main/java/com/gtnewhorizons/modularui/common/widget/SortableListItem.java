@@ -9,11 +9,10 @@ import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.widget.IDraggable;
 import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
 import com.gtnewhorizons.modularui.api.widget.Widget;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SortableListItem<T> extends Widget implements IWidgetParent, IDraggable {
 
@@ -139,7 +138,8 @@ public class SortableListItem<T> extends Widget implements IWidgetParent, IDragg
     public boolean canDropHere(@Nullable Widget widget, boolean isInBounds) {
         if (widget != null && widget.getParent() instanceof SortableListItem) {
             SortableListItem<T> listItem = (SortableListItem<T>) widget.getParent();
-            return value.getClass().isAssignableFrom(listItem.value.getClass()) && currentIndex != listItem.currentIndex;
+            return value.getClass().isAssignableFrom(listItem.value.getClass())
+                    && currentIndex != listItem.currentIndex;
         }
         return false;
     }

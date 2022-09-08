@@ -1,7 +1,6 @@
 package com.gtnewhorizons.modularui.common.widget;
 
 import com.gtnewhorizons.modularui.ModularUI;
-
 import com.gtnewhorizons.modularui.api.forge.IItemHandlerModifiable;
 import com.gtnewhorizons.modularui.api.forge.PlayerMainInvWrapper;
 import com.gtnewhorizons.modularui.api.math.Alignment;
@@ -9,16 +8,15 @@ import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.wrapper.BaseSlot;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fluids.IFluidTank;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.fluids.IFluidTank;
+import org.jetbrains.annotations.Nullable;
 
 public class SlotGroup extends MultiChildWidget {
 
@@ -37,26 +35,41 @@ public class SlotGroup extends MultiChildWidget {
         }
 
         for (int i = 0; i < 9; i++) {
-            SlotWidget slot = new SlotWidget(new BaseSlot(wrapper, i))
-                    .setPos(new Pos2d(i * 18, 58));
+            SlotWidget slot = new SlotWidget(new BaseSlot(wrapper, i)).setPos(new Pos2d(i * 18, 58));
             slotGroup.addSlot(slot);
         }
         return slotGroup;
     }
 
-    public static SlotGroup ofItemHandler(IItemHandlerModifiable itemHandler, int slotsWidth, boolean output, @Nullable String sortArea) {
+    public static SlotGroup ofItemHandler(
+            IItemHandlerModifiable itemHandler, int slotsWidth, boolean output, @Nullable String sortArea) {
         return ofItemHandler(itemHandler, slotsWidth, 0, 0, itemHandler.getSlots() - 1, sortArea, output);
     }
 
-    public static SlotGroup ofItemHandler(IItemHandlerModifiable itemHandler, int slotsWidth, int shiftClickPriority, @Nullable String sortArea) {
-        return ofItemHandler(itemHandler, slotsWidth, shiftClickPriority, 0, itemHandler.getSlots() - 1, sortArea, false);
+    public static SlotGroup ofItemHandler(
+            IItemHandlerModifiable itemHandler, int slotsWidth, int shiftClickPriority, @Nullable String sortArea) {
+        return ofItemHandler(
+                itemHandler, slotsWidth, shiftClickPriority, 0, itemHandler.getSlots() - 1, sortArea, false);
     }
 
-    public static SlotGroup ofItemHandler(IItemHandlerModifiable itemHandler, int slotsWidth, int shiftClickPriority, int startFromSlot, int endAtSlot, @Nullable String sortArea) {
+    public static SlotGroup ofItemHandler(
+            IItemHandlerModifiable itemHandler,
+            int slotsWidth,
+            int shiftClickPriority,
+            int startFromSlot,
+            int endAtSlot,
+            @Nullable String sortArea) {
         return ofItemHandler(itemHandler, slotsWidth, shiftClickPriority, startFromSlot, endAtSlot, sortArea, false);
     }
 
-    public static SlotGroup ofItemHandler(IItemHandlerModifiable itemHandler, int slotsWidth, int shiftClickPriority, int startFromSlot, int endAtSlot, @Nullable String sortArea, boolean output) {
+    public static SlotGroup ofItemHandler(
+            IItemHandlerModifiable itemHandler,
+            int slotsWidth,
+            int shiftClickPriority,
+            int startFromSlot,
+            int endAtSlot,
+            @Nullable String sortArea,
+            boolean output) {
         SlotGroup slotGroup = new SlotGroup();
         if (itemHandler.getSlots() >= endAtSlot) {
             endAtSlot = itemHandler.getSlots() - 1;
@@ -68,7 +81,9 @@ public class SlotGroup extends MultiChildWidget {
         slotsWidth = Math.max(slotsWidth, 1);
         int x = 0, y = 0;
         for (int i = startFromSlot; i < endAtSlot + 1; i++) {
-            slotGroup.addSlot(new SlotWidget(new BaseSlot(itemHandler, i, false).setAccess(!output, true).setShiftClickPriority(shiftClickPriority))
+            slotGroup.addSlot(new SlotWidget(new BaseSlot(itemHandler, i, false)
+                            .setAccess(!output, true)
+                            .setShiftClickPriority(shiftClickPriority))
                     .setPos(new Pos2d(x * 18, y * 18)));
             if (++x == slotsWidth) {
                 x = 0;
@@ -171,7 +186,9 @@ public class SlotGroup extends MultiChildWidget {
                         ModularUI.logger.warn("Key {} was not found in Slot group.", c);
                         continue;
                     }
-                    Widget widget = widgetCreator.apply(charCount.computeIfAbsent(c, key -> new AtomicInteger()).getAndIncrement());
+                    Widget widget = widgetCreator.apply(charCount
+                            .computeIfAbsent(c, key -> new AtomicInteger())
+                            .getAndIncrement());
                     if (widget != null) {
                         slotGroup.addChild(widget.setPos(offsetPos.add(j * cellSize.width, i * cellSize.height)));
                     }

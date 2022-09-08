@@ -8,5 +8,4 @@ import net.minecraft.world.World;
 public interface IContainerCreator {
 
     Container create(EntityPlayer player, World world, int x, int y, int z);
-
 }

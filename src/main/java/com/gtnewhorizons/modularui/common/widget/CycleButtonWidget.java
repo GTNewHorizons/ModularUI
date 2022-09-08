@@ -1,7 +1,9 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.gtnewhorizons.modularui.ModularUI;
-
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
@@ -10,16 +12,12 @@ import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.common.internal.JsonHelper;
 import com.gtnewhorizons.modularui.common.internal.Theme;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.minecraft.network.PacketBuffer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.*;
+import net.minecraft.network.PacketBuffer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class CycleButtonWidget extends SyncedWidget implements Interactable {
 
@@ -31,8 +29,7 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
     private IDrawable texture = IDrawable.EMPTY;
     private final List<List<Text>> stateTooltip = new ArrayList<>();
 
-    public CycleButtonWidget() {
-    }
+    public CycleButtonWidget() {}
 
     @Override
     public void readJson(JsonObject json, String type) {
@@ -172,7 +169,9 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
 
     @Override
     public boolean hasTooltip() {
-        return super.hasTooltip() || (this.stateTooltip.size() > this.state && !this.stateTooltip.get(this.state).isEmpty());
+        return super.hasTooltip()
+                || (this.stateTooltip.size() > this.state
+                        && !this.stateTooltip.get(this.state).isEmpty());
     }
 
     @Override

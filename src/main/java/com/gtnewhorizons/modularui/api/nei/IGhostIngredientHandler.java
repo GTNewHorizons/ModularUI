@@ -1,11 +1,10 @@
 package com.gtnewhorizons.modularui.api.nei;
 
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.item.ItemStack;
-
 import java.awt.*;
 import java.util.List;
 import java.util.function.Consumer;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.item.ItemStack;
 
 /**
  * Lets mods accept ghost ingredients from NEI.

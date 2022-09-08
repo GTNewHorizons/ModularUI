@@ -1,6 +1,7 @@
 package com.gtnewhorizons.modularui.common.internal.wrapper;
 
-import com.gtnewhorizons.modularui.config.Config;
+import static codechicken.lib.render.FontUtils.fontRenderer;
+
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.math.Color;
@@ -13,9 +14,14 @@ import com.gtnewhorizons.modularui.api.widget.IVanillaSlot;
 import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
+import com.gtnewhorizons.modularui.config.Config;
 import com.gtnewhorizons.modularui.mixins.GuiContainerMixin;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -31,13 +37,6 @@ import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.input.Keyboard;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static codechicken.lib.render.FontUtils.fontRenderer;
-
 @SideOnly(Side.CLIENT)
 public class ModularGui extends GuiContainer {
 
@@ -46,6 +45,7 @@ public class ModularGui extends GuiContainer {
 
     @Nullable
     private Interactable lastClicked;
+
     private long lastClick = -1;
     private long lastFocusedClick = -1;
     private int drawCalls = 0;
@@ -72,11 +72,11 @@ public class ModularGui extends GuiContainer {
         return mousePos;
     }
 
-//    @Override
-//    public void onResize(@NotNull Minecraft mc, int w, int h) {
-//        super.onResize(mc, w, h);
-//        context.resize(new Size(w, h));
-//    }
+    //    @Override
+    //    public void onResize(@NotNull Minecraft mc, int w, int h) {
+    //        super.onResize(mc, w, h);
+    //        context.resize(new Size(w, h));
+    //    }
 
     public void setMainWindowArea(Pos2d pos, Size size) {
         this.guiLeft = pos.x;
@@ -128,11 +128,13 @@ public class ModularGui extends GuiContainer {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.pushMatrix();
         GlStateManager.translate(i, j, 0);
-//        MinecraftForge.EVENT_BUS.post(new GuiContainerEvent.DrawForeground(this, mouseX, mouseY));
+        //        MinecraftForge.EVENT_BUS.post(new GuiContainerEvent.DrawForeground(this, mouseX, mouseY));
         GlStateManager.popMatrix();
 
         InventoryPlayer inventoryplayer = this.mc.thePlayer.inventory;
-        ItemStack itemstack = getAccessor().getDraggedStack() == null ? inventoryplayer.getItemStack() : getAccessor().getDraggedStack();
+        ItemStack itemstack = getAccessor().getDraggedStack() == null
+                ? inventoryplayer.getItemStack()
+                : getAccessor().getDraggedStack();
         GlStateManager.translate((float) i, (float) j, 0.0F);
         if (itemstack != null) {
             int k2 = getAccessor().getDraggedStack() == null ? 8 : 16;
@@ -140,7 +142,7 @@ public class ModularGui extends GuiContainer {
 
             if (getAccessor().getDraggedStack() != null && getAccessor().getIsRightMouseClick()) {
                 itemstack = itemstack.copy();
-                itemstack.stackSize = (int)Math.ceil((float) itemstack.stackSize / 2.0F);
+                itemstack.stackSize = (int) Math.ceil((float) itemstack.stackSize / 2.0F);
             } else if (this.isDragSplitting2() && this.getDragSlots().size() > 1) {
                 itemstack = itemstack.copy();
                 itemstack.stackSize = getAccessor().getDragSplittingRemnant();
@@ -161,8 +163,10 @@ public class ModularGui extends GuiContainer {
                 getAccessor().setReturningStack(null);
             }
 
-            int l2 = getAccessor().getReturningStackDestSlot().xDisplayPosition - getAccessor().getTouchUpX();
-            int i3 = getAccessor().getReturningStackDestSlot().yDisplayPosition - getAccessor().getTouchUpY();
+            int l2 = getAccessor().getReturningStackDestSlot().xDisplayPosition
+                    - getAccessor().getTouchUpX();
+            int i3 = getAccessor().getReturningStackDestSlot().yDisplayPosition
+                    - getAccessor().getTouchUpY();
             int l1 = getAccessor().getTouchUpX() + (int) ((float) l2 * f);
             int i2 = getAccessor().getTouchUpY() + (int) ((float) i3 * f);
             this.drawItemStack(getAccessor().getReturningStack(), l1, i2, null);
@@ -190,7 +194,8 @@ public class ModularGui extends GuiContainer {
         FontRenderer font = stack.getItem().getFontRenderer(stack);
         if (font == null) font = fontRenderer;
         itemRender.renderItemAndEffectIntoGUI(font, mc.getTextureManager(), stack, x, y);
-        itemRender.renderItemOverlayIntoGUI(font, mc.getTextureManager(), stack, x, y - (getDragSlots() != null ? 0 : 8), altText);
+        itemRender.renderItemOverlayIntoGUI(
+                font, mc.getTextureManager(), stack, x, y - (getDragSlots() != null ? 0 : 8), altText);
         this.zLevel = 0.0F;
         itemRender.zLevel = 0.0F;
     }
@@ -240,12 +245,21 @@ public class ModularGui extends GuiContainer {
 
         Widget hovered = context.getCursor().getHovered();
         if (hovered != null && !context.getCursor().isHoldingSomething()) {
-            if (hovered instanceof IVanillaSlot && ((IVanillaSlot) hovered).getMcSlot().getHasStack()) {
-                renderToolTip(((IVanillaSlot) hovered).getMcSlot().getStack(), mouseX, mouseY, ((IVanillaSlot) hovered).getExtraTooltip());
+            if (hovered instanceof IVanillaSlot
+                    && ((IVanillaSlot) hovered).getMcSlot().getHasStack()) {
+                renderToolTip(
+                        ((IVanillaSlot) hovered).getMcSlot().getStack(),
+                        mouseX,
+                        mouseY,
+                        ((IVanillaSlot) hovered).getExtraTooltip());
             } else if (hovered.getTooltipShowUpDelay() <= context.getCursor().getTimeHovered()) {
                 List<Text> tooltip = hovered.getTooltip();
                 if (!tooltip.isEmpty()) {
-                    renderToolTip(null, context.getMousePos().x, context.getMousePos().y, tooltip.stream().map(line -> line.getFormatted()).collect(Collectors.toList()));
+                    renderToolTip(
+                            null,
+                            context.getMousePos().x,
+                            context.getMousePos().y,
+                            tooltip.stream().map(line -> line.getFormatted()).collect(Collectors.toList()));
                 }
             }
         }
@@ -276,12 +290,24 @@ public class ModularGui extends GuiContainer {
             IWidgetParent parent = hovered.getParent();
 
             drawBorder(pos.x, pos.y, size.width, size.height, color, 1f);
-            drawBorder(parent.getAbsolutePos().x, parent.getAbsolutePos().y, parent.getSize().width, parent.getSize().height, Color.withAlpha(color, 0.3f), 1f);
+            drawBorder(
+                    parent.getAbsolutePos().x,
+                    parent.getAbsolutePos().y,
+                    parent.getSize().width,
+                    parent.getSize().height,
+                    Color.withAlpha(color, 0.3f),
+                    1f);
             drawText("Pos: " + hovered.getPos(), 5, lineY, 1, color, false);
             lineY -= 11;
             drawText("Size: " + size, 5, lineY, 1, color, false);
             lineY -= 11;
-            drawText("Parent: " + (parent instanceof ModularWindow ? "ModularWindow" : parent.toString()), 5, lineY, 1, color, false);
+            drawText(
+                    "Parent: " + (parent instanceof ModularWindow ? "ModularWindow" : parent.toString()),
+                    5,
+                    lineY,
+                    1,
+                    color,
+                    false);
             lineY -= 11;
             drawText("Class: " + hovered, 5, lineY, 1, color, false);
         }
@@ -299,7 +325,7 @@ public class ModularGui extends GuiContainer {
     protected void renderToolTip(ItemStack stack, int x, int y, List<String> extraLines) {
         FontRenderer font = null;
         List lines = new ArrayList();
-        if(stack != null){
+        if (stack != null) {
             font = stack.getItem().getFontRenderer(stack);
             lines.addAll(stack.getTooltip(context.getPlayer(), this.mc.gameSettings.advancedItemTooltips));
         }
@@ -309,10 +335,10 @@ public class ModularGui extends GuiContainer {
 
     protected void drawVanillaElements(int mouseX, int mouseY, float partialTicks) {
         for (Object guiButton : this.buttonList) {
-            ((GuiButton)guiButton).drawButton(this.mc, mouseX, mouseY);
+            ((GuiButton) guiButton).drawButton(this.mc, mouseX, mouseY);
         }
         for (Object guiLabel : this.labelList) {
-            ((GuiLabel)guiLabel).func_146159_a(this.mc, mouseX, mouseY);
+            ((GuiLabel) guiLabel).func_146159_a(this.mc, mouseX, mouseY);
         }
     }
 
@@ -331,18 +357,18 @@ public class ModularGui extends GuiContainer {
         return currentClick - lastClick < 500;
     }
 
-//    @Override
-//    protected boolean hasClickedOutside(int p_193983_1_, int p_193983_2_, int p_193983_3_, int p_193983_4_) {
-//        for (ModularWindow window : context.getOpenWindows()) {
-//            if (Pos2d.isInside(p_193983_1_, p_193983_2_, window.getAbsolutePos(), window.getSize())) {
-//                return false;
-//            }
-//        }
-//        return super.hasClickedOutside(p_193983_1_, p_193983_2_, p_193983_3_, p_193983_4_);
-//    }
+    //    @Override
+    //    protected boolean hasClickedOutside(int p_193983_1_, int p_193983_2_, int p_193983_3_, int p_193983_4_) {
+    //        for (ModularWindow window : context.getOpenWindows()) {
+    //            if (Pos2d.isInside(p_193983_1_, p_193983_2_, window.getAbsolutePos(), window.getSize())) {
+    //                return false;
+    //            }
+    //        }
+    //        return super.hasClickedOutside(p_193983_1_, p_193983_2_, p_193983_3_, p_193983_4_);
+    //    }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton){
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         long time = Minecraft.getSystemTime();
         boolean doubleClick = isDoubleClick(lastClick, time);
         lastClick = time;
@@ -365,7 +391,8 @@ public class ModularGui extends GuiContainer {
             }
             if (hovered instanceof Interactable) {
                 Interactable interactable = (Interactable) hovered;
-                Interactable.ClickResult result = interactable.onClick(mouseButton, doubleClick && lastClicked == interactable);
+                Interactable.ClickResult result =
+                        interactable.onClick(mouseButton, doubleClick && lastClicked == interactable);
                 switch (result) {
                     case IGNORE:
                         continue;
@@ -404,7 +431,8 @@ public class ModularGui extends GuiContainer {
         for (Interactable interactable : context.getCurrentWindow().getInteractionListeners()) {
             interactable.onClickReleased(mouseButton);
         }
-        if (!context.getCursor().onMouseReleased(mouseButton) && (lastClicked == null || !lastClicked.onClickReleased(mouseButton))) {
+        if (!context.getCursor().onMouseReleased(mouseButton)
+                && (lastClicked == null || !lastClicked.onClickReleased(mouseButton))) {
             super.mouseMovedOrUp(mouseX, mouseY, mouseButton);
         }
     }
@@ -421,7 +449,7 @@ public class ModularGui extends GuiContainer {
     }
 
     @Override
-    protected void keyTyped(char typedChar, int keyCode){
+    protected void keyTyped(char typedChar, int keyCode) {
         // debug mode C + CTRL + SHIFT
         if (keyCode == 46 && isCtrlKeyDown() && isShiftKeyDown()) {
             Config.debug = !Config.debug;
@@ -435,7 +463,9 @@ public class ModularGui extends GuiContainer {
             return;
         }
         for (Object hovered : getCursor().getAllHovered()) {
-            if (focused != hovered && hovered instanceof Interactable && ((Interactable) hovered).onKeyPressed(typedChar, keyCode)) {
+            if (focused != hovered
+                    && hovered instanceof Interactable
+                    && ((Interactable) hovered).onKeyPressed(typedChar, keyCode)) {
                 return;
             }
         }
@@ -456,7 +486,9 @@ public class ModularGui extends GuiContainer {
             return;
         }
         for (Object hovered : getCursor().getAllHovered()) {
-            if (focused != hovered && hovered instanceof Interactable && ((Interactable) hovered).onMouseScroll(direction)) {
+            if (focused != hovered
+                    && hovered instanceof Interactable
+                    && ((Interactable) hovered).onMouseScroll(direction)) {
                 return;
             }
         }
@@ -513,7 +545,7 @@ public class ModularGui extends GuiContainer {
         GlStateManager.pushMatrix();
         GlStateManager.scale(scale, scale, 0f);
         float sf = 1 / scale;
-        fontRenderer.drawString(text, (int)(x * sf), (int)(y * sf), color, shadow);
+        fontRenderer.drawString(text, (int) (x * sf), (int) (y * sf), color, shadow);
         GlStateManager.popMatrix();
         GlStateManager.enableBlend();
     }
@@ -538,10 +570,14 @@ public class ModularGui extends GuiContainer {
         Tessellator tessellator = Tessellator.instance;
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.tryBlendFuncSeparate(
+                GlStateManager.SourceFactor.SRC_ALPHA,
+                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                GlStateManager.SourceFactor.ONE,
+                GlStateManager.DestFactor.ZERO);
         GlStateManager.color(r, g, b, a);
         tessellator.startDrawingQuads();
-//        bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
+        //        bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
         tessellator.addVertex(left, bottom, 0.0D);
         tessellator.addVertex(right, bottom, 0.0D);
         tessellator.addVertex(right, top, 0.0D);

@@ -11,7 +11,6 @@ public enum Eases implements IEase {
     }),
     EaseQuadOut(input -> -input * (input - 2));
 
-
     IEase ease;
 
     Eases(IEase ease) {

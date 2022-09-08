@@ -1,10 +1,10 @@
 package com.gtnewhorizons.modularui.common.widget;
 
-import com.gtnewhorizons.modularui.api.widget.IWidgetBuilder;
 import com.gtnewhorizons.modularui.api.math.CrossAxisAlignment;
 import com.gtnewhorizons.modularui.api.math.MainAxisAlignment;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
+import com.gtnewhorizons.modularui.api.widget.IWidgetBuilder;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,14 +1,13 @@
 package com.gtnewhorizons.modularui.common.widget;
 
 import codechicken.lib.math.MathHelper;
-import com.gtnewhorizons.modularui.config.Config;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.Widget;
-import org.jetbrains.annotations.NotNull;
-
+import com.gtnewhorizons.modularui.config.Config;
 import java.util.function.Supplier;
+import org.jetbrains.annotations.NotNull;
 
 public class ProgressBar extends Widget {
 
@@ -87,45 +86,50 @@ public class ProgressBar extends Widget {
 
     private void drawCircular(float progress) {
         float[] subAreas = {
-                getProgressUV((float)MathHelper.clip(progress / 0.25f, 0, 1)),
-                getProgressUV((float)MathHelper.clip((progress - 0.25f) / 0.25f, 0, 1)),
-                getProgressUV((float)MathHelper.clip((progress - 0.5f) / 0.25f, 0, 1)),
-                getProgressUV((float)MathHelper.clip((progress - 0.75f) / 0.25f, 0, 1))
+            getProgressUV((float) MathHelper.clip(progress / 0.25f, 0, 1)),
+            getProgressUV((float) MathHelper.clip((progress - 0.25f) / 0.25f, 0, 1)),
+            getProgressUV((float) MathHelper.clip((progress - 0.5f) / 0.25f, 0, 1)),
+            getProgressUV((float) MathHelper.clip((progress - 0.75f) / 0.25f, 0, 1))
         };
         float halfWidth = size.width / 2f;
         float halfHeight = size.height / 2f;
 
         float progressScaled = subAreas[0] * halfHeight;
         fullTexture[0].drawSubArea(
-                0, size.height - progressScaled,
-                halfWidth, progressScaled,
-                0.0f, 1.0f - progressScaled / halfHeight,
-                1.0f, 1.0f
-        ); // BL, draw UP
+                0,
+                size.height - progressScaled,
+                halfWidth,
+                progressScaled,
+                0.0f,
+                1.0f - progressScaled / halfHeight,
+                1.0f,
+                1.0f); // BL, draw UP
 
         progressScaled = subAreas[1] * halfWidth;
         fullTexture[1].drawSubArea(
-                0, 0,
-                progressScaled, halfHeight,
-                0.0f, 0.0f,
-                progressScaled / (halfWidth), 1.0f
-        ); // TL, draw RIGHT
+                0, 0, progressScaled, halfHeight, 0.0f, 0.0f, progressScaled / (halfWidth), 1.0f); // TL, draw RIGHT
 
         progressScaled = subAreas[2] * halfHeight;
         fullTexture[2].drawSubArea(
-                halfWidth, 0,
-                halfWidth, progressScaled,
-                0.0f, 0.0f,
-                1.0f, progressScaled / halfHeight
-        ); // TR, draw DOWN
+                halfWidth,
+                0,
+                halfWidth,
+                progressScaled,
+                0.0f,
+                0.0f,
+                1.0f,
+                progressScaled / halfHeight); // TR, draw DOWN
 
         progressScaled = subAreas[3] * halfWidth;
         fullTexture[3].drawSubArea(
-                size.width - progressScaled, halfHeight,
-                progressScaled, halfHeight,
-                1.0f - progressScaled / halfWidth, 0.0f,
-                1.0f, 1.0f
-        ); // BR, draw LEFT
+                size.width - progressScaled,
+                halfHeight,
+                progressScaled,
+                halfHeight,
+                1.0f - progressScaled / halfWidth,
+                0.0f,
+                1.0f,
+                1.0f); // BR, draw LEFT
     }
 
     @Override
@@ -170,6 +174,10 @@ public class ProgressBar extends Widget {
     }
 
     public enum Direction {
-        LEFT, RIGHT, UP, DOWN, CIRCULAR_CW;
+        LEFT,
+        RIGHT,
+        UP,
+        DOWN,
+        CIRCULAR_CW;
     }
 }

@@ -7,13 +7,12 @@ import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.common.internal.JsonHelper;
 import com.gtnewhorizons.modularui.common.internal.Theme;
 import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.Objects;
+import java.util.function.Supplier;
+import javax.annotation.Nullable;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
-
-import javax.annotation.Nullable;
-import java.util.Objects;
-import java.util.function.Supplier;
 
 public class Text implements IDrawable {
 
@@ -22,8 +21,10 @@ public class Text implements IDrawable {
     private static final TextRenderer renderer = new TextRenderer();
     private final String text;
     private String formatting = "";
+
     @Nullable
     private Supplier<Object[]> localisationData;
+
     private int color;
     private boolean shadow = false;
 

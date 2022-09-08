@@ -1,9 +1,7 @@
 package com.gtnewhorizons.modularui.common.widget;
 
-
 import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.widget.Widget;
-
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -14,10 +12,8 @@ public class SortableListWidget<T> extends ListWidget {
     private final Map<T, SortableListItem<T>> widgetMap = new HashMap<>();
     private final List<T> startValues;
     private Function<T, Widget> widgetCreator = t -> new TextWidget(t.toString());
-    private Consumer<List<T>> saveFunction = list -> {
-    };
-    private Consumer<T> onRemoveElement = t -> {
-    };
+    private Consumer<List<T>> saveFunction = list -> {};
+    private Consumer<T> onRemoveElement = t -> {};
     private boolean elementsRemovable = false;
 
     public static <T> SortableListWidget<T> removable(Collection<T> allValues, List<T> startValues) {
@@ -72,7 +68,9 @@ public class SortableListWidget<T> extends ListWidget {
     }
 
     public List<T> createElements() {
-        return this.children.stream().map(widget -> ((SortableListItem<T>) widget).getValue()).collect(Collectors.toList());
+        return this.children.stream()
+                .map(widget -> ((SortableListItem<T>) widget).getValue())
+                .collect(Collectors.toList());
     }
 
     protected void removeElement(int index) {

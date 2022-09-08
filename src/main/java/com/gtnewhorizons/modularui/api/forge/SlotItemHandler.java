@@ -23,11 +23,11 @@ public class SlotItemHandler extends Slot {
     }
 
     public boolean isItemValid(ItemStack stack) {
-        if (stack!=null && this.itemHandler.isItemValid(this.index, stack)) {
+        if (stack != null && this.itemHandler.isItemValid(this.index, stack)) {
             IItemHandler handler = this.getItemHandler();
             ItemStack remainder;
             if (handler instanceof IItemHandlerModifiable) {
-                IItemHandlerModifiable handlerModifiable = (IItemHandlerModifiable)handler;
+                IItemHandlerModifiable handlerModifiable = (IItemHandlerModifiable) handler;
                 ItemStack currentStack = handlerModifiable.getStackInSlot(this.index);
                 handlerModifiable.setStackInSlot(this.index, null);
                 remainder = handlerModifiable.insertItem(this.index, stack, true);
@@ -47,12 +47,11 @@ public class SlotItemHandler extends Slot {
     }
 
     public void putStack(ItemStack stack) {
-        ((IItemHandlerModifiable)this.getItemHandler()).setStackInSlot(this.index, stack);
+        ((IItemHandlerModifiable) this.getItemHandler()).setStackInSlot(this.index, stack);
         this.onSlotChanged();
     }
 
-    public void onSlotChange(ItemStack p_75220_1_, ItemStack p_75220_2_) {
-    }
+    public void onSlotChange(ItemStack p_75220_1_, ItemStack p_75220_2_) {}
 
     public int getSlotStackLimit() {
         return this.itemHandler.getSlotLimit(this.index);
@@ -65,7 +64,7 @@ public class SlotItemHandler extends Slot {
         IItemHandler handler = this.getItemHandler();
         ItemStack currentStack = handler.getStackInSlot(this.index);
         if (handler instanceof IItemHandlerModifiable) {
-            IItemHandlerModifiable handlerModifiable = (IItemHandlerModifiable)handler;
+            IItemHandlerModifiable handlerModifiable = (IItemHandlerModifiable) handler;
             handlerModifiable.setStackInSlot(this.index, null);
             ItemStack remainder = handlerModifiable.insertItem(this.index, maxAdd, true);
             handlerModifiable.setStackInSlot(this.index, currentStack);
@@ -92,7 +91,6 @@ public class SlotItemHandler extends Slot {
     }
 
     public boolean isSameInventory(Slot other) {
-        return other instanceof SlotItemHandler && ((SlotItemHandler)other).getItemHandler() == this.itemHandler;
+        return other instanceof SlotItemHandler && ((SlotItemHandler) other).getItemHandler() == this.itemHandler;
     }
 }
-

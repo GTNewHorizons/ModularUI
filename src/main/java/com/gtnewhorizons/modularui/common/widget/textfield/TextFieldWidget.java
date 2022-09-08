@@ -1,19 +1,18 @@
 package com.gtnewhorizons.modularui.common.widget.textfield;
 
-import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
 import com.gtnewhorizons.modularui.api.math.MathExpression;
 import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
-import net.minecraft.network.PacketBuffer;
-import org.jetbrains.annotations.NotNull;
-
+import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import net.minecraft.network.PacketBuffer;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Text input widget with one line only. Can be synced between client and server. Can handle text validation.
@@ -36,8 +35,7 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
     }
 
     @Override
-    public void onInit() {
-    }
+    public void onInit() {}
 
     @Override
     public void draw(float partialTicks) {
@@ -102,10 +100,9 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
     public void readOnClient(int id, PacketBuffer buf) {
         if (id == 1) {
             if (!isFocused()) {
-                try{
+                try {
                     setText(buf.readStringFromBuffer(Short.MAX_VALUE));
-                }
-                catch (IOException e){
+                } catch (IOException e) {
 
                 }
                 if (this.setter != null && (this.getter == null || !getText().equals(this.getter.get()))) {
@@ -118,10 +115,9 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
     @Override
     public void readOnServer(int id, PacketBuffer buf) {
         if (id == 1) {
-            try{
+            try {
                 setText(buf.readStringFromBuffer(Short.MAX_VALUE));
-            }
-            catch (IOException e){
+            } catch (IOException e) {
 
             }
             if (this.setter != null) {
@@ -272,5 +268,4 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
     public TextFieldWidget setNumbers(int min, int max) {
         return setNumbers(val -> Math.min(max, Math.max(min, val)));
     }
-
 }

@@ -20,9 +20,9 @@ public class CommonProxy {
     public void preInit(FMLPreInitializationEvent event) {
 
         testBlock = new TestBlock(Material.rock)
-            .setBlockName("testBlock")
-            .setCreativeTab(CreativeTabs.tabBlock)
-            .setBlockTextureName("stone");
+                .setBlockName("testBlock")
+                .setCreativeTab(CreativeTabs.tabBlock)
+                .setBlockTextureName("stone");
         GameRegistry.registerBlock(testBlock, "testBlock");
         GameRegistry.registerTileEntity(TestTile.class, "TestTileEntity");
 
@@ -32,20 +32,19 @@ public class CommonProxy {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    public void postInit() {
-    }
+    public void postInit() {}
 
-//    @SubscribeEvent
-//    public static void registerBlocks(RegistryEvent.Register<Block> event) {
-//        IForgeRegistry<Block> registry = event.getRegistry();
-//        registry.register(testBlock);
-//    }
-//
-//    @SubscribeEvent
-//    public static void registerItems(RegistryEvent.Register<Item> event) {
-//        IForgeRegistry<Item> registry = event.getRegistry();
-//        registry.register(testItemBlock);
-//    }
+    //    @SubscribeEvent
+    //    public static void registerBlocks(RegistryEvent.Register<Block> event) {
+    //        IForgeRegistry<Block> registry = event.getRegistry();
+    //        registry.register(testBlock);
+    //    }
+    //
+    //    @SubscribeEvent
+    //    public static void registerItems(RegistryEvent.Register<Item> event) {
+    //        IForgeRegistry<Item> registry = event.getRegistry();
+    //        registry.register(testItemBlock);
+    //    }
 
     @SubscribeEvent
     public void onConfigChange(ConfigChangedEvent.OnConfigChangedEvent event) {

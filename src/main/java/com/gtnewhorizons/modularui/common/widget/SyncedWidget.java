@@ -1,9 +1,9 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import com.google.gson.JsonObject;
 import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.JsonHelper;
-import com.google.gson.JsonObject;
 
 /**
  * An optional base class for synced widgets.

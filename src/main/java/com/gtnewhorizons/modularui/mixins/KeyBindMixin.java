@@ -1,19 +1,19 @@
-//package com.gtnewhorizons.modularui.core.mixin;
+// package com.gtnewhorizons.modularui.core.mixin;
 //
-//import com.gtnewhorizons.modularui.api.KeyBindAPI;
-//import com.gtnewhorizons.modularui.common.keybind.KeyBindHandler;
-//import com.gtnewhorizons.modularui.api.KeyBindAPI;
-//import net.minecraft.client.settings.KeyBinding;
-//import org.spongepowered.asm.mixin.Mixin;
-//import org.spongepowered.asm.mixin.Overwrite;
-//import org.spongepowered.asm.mixin.injection.At;
-//import org.spongepowered.asm.mixin.injection.Inject;
-//import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+// import com.gtnewhorizons.modularui.api.KeyBindAPI;
+// import com.gtnewhorizons.modularui.common.keybind.KeyBindHandler;
+// import com.gtnewhorizons.modularui.api.KeyBindAPI;
+// import net.minecraft.client.settings.KeyBinding;
+// import org.spongepowered.asm.mixin.Mixin;
+// import org.spongepowered.asm.mixin.Overwrite;
+// import org.spongepowered.asm.mixin.injection.At;
+// import org.spongepowered.asm.mixin.injection.Inject;
+// import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 //
-//import java.util.Collection;
+// import java.util.Collection;
 //
-//@Mixin(KeyBinding.class)
-//public class KeyBindMixin {
+// @Mixin(KeyBinding.class)
+// public class KeyBindMixin {
 //
 //    @Inject(method = "conflicts", at = @At("HEAD"), cancellable = true, remap = false)
 //    public void conflicts(KeyBinding other, CallbackInfoReturnable<Boolean> cir) {
@@ -42,4 +42,4 @@
 //            }
 //        }
 //    }
-//}
+// }

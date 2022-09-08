@@ -1,18 +1,18 @@
-//package com.gtnewhorizons.modularui.core.mixin;
+// package com.gtnewhorizons.modularui.core.mixin;
 //
-//import net.minecraft.item.ItemStack;
-//import net.minecraft.network.PacketBuffer;
-//import net.minecraft.network.play.server.SPacketSetSlot;
-//import org.spongepowered.asm.mixin.Mixin;
-//import org.spongepowered.asm.mixin.Shadow;
-//import org.spongepowered.asm.mixin.injection.At;
-//import org.spongepowered.asm.mixin.injection.Inject;
-//import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+// import net.minecraft.item.ItemStack;
+// import net.minecraft.network.PacketBuffer;
+// import net.minecraft.network.play.server.SPacketSetSlot;
+// import org.spongepowered.asm.mixin.Mixin;
+// import org.spongepowered.asm.mixin.Shadow;
+// import org.spongepowered.asm.mixin.injection.At;
+// import org.spongepowered.asm.mixin.injection.Inject;
+// import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 //
-//import java.io.IOException;
+// import java.io.IOException;
 //
-//@Mixin(SPacketSetSlot.class)
-//public class SPacketSetSlotMixin {
+// @Mixin(SPacketSetSlot.class)
+// public class SPacketSetSlotMixin {
 //
 //    @Shadow
 //    private ItemStack item;
@@ -26,4 +26,4 @@
 //    public void writePacketData(PacketBuffer buf, CallbackInfo ci) throws IOException {
 //        buf.writeVarInt(item.getCount());
 //    }
-//}
+// }

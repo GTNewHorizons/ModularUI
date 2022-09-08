@@ -1,6 +1,5 @@
 package com.gtnewhorizons.modularui.common.widget;
 
-import com.gtnewhorizons.modularui.common.internal.wrapper.MultiList;
 import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
@@ -8,20 +7,22 @@ import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.api.widget.scroll.IVerticalScrollable;
 import com.gtnewhorizons.modularui.api.widget.scroll.ScrollType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
+import com.gtnewhorizons.modularui.common.internal.wrapper.MultiList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ListWidget extends MultiChildWidget implements Interactable, IVerticalScrollable {
 
     private int scrollOffset = 0;
     private int totalHeight = 0;
+
     @Nullable
     private ScrollBar scrollBar;
+
     private int maxHeight = -1;
     private final MultiList<Widget> allChildren = new MultiList<>();
 
@@ -29,7 +30,8 @@ public class ListWidget extends MultiChildWidget implements Interactable, IVerti
         ListWidget listWidget = new ListWidget();
         int i = 0;
         for (T t : list) {
-            Widget widget = Objects.requireNonNull(widgetCreator.apply(t, i++), "ListWidget creator produced a null child! This is forbidden!");
+            Widget widget = Objects.requireNonNull(
+                    widgetCreator.apply(t, i++), "ListWidget creator produced a null child! This is forbidden!");
             listWidget.addChild(widget);
         }
         return listWidget;
@@ -38,7 +40,8 @@ public class ListWidget extends MultiChildWidget implements Interactable, IVerti
     public static ListWidget builder(int size, Function<Integer, Widget> widgetCreator) {
         ListWidget listWidget = new ListWidget();
         for (int i = 0; i < size; i++) {
-            Widget widget = Objects.requireNonNull(widgetCreator.apply(i), "ListWidget creator produced a null child! This is forbidden!");
+            Widget widget = Objects.requireNonNull(
+                    widgetCreator.apply(i), "ListWidget creator produced a null child! This is forbidden!");
             listWidget.addChild(widget);
         }
         return listWidget;

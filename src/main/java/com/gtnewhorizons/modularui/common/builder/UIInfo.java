@@ -1,18 +1,16 @@
 package com.gtnewhorizons.modularui.common.builder;
 
-import com.gtnewhorizons.modularui.api.UIInfos;
-import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.ModularUI;
-
+import com.gtnewhorizons.modularui.api.UIInfos;
 import com.gtnewhorizons.modularui.api.screen.IContainerCreator;
 import com.gtnewhorizons.modularui.api.screen.IGuiCreator;
 import com.gtnewhorizons.modularui.common.internal.InternalUIMapper;
+import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
+import java.util.function.Function;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-
-import java.util.function.Function;
 
 /**
  * Responsible for registering actual Container and GuiContainer, and opening them.
@@ -51,11 +49,10 @@ public class UIInfo<CC extends IContainerCreator, GC extends IGuiCreator> {
      * For client-only GUI, use {@link UIInfos#openClientUI(EntityPlayer, Function)}
      */
     public void open(EntityPlayer player, World world, Vec3 pos) {
-        open(player, world, (int)pos.xCoord, (int)pos.yCoord, (int)pos.zCoord);
+        open(player, world, (int) pos.xCoord, (int) pos.yCoord, (int) pos.zCoord);
     }
 
     public void open(EntityPlayer player) {
         open(player, player.getEntityWorld(), (int) player.posX, (int) player.posY, (int) player.posZ);
     }
-
 }

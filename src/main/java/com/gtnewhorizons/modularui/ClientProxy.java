@@ -1,6 +1,5 @@
 package com.gtnewhorizons.modularui;
 
-
 import codechicken.lib.math.MathHelper;
 import com.gtnewhorizons.modularui.common.internal.JsonLoader;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
@@ -25,7 +24,8 @@ public class ClientProxy extends CommonProxy {
 
     public void postInit() {
         super.postInit();
-        ((SimpleReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(this::onReload);
+        ((SimpleReloadableResourceManager) Minecraft.getMinecraft().getResourceManager())
+                .registerReloadListener(this::onReload);
     }
 
     public void onReload(IResourceManager manager) {
@@ -37,7 +37,7 @@ public class ClientProxy extends CommonProxy {
     public void mouseScreenInput(GuiScreenEvent event) {
         if (event.gui instanceof ModularGui) {
             int w = Mouse.getEventDWheel();
-            int wheel = (int)MathHelper.clip(w, -1, 1);
+            int wheel = (int) MathHelper.clip(w, -1, 1);
             if (wheel != 0) {
                 ((ModularGui) event.gui).mouseScroll(wheel);
             }

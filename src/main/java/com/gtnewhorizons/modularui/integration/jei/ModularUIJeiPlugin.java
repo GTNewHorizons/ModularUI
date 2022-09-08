@@ -1,13 +1,13 @@
-//package com.gtnewhorizons.modularui.integration.jei;
+// package com.gtnewhorizons.modularui.integration.jei;
 //
-//import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
-//import mezz.jei.api.IModPlugin;
-//import mezz.jei.api.IModRegistry;
-//import mezz.jei.api.JEIPlugin;
-//import org.jetbrains.annotations.NotNull;
+// import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
+// import mezz.jei.api.IModPlugin;
+// import mezz.jei.api.IModRegistry;
+// import mezz.jei.api.JEIPlugin;
+// import org.jetbrains.annotations.NotNull;
 //
-//@JEIPlugin
-//public class ModularUIJeiPlugin implements IModPlugin {
+// @JEIPlugin
+// public class ModularUIJeiPlugin implements IModPlugin {
 //
 //    @Override
 //    public void register(@NotNull IModRegistry registry) {
@@ -16,4 +16,4 @@
 //        registry.addGhostIngredientHandler(ModularGui.class, uiHandler);
 //        registry.addGuiScreenHandler(ModularGui.class, uiHandler);
 //    }
-//}
+// }

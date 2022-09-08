@@ -4,27 +4,30 @@ import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.widget.IDraggable;
 import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
 import com.gtnewhorizons.modularui.api.widget.Widget;
-import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
-
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import net.minecraft.client.Minecraft;
+import net.minecraft.item.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 public class Cursor {
 
     private final ModularUIContext uiContext;
+
     @Nullable
     private IDraggable cursorDraggable;
+
     @Nullable
     private Widget hovered;
+
     @Nullable
     private Widget focused;
+
     private final List<Object> hoveredWidgets = new ArrayList<>();
     private int lastButton = -1;
     private long lastClickTime = 0;
@@ -121,13 +124,14 @@ public class Cursor {
         if (stack != null) {
             uiContext.getPlayer().inventory.setItemStack(stack);
             if (sync && !uiContext.isClient()) {
-                uiContext.sendServerPacket(ModularUIContext.DataCodes.SYNC_CURSOR_STACK, null, uiContext.getMainWindow(), buffer -> {
-                    try {
-                        buffer.writeItemStackToBuffer(stack);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+                uiContext.sendServerPacket(
+                        ModularUIContext.DataCodes.SYNC_CURSOR_STACK, null, uiContext.getMainWindow(), buffer -> {
+                            try {
+                                buffer.writeItemStackToBuffer(stack);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
             }
         }
     }
@@ -159,9 +163,9 @@ public class Cursor {
     @ApiStatus.Internal
     public void onScreenUpdate() {
         if (this.hovered != null) {
-//            if (hovered instanceof IVanillaSlot) {
-//                uiContext.getScreen().getAccessor().setHoveredSlot(((IVanillaSlot) hovered).getMcSlot());
-//            }
+            //            if (hovered instanceof IVanillaSlot) {
+            //                uiContext.getScreen().getAccessor().setHoveredSlot(((IVanillaSlot) hovered).getMcSlot());
+            //            }
             this.timeHovered++;
         }
         if (this.cursorDraggable != null && getItemStack() != null) {
@@ -211,7 +215,8 @@ public class Cursor {
             if (hovered instanceof IDraggable) {
                 draggable = (IDraggable) hovered;
             } else if (hovered instanceof ModularWindow && ((ModularWindow) hovered).isDraggable()) {
-                draggable = new DraggableWindowWrapper((ModularWindow) hovered, getPos().subtract(((ModularWindow) hovered).getPos()));
+                draggable = new DraggableWindowWrapper(
+                        (ModularWindow) hovered, getPos().subtract(((ModularWindow) hovered).getPos()));
             } else {
                 return false;
             }
@@ -241,7 +246,11 @@ public class Cursor {
             if (!window.isEnabled()) continue;
             AtomicReference<Widget> hovered = new AtomicReference<>();
             IWidgetParent.forEachByLayer(window, true, widget -> {
-                if (widget instanceof IDraggable && (hovered.get() == null || widget.getLayer() > hovered.get().getLayer()) && isAbove(widget) && widget.canHover()) {
+                if (widget instanceof IDraggable
+                        && (hovered.get() == null
+                                || widget.getLayer() > hovered.get().getLayer())
+                        && isAbove(widget)
+                        && widget.canHover()) {
                     hovered.set(widget);
                 }
                 return false;
@@ -276,7 +285,10 @@ public class Cursor {
     public Widget findHoveredWidget(ModularWindow window, boolean forDebug) {
         AtomicReference<Widget> hovered = new AtomicReference<>();
         IWidgetParent.forEachByLayer(window, widget -> {
-            if ((hovered.get() == null || widget.getLayer() > hovered.get().getLayer()) && widget.isEnabled() && isAbove(widget) && (forDebug || widget.canHover())) {
+            if ((hovered.get() == null || widget.getLayer() > hovered.get().getLayer())
+                    && widget.isEnabled()
+                    && isAbove(widget)
+                    && (forDebug || widget.canHover())) {
                 hovered.set(widget);
             }
             return false;
@@ -321,7 +333,8 @@ public class Cursor {
                             }
                         }
                     }
-                    if (child instanceof IWidgetParent && (!((IWidgetParent) child).childrenMustBeInBounds() || above)) {
+                    if (child instanceof IWidgetParent
+                            && (!((IWidgetParent) child).childrenMustBeInBounds() || above)) {
                         stack.addLast((IWidgetParent) child);
                     }
                 }

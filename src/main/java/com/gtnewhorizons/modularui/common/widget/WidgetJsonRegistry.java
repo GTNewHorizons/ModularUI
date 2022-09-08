@@ -1,17 +1,15 @@
 package com.gtnewhorizons.modularui.common.widget;
 
 import com.gtnewhorizons.modularui.ModularUI;
-
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.gtnewhorizons.modularui.api.widget.Widget;
-import net.minecraft.entity.player.EntityPlayer;
-
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+import javax.annotation.Nullable;
+import net.minecraft.entity.player.EntityPlayer;
 
 public class WidgetJsonRegistry {
 

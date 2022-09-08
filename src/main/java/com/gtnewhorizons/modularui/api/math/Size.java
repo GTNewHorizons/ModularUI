@@ -3,9 +3,7 @@ package com.gtnewhorizons.modularui.api.math;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.gtnewhorizons.modularui.ModularUI;
-
 import com.gtnewhorizons.modularui.common.internal.JsonHelper;
-
 import java.awt.*;
 import java.util.Objects;
 

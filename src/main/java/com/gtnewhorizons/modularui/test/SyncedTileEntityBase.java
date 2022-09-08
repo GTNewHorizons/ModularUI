@@ -2,6 +2,11 @@ package com.gtnewhorizons.modularui.test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
+import javax.annotation.Nonnull;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
@@ -9,12 +14,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
-
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Consumer;
 
 public abstract class SyncedTileEntityBase extends TileEntity {
 
@@ -91,5 +90,4 @@ public abstract class SyncedTileEntityBase extends TileEntity {
         ByteBuf backedBuffer = Unpooled.copiedBuffer(updateData);
         receiveInitialSyncData(new PacketBuffer(backedBuffer));
     }
-
 }

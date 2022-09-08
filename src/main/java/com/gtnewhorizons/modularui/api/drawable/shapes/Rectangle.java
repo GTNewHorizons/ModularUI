@@ -63,62 +63,93 @@ public class Rectangle implements IDrawable {
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
         GlStateManager.enableAlpha();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.tryBlendFuncSeparate(
+                GlStateManager.SourceFactor.SRC_ALPHA,
+                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                GlStateManager.SourceFactor.ONE,
+                GlStateManager.DestFactor.ZERO);
         GlStateManager.shadeModel(7425);
         Tessellator tessellator = Tessellator.instance;
         float x1 = x0 + width, y1 = y0 + height;
         if (this.cornerRadius == 0) {
             tessellator.startDrawingQuads();
 
-            tessellator.setColorRGBA_F(Color.getRed(colorTL), Color.getGreen(colorTL), Color.getBlue(colorTL), Color.getAlpha(colorTL));
+            tessellator.setColorRGBA_F(
+                    Color.getRed(colorTL), Color.getGreen(colorTL), Color.getBlue(colorTL), Color.getAlpha(colorTL));
             tessellator.addVertex(x0, y0, 0.0f);
-            tessellator.setColorRGBA_F(Color.getRed(colorBL), Color.getGreen(colorBL), Color.getBlue(colorBL), Color.getAlpha(colorBL));
+            tessellator.setColorRGBA_F(
+                    Color.getRed(colorBL), Color.getGreen(colorBL), Color.getBlue(colorBL), Color.getAlpha(colorBL));
             tessellator.addVertex(x0, y1, 0.0f);
-            tessellator.setColorRGBA_F(Color.getRed(colorBR), Color.getGreen(colorBR), Color.getBlue(colorBR), Color.getAlpha(colorBR));
+            tessellator.setColorRGBA_F(
+                    Color.getRed(colorBR), Color.getGreen(colorBR), Color.getBlue(colorBR), Color.getAlpha(colorBR));
             tessellator.addVertex(x1, y1, 0.0f);
-            tessellator.setColorRGBA_F(Color.getRed(colorTR), Color.getGreen(colorTR), Color.getBlue(colorTR), Color.getAlpha(colorTR));
+            tessellator.setColorRGBA_F(
+                    Color.getRed(colorTR), Color.getGreen(colorTR), Color.getBlue(colorTR), Color.getAlpha(colorTR));
             tessellator.addVertex(x1, y0, 0.0f);
         } else {
             tessellator.startDrawing(GL11.GL_TRIANGLE_FAN);
             int color = Color.average(colorBL, colorBR, colorTR, colorTL);
-            tessellator.setColorRGBA_F(Color.getRed(color), Color.getGreen(color), Color.getBlue(color), Color.getAlpha(color));
+            tessellator.setColorRGBA_F(
+                    Color.getRed(color), Color.getGreen(color), Color.getBlue(color), Color.getAlpha(color));
             tessellator.addVertex(x0 + width / 2, y0 + height / 2, 0.0f);
-            tessellator.setColorRGBA_F(Color.getRed(colorTL), Color.getGreen(colorTL), Color.getBlue(colorTL), Color.getAlpha(colorTL));
+            tessellator.setColorRGBA_F(
+                    Color.getRed(colorTL), Color.getGreen(colorTL), Color.getBlue(colorTL), Color.getAlpha(colorTL));
             tessellator.addVertex(x0, y0 + cornerRadius, 0.0f);
-            tessellator.setColorRGBA_F(Color.getRed(colorBL), Color.getGreen(colorBL), Color.getBlue(colorBL), Color.getAlpha(colorBL));
+            tessellator.setColorRGBA_F(
+                    Color.getRed(colorBL), Color.getGreen(colorBL), Color.getBlue(colorBL), Color.getAlpha(colorBL));
             tessellator.addVertex(x0, y1 - cornerRadius, 0.0f);
             int n = cornerSegments;
             for (int i = 1; i <= n; i++) {
                 float x = (float) (x0 + cornerRadius - Math.cos(PI_2 / n * i) * cornerRadius);
                 float y = (float) (y1 - cornerRadius + Math.sin(PI_2 / n * i) * cornerRadius);
-                tessellator.setColorRGBA_F(Color.getRed(colorBL), Color.getGreen(colorBL), Color.getBlue(colorBL), Color.getAlpha(colorBL));
+                tessellator.setColorRGBA_F(
+                        Color.getRed(colorBL),
+                        Color.getGreen(colorBL),
+                        Color.getBlue(colorBL),
+                        Color.getAlpha(colorBL));
                 tessellator.addVertex(x, y, 0.0f);
             }
-            tessellator.setColorRGBA_F(Color.getRed(colorBR), Color.getGreen(colorBR), Color.getBlue(colorBR), Color.getAlpha(colorBR));
+            tessellator.setColorRGBA_F(
+                    Color.getRed(colorBR), Color.getGreen(colorBR), Color.getBlue(colorBR), Color.getAlpha(colorBR));
             tessellator.addVertex(x1 - cornerRadius, y1, 0.0f);
             for (int i = 1; i <= n; i++) {
                 float x = (float) (x1 - cornerRadius + Math.sin(PI_2 / n * i) * cornerRadius);
                 float y = (float) (y1 - cornerRadius + Math.cos(PI_2 / n * i) * cornerRadius);
-                tessellator.setColorRGBA_F(Color.getRed(colorBR), Color.getGreen(colorBR), Color.getBlue(colorBR), Color.getAlpha(colorBR));
+                tessellator.setColorRGBA_F(
+                        Color.getRed(colorBR),
+                        Color.getGreen(colorBR),
+                        Color.getBlue(colorBR),
+                        Color.getAlpha(colorBR));
                 tessellator.addVertex(x, y, 0.0f);
             }
-            tessellator.setColorRGBA_F(Color.getRed(colorTR), Color.getGreen(colorTR), Color.getBlue(colorTR), Color.getAlpha(colorTR));
+            tessellator.setColorRGBA_F(
+                    Color.getRed(colorTR), Color.getGreen(colorTR), Color.getBlue(colorTR), Color.getAlpha(colorTR));
             tessellator.addVertex(x1, y0 + cornerRadius, 0.0f);
             for (int i = 1; i <= n; i++) {
                 float x = (float) (x1 - cornerRadius + Math.cos(PI_2 / n * i) * cornerRadius);
                 float y = (float) (y0 + cornerRadius - Math.sin(PI_2 / n * i) * cornerRadius);
-                tessellator.setColorRGBA_F(Color.getRed(colorTR), Color.getGreen(colorTR), Color.getBlue(colorTR), Color.getAlpha(colorTR));
+                tessellator.setColorRGBA_F(
+                        Color.getRed(colorTR),
+                        Color.getGreen(colorTR),
+                        Color.getBlue(colorTR),
+                        Color.getAlpha(colorTR));
                 tessellator.addVertex(x, y, 0.0f);
             }
-            tessellator.setColorRGBA_F(Color.getRed(colorTL), Color.getGreen(colorTL), Color.getBlue(colorTL), Color.getAlpha(colorTL));
+            tessellator.setColorRGBA_F(
+                    Color.getRed(colorTL), Color.getGreen(colorTL), Color.getBlue(colorTL), Color.getAlpha(colorTL));
             tessellator.addVertex(x0 + cornerRadius, y0, 0.0f);
             for (int i = 1; i <= n; i++) {
                 float x = (float) (x0 + cornerRadius - Math.sin(PI_2 / n * i) * cornerRadius);
                 float y = (float) (y0 + cornerRadius - Math.cos(PI_2 / n * i) * cornerRadius);
-                tessellator.setColorRGBA_F(Color.getRed(colorTL), Color.getGreen(colorTL), Color.getBlue(colorTL), Color.getAlpha(colorTL));
+                tessellator.setColorRGBA_F(
+                        Color.getRed(colorTL),
+                        Color.getGreen(colorTL),
+                        Color.getBlue(colorTL),
+                        Color.getAlpha(colorTL));
                 tessellator.addVertex(x, y, 0.0f);
             }
-            tessellator.setColorRGBA_F(Color.getRed(colorTL), Color.getGreen(colorTL), Color.getBlue(colorTL), Color.getAlpha(colorTL));
+            tessellator.setColorRGBA_F(
+                    Color.getRed(colorTL), Color.getGreen(colorTL), Color.getBlue(colorTL), Color.getAlpha(colorTL));
             tessellator.addVertex(x0, y0 + cornerRadius, 0.0f);
         }
         tessellator.draw();

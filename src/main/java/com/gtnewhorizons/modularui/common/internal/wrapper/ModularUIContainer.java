@@ -3,13 +3,12 @@ package com.gtnewhorizons.modularui.common.internal.wrapper;
 import com.gtnewhorizons.modularui.api.forge.ItemHandlerHelper;
 import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
+import java.util.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-
-import java.util.*;
 
 public class ModularUIContainer extends Container {
 
@@ -43,7 +42,7 @@ public class ModularUIContainer extends Container {
 
     private void checkSlotIds() {
         for (int i = 0; i < inventorySlots.size(); i++) {
-            ((Slot)(inventorySlots.get(i))).slotNumber = i;
+            ((Slot) (inventorySlots.get(i))).slotNumber = i;
         }
     }
 
@@ -99,22 +98,22 @@ public class ModularUIContainer extends Container {
 
     public void sendSlotChange(ItemStack stack, int index) {
         for (Object listener : this.crafters) {
-            ((ICrafting)(listener)).sendSlotContents(this, index, stack);
+            ((ICrafting) (listener)).sendSlotContents(this, index, stack);
         }
     }
 
-//    public void sendHeldItemUpdate() {
-//        for (Object listener : this.crafters) {
-//            if (listener instanceof EntityPlayerMP) {
-//                EntityPlayerMP player = (EntityPlayerMP) listener;
-//                player.connection.sendPacket(new SPacketSetSlot(-1, -1, player.inventory.getItemStack()));
-//            }
-//        }
-//    }
+    //    public void sendHeldItemUpdate() {
+    //        for (Object listener : this.crafters) {
+    //            if (listener instanceof EntityPlayerMP) {
+    //                EntityPlayerMP player = (EntityPlayerMP) listener;
+    //                player.connection.sendPacket(new SPacketSetSlot(-1, -1, player.inventory.getItemStack()));
+    //            }
+    //        }
+    //    }
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
-        Slot slot = (Slot)(this.inventorySlots.get(index));
+        Slot slot = (Slot) (this.inventorySlots.get(index));
         if (slot instanceof BaseSlot && !((BaseSlot) slot).isPhantom()) {
             ItemStack stack = slot.getStack();
             if (stack != null) {
@@ -131,10 +130,14 @@ public class ModularUIContainer extends Container {
 
     protected ItemStack transferItem(BaseSlot fromSlot, ItemStack stack) {
         for (BaseSlot slot : this.sortedShiftClickSlots) {
-            if (fromSlot.getShiftClickPriority() != slot.getShiftClickPriority() && slot.canTake && slot.isItemValidPhantom(stack)) {
+            if (fromSlot.getShiftClickPriority() != slot.getShiftClickPriority()
+                    && slot.canTake
+                    && slot.isItemValidPhantom(stack)) {
                 ItemStack itemstack = slot.getStack();
                 if (slot.isPhantom()) {
-                    if (itemstack == null || (ItemHandlerHelper.canItemStacksStackRelaxed(stack, itemstack) && itemstack.stackSize < slot.getItemStackLimit(itemstack))) {
+                    if (itemstack == null
+                            || (ItemHandlerHelper.canItemStacksStackRelaxed(stack, itemstack)
+                                    && itemstack.stackSize < slot.getItemStackLimit(itemstack))) {
                         slot.putStack(stack.copy());
                         return stack;
                     }
@@ -165,7 +168,10 @@ public class ModularUIContainer extends Container {
             }
             BaseSlot slot = (BaseSlot) slot1;
             ItemStack itemstack = slot.getStack();
-            if (fromSlot.getItemHandler() != slot.getItemHandler() && slot.canInsert && itemstack == null && slot.isItemValid(stack)) {
+            if (fromSlot.getItemHandler() != slot.getItemHandler()
+                    && slot.canInsert
+                    && itemstack == null
+                    && slot.isItemValid(stack)) {
                 if (stack.stackSize > slot1.getSlotStackLimit()) {
                     slot.putStack(stack.splitStack(slot.getSlotStackLimit()));
                 } else {

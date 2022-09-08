@@ -1,14 +1,12 @@
 package com.gtnewhorizons.modularui.common.internal.network;
 
 import com.gtnewhorizons.modularui.ModularUI;
-import com.gtnewhorizons.modularui.common.internal.wrapper.ModularUIContainer;
-
 import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
+import com.gtnewhorizons.modularui.common.internal.wrapper.ModularUIContainer;
+import java.io.IOException;
 import net.minecraft.inventory.Container;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
-
-import java.io.IOException;
 
 public class CWidgetUpdate implements IPacket {
 
@@ -20,8 +18,7 @@ public class CWidgetUpdate implements IPacket {
         this.widgetId = widgetId;
     }
 
-    public CWidgetUpdate() {
-    }
+    public CWidgetUpdate() {}
 
     @Override
     public void decode(PacketBuffer buf) {

@@ -7,13 +7,12 @@ import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.common.internal.Theme;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import org.apache.commons.lang3.tuple.Pair;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class TextRenderer {
 
@@ -95,7 +94,9 @@ public class TextRenderer {
     }
 
     public List<String> wrapLine(String line) {
-        return maxWidth > 0 ? getFontRenderer().listFormattedStringToWidth(line, (int) (maxWidth / scale)) : Collections.singletonList(line);
+        return maxWidth > 0
+                ? getFontRenderer().listFormattedStringToWidth(line, (int) (maxWidth / scale))
+                : Collections.singletonList(line);
     }
 
     public boolean wouldFit(List<String> text) {
@@ -154,7 +155,7 @@ public class TextRenderer {
         GlStateManager.disableBlend();
         GlStateManager.pushMatrix();
         GlStateManager.scale(scale, scale, 0f);
-        int width = getFontRenderer().drawString(text, (int)(x / scale), (int)(y / scale), color, shadow);
+        int width = getFontRenderer().drawString(text, (int) (x / scale), (int) (y / scale), color, shadow);
         GlStateManager.popMatrix();
         GlStateManager.enableBlend();
         return width * scale;

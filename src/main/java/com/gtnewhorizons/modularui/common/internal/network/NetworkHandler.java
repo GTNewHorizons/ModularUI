@@ -43,12 +43,12 @@ public class NetworkHandler {
         network.sendTo(packet, player);
     }
 
-    final static IMessageHandler<IPacket, IPacket> S2CHandler = (message, ctx) -> {
+    static final IMessageHandler<IPacket, IPacket> S2CHandler = (message, ctx) -> {
         NetHandlerPlayClient handler = ctx.getClientHandler();
         return message.executeClient(handler);
     };
 
-    final static IMessageHandler<IPacket, IPacket> C2SHandler = (message, ctx) -> {
+    static final IMessageHandler<IPacket, IPacket> C2SHandler = (message, ctx) -> {
         NetHandlerPlayServer handler = ctx.getServerHandler();
         return message.executeServer(handler);
     };

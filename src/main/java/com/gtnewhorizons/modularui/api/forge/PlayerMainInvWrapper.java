@@ -11,27 +11,21 @@ import net.minecraft.item.ItemStack;
 public class PlayerMainInvWrapper extends RangedWrapper {
     private final InventoryPlayer inventoryPlayer;
 
-    public PlayerMainInvWrapper(InventoryPlayer inv)
-    {
+    public PlayerMainInvWrapper(InventoryPlayer inv) {
         super(new InvWrapper(inv), 0, inv.mainInventory.length);
         inventoryPlayer = inv;
     }
 
     @Override
-    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
-    {
+    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         ItemStack rest = super.insertItem(slot, stack, simulate);
-        if (rest.stackSize != stack.stackSize)
-        {
+        if (rest.stackSize != stack.stackSize) {
             // the stack in the slot changed, animate it
             ItemStack inSlot = getStackInSlot(slot);
-            if(inSlot != null)
-            {
-                if (getInventoryPlayer().player.worldObj.isRemote)
-                {
+            if (inSlot != null) {
+                if (getInventoryPlayer().player.worldObj.isRemote) {
                     inSlot.animationsToGo = 5;
-                }
-                else if(getInventoryPlayer().player instanceof EntityPlayerMP) {
+                } else if (getInventoryPlayer().player instanceof EntityPlayerMP) {
                     getInventoryPlayer().player.openContainer.detectAndSendChanges();
                 }
             }
@@ -39,8 +33,7 @@ public class PlayerMainInvWrapper extends RangedWrapper {
         return rest;
     }
 
-    public InventoryPlayer getInventoryPlayer()
-    {
+    public InventoryPlayer getInventoryPlayer() {
         return inventoryPlayer;
     }
 }

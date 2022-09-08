@@ -10,5 +10,4 @@ public interface IGuiCreator {
 
     @SideOnly(Side.CLIENT)
     Object create(EntityPlayer player, World world, int x, int y, int z);
-
 }

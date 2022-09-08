@@ -53,12 +53,20 @@ public class Circle implements IDrawable {
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
         GlStateManager.enableAlpha();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.tryBlendFuncSeparate(
+                GlStateManager.SourceFactor.SRC_ALPHA,
+                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                GlStateManager.SourceFactor.ONE,
+                GlStateManager.DestFactor.ZERO);
         GlStateManager.shadeModel(7425);
         Tessellator tessellator = Tessellator.instance;
         float x_2 = x0 + width / 2, y_2 = y0 + height / 2;
         tessellator.startDrawing(GL11.GL_TRIANGLE_FAN);
-        tessellator.setColorRGBA(Color.getRed(colorInner), Color.getGreen(colorInner), Color.getBlue(colorInner), Color.getAlpha(colorInner));
+        tessellator.setColorRGBA(
+                Color.getRed(colorInner),
+                Color.getGreen(colorInner),
+                Color.getBlue(colorInner),
+                Color.getAlpha(colorInner));
         tessellator.addVertex(x_2, y_2, 0.0f);
         float incr = (float) (PI2 / segments);
         for (int i = 0; i <= segments; i++) {
@@ -66,7 +74,11 @@ public class Circle implements IDrawable {
             float x = (float) (Math.sin(angle) * (width / 2) + x_2);
             float y = (float) (Math.cos(angle) * (height / 2) + y_2);
             tessellator.startDrawing(GL11.GL_TRIANGLE_FAN);
-            tessellator.setColorRGBA(Color.getRed(colorOuter), Color.getGreen(colorOuter), Color.getBlue(colorOuter), Color.getAlpha(colorOuter));
+            tessellator.setColorRGBA(
+                    Color.getRed(colorOuter),
+                    Color.getGreen(colorOuter),
+                    Color.getBlue(colorOuter),
+                    Color.getAlpha(colorOuter));
             tessellator.addVertex(x, y, 0.0f);
         }
         tessellator.draw();

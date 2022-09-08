@@ -4,12 +4,12 @@ import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.nei.IGhostIngredientHandler;
 import com.gtnewhorizons.modularui.api.widget.IGhostIngredientTarget;
 import com.gtnewhorizons.modularui.api.widget.Widget;
+import java.awt.*;
 import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
-
-public class GhostIngredientWrapper<W extends Widget & IGhostIngredientTarget, I> implements IGhostIngredientHandler.Target {
+public class GhostIngredientWrapper<W extends Widget & IGhostIngredientTarget, I>
+        implements IGhostIngredientHandler.Target {
 
     private final W widget;
 

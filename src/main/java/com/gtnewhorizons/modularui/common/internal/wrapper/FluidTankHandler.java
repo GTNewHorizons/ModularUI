@@ -1,13 +1,12 @@
 package com.gtnewhorizons.modularui.common.internal.wrapper;
 
+import javax.annotation.Nullable;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
-
-import javax.annotation.Nullable;
 
 public class FluidTankHandler implements IFluidHandler {
 
@@ -26,9 +25,7 @@ public class FluidTankHandler implements IFluidHandler {
 
     @Override
     public FluidTankInfo[] getTankInfo(ForgeDirection from) {
-        return new FluidTankInfo[]{
-                fluidTank.getInfo()
-        };
+        return new FluidTankInfo[] {fluidTank.getInfo()};
     }
 
     @Override

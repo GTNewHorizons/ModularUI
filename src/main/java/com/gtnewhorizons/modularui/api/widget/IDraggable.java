@@ -1,9 +1,8 @@
 package com.gtnewhorizons.modularui.api.widget;
 
+import java.awt.*;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
-
-import java.awt.*;
 
 @ApiStatus.Experimental
 public interface IDraggable {

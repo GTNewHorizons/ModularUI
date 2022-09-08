@@ -5,12 +5,11 @@ import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import org.jetbrains.annotations.Unmodifiable;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * "Parent" widget that can contain another widgets as children.
@@ -31,15 +30,13 @@ public interface IWidgetParent {
     /**
      * Called right after the ui is created and right before synced widgets are registered. Last chance to add sub widgets
      */
-    default void initChildren() {
-    }
+    default void initChildren() {}
 
     /**
      * Called during rebuild.
      * {@link Widget#isAutoPositioned()} must be checked for each child!!!
      */
-    default void layoutChildren(int maxWidth, int maxHeight) {
-    }
+    default void layoutChildren(int maxWidth, int maxHeight) {}
 
     @SideOnly(Side.CLIENT)
     default void drawChildren(float partialTicks) {

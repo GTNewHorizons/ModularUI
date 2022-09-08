@@ -1,36 +1,35 @@
 package com.gtnewhorizons.modularui.api.screen;
 
-import com.gtnewhorizons.modularui.config.Config;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableBiMap;
+import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
+import com.gtnewhorizons.modularui.api.animation.Eases;
+import com.gtnewhorizons.modularui.api.animation.Interpolator;
+import com.gtnewhorizons.modularui.api.drawable.IDrawable;
+import com.gtnewhorizons.modularui.api.drawable.Text;
+import com.gtnewhorizons.modularui.api.math.Alignment;
+import com.gtnewhorizons.modularui.api.math.Color;
+import com.gtnewhorizons.modularui.api.math.Pos2d;
+import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
 import com.gtnewhorizons.modularui.api.widget.IWidgetBuilder;
 import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.Theme;
-import com.gtnewhorizons.modularui.api.math.Color;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.google.common.collect.ImmutableBiMap;
-import com.gtnewhorizons.modularui.api.GlStateManager;
-import com.gtnewhorizons.modularui.api.animation.Eases;
-import com.gtnewhorizons.modularui.api.animation.Interpolator;
-import com.gtnewhorizons.modularui.api.drawable.IDrawable;
-import com.gtnewhorizons.modularui.api.drawable.Text;
-import com.gtnewhorizons.modularui.api.math.Alignment;
-import com.gtnewhorizons.modularui.api.math.Pos2d;
-import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.gtnewhorizons.modularui.config.Config;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.entity.player.EntityPlayer;
-
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * A window in a modular gui. Only the "main" window can exist on both, server and client.
@@ -77,7 +76,6 @@ public class ModularWindow implements IWidgetParent {
     private float scale = 1f;
     private float rotation = 0;
     private float translateX = 0, translateY = 0;
-
     private Interpolator openAnimation, closeAnimation;
 
     public ModularWindow(Size size, List<Widget> children, IDrawable... background) {
@@ -125,11 +123,11 @@ public class ModularWindow implements IWidgetParent {
     }
 
     public static boolean anyAnimation() {
-        return Config.openCloseDurationMs > 0 &&
-                (Config.openCloseFade ||
-                    Config.openCloseTranslateFromBottom ||
-                    Config.openCloseScale ||
-                    Config.openCloseRotateFast);
+        return Config.openCloseDurationMs > 0
+                && (Config.openCloseFade
+                        || Config.openCloseTranslateFromBottom
+                        || Config.openCloseScale
+                        || Config.openCloseRotateFast);
     }
 
     /**
@@ -138,27 +136,33 @@ public class ModularWindow implements IWidgetParent {
     public void onOpen() {
         if (openAnimation == null && anyAnimation()) {
             final int startY = context.getScaledScreenSize().height - pos.y;
-            openAnimation = new Interpolator(0, 1, Config.openCloseDurationMs, Eases.EaseQuadOut, value -> {
-                float val = (float) value;
-                if (Config.openCloseFade) {
-                    alpha = (int) (val * Color.getAlpha(Theme.INSTANCE.getBackground()));
-                }
-                if (Config.openCloseTranslateFromBottom) {
-                    translateY = startY * (1 - val);
-                }
-                if (Config.openCloseScale) {
-                    scale = val;
-                }
-                if (Config.openCloseRotateFast) {
-                    rotation = val * 360;
-                }
-            }, val -> {
-                alpha = Color.getAlpha(Theme.INSTANCE.getBackground());
-                translateX = 0;
-                translateY = 0;
-                scale = 1f;
-                rotation = 360;
-            });
+            openAnimation = new Interpolator(
+                    0,
+                    1,
+                    Config.openCloseDurationMs,
+                    Eases.EaseQuadOut,
+                    value -> {
+                        float val = (float) value;
+                        if (Config.openCloseFade) {
+                            alpha = (int) (val * Color.getAlpha(Theme.INSTANCE.getBackground()));
+                        }
+                        if (Config.openCloseTranslateFromBottom) {
+                            translateY = startY * (1 - val);
+                        }
+                        if (Config.openCloseScale) {
+                            scale = val;
+                        }
+                        if (Config.openCloseRotateFast) {
+                            rotation = val * 360;
+                        }
+                    },
+                    val -> {
+                        alpha = Color.getAlpha(Theme.INSTANCE.getBackground());
+                        translateX = 0;
+                        translateY = 0;
+                        scale = 1f;
+                        rotation = 360;
+                    });
             closeAnimation = openAnimation.getReversed(Config.openCloseDurationMs, Eases.EaseQuadIn);
             openAnimation.forward();
             closeAnimation.setCallback(val -> {
@@ -167,7 +171,7 @@ public class ModularWindow implements IWidgetParent {
                 closeAnimation = null;
             });
         }
-        //this.pos = new Pos2d(pos.x, getContext().getScaledScreenSize().height);
+        // this.pos = new Pos2d(pos.x, getContext().getScaledScreenSize().height);
     }
 
     /**
@@ -385,7 +389,8 @@ public class ModularWindow implements IWidgetParent {
      */
     public void addDynamicSyncedWidget(int id, ISyncedWidget syncedWidget, ISyncedWidget parent) {
         if (id <= 0 || id > 0xFFFF) {
-            throw new IllegalArgumentException("Dynamic Synced widget id must be greater than 0 and smaller than 65535 (0xFFFF)");
+            throw new IllegalArgumentException(
+                    "Dynamic Synced widget id must be greater than 0 and smaller than 65535 (0xFFFF)");
         }
         if (syncedWidget == null || parent == null) {
             throw new NullPointerException("Can't add dynamic null widget or with null parent!");
@@ -395,7 +400,8 @@ public class ModularWindow implements IWidgetParent {
         }
         int parentId = getSyncedWidgetId(parent);
         if ((parentId & ~0xFFFF) != 0) {
-            throw new IllegalStateException("Dynamic synced widgets can't have other dynamic widgets as parent! It's possible with some trickery tho.");
+            throw new IllegalStateException(
+                    "Dynamic synced widgets can't have other dynamic widgets as parent! It's possible with some trickery tho.");
         }
         // generate unique id
         // first 2 bytes is passed id, last 2 bytes is parent id

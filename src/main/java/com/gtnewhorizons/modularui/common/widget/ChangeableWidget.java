@@ -5,23 +5,24 @@ import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
 import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
-import net.minecraft.network.PacketBuffer;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+import net.minecraft.network.PacketBuffer;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @ApiStatus.Experimental
 public class ChangeableWidget extends Widget implements ISyncedWidget, IWidgetParent {
 
     private final List<Widget> child = new ArrayList<>();
+
     @Nullable
     private Widget queuedChild = null;
+
     private final Supplier<Widget> widgetSupplier;
     private boolean initialised = false;
     private boolean firstTick = true;

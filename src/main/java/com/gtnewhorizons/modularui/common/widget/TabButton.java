@@ -3,7 +3,6 @@ package com.gtnewhorizons.modularui.common.widget;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
-
 import javax.annotation.Nullable;
 
 /**

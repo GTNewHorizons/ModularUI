@@ -7,19 +7,20 @@ import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.network.PacketBuffer;
-
 import java.io.IOException;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import net.minecraft.network.PacketBuffer;
 
 public class SliderWidget extends SyncedWidget implements Interactable {
 
     private IDrawable slider = ModularUITextures.BASE_BUTTON;
     private Size handleSize = new Size(8, 0);
     private float min = 0, max = 1;
+
     @SideOnly(Side.CLIENT)
     private float sliderPos = 0;
+
     private float value = 0;
     private Supplier<Float> getter;
     private Consumer<Float> setter;
@@ -40,7 +41,9 @@ public class SliderWidget extends SyncedWidget implements Interactable {
 
     @SideOnly(Side.CLIENT)
     public void updateSlider(int relativePos, boolean sync) {
-        setValue(toValue((float)MathHelper.clip(relativePos - handleSize.width / 2f, 0, size.width - handleSize.width)), sync);
+        setValue(
+                toValue((float) MathHelper.clip(relativePos - handleSize.width / 2f, 0, size.width - handleSize.width)),
+                sync);
     }
 
     @Override
@@ -50,12 +53,18 @@ public class SliderWidget extends SyncedWidget implements Interactable {
 
     @Override
     public void onRebuild() {
-        this.handleSize = new Size(handleSize.width > 0 ? handleSize.width : 8, handleSize.height > 0 ? handleSize.height : size.height);
+        this.handleSize = new Size(
+                handleSize.width > 0 ? handleSize.width : 8, handleSize.height > 0 ? handleSize.height : size.height);
     }
 
     @Override
     public void draw(float partialTicks) {
-        slider.draw(sliderPos, size.height / 2f - handleSize.height / 2f, handleSize.width, handleSize.height, partialTicks);
+        slider.draw(
+                sliderPos,
+                size.height / 2f - handleSize.height / 2f,
+                handleSize.width,
+                handleSize.height,
+                partialTicks);
     }
 
     @Override

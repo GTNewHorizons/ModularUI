@@ -1,10 +1,12 @@
 package com.gtnewhorizons.modularui.common.internal.network;
 
 import com.gtnewhorizons.modularui.ModularUI;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.function.Consumer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,14 +14,9 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.function.Consumer;
-
 public class NetworkUtils {
 
-    public static final Consumer<PacketBuffer> EMPTY_PACKET = buffer -> {
-    };
+    public static final Consumer<PacketBuffer> EMPTY_PACKET = buffer -> {};
 
     public static boolean isDedicatedClient() {
         return FMLCommonHandler.instance().getSide().isClient();
@@ -48,10 +45,9 @@ public class NetworkUtils {
         } else {
             buffer.writeBoolean(false);
             NBTTagCompound fluidStackTag = fluidStack.writeToNBT(new NBTTagCompound());
-            try{
+            try {
                 buffer.writeNBTTagCompoundToBuffer(fluidStackTag);
-            }
-            catch(IOException e){
+            } catch (IOException e) {
 
             }
         }

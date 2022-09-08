@@ -33,25 +33,34 @@ public class ExpandTab extends MultiChildWidget implements Interactable, IWidget
     private Pos2d normalPos;
     private int animateDuration = 250;
     private float animateX, animateY, animateWidth, animateHeight;
+
     @Nullable
     private IDrawable[] normalTexture;
+
     private float ticktime;
 
     @Override
     public void onInit() {
-        this.openAnimator = new Interpolator(0, 1, this.animateDuration, Eases.EaseQuadOut, value -> {
-            float val = (float) value;
-            this.animateX = (this.expandedPos.x - this.normalPos.x) * val + this.normalPos.x;
-            this.animateY = (this.expandedPos.y - this.normalPos.y) * val + this.normalPos.y;
-            this.animateWidth = (this.expandedSize.width - this.normalSize.width) * val + this.normalSize.width;
-            this.animateHeight = (this.expandedSize.height - this.normalSize.height) * val + this.normalSize.height;
-        }, val -> {
-            this.animateX = this.expandedPos.x;
-            this.animateY = this.expandedPos.y;
-            this.animateWidth = this.expandedSize.width;
-            this.animateHeight = this.expandedSize.height;
-            this.animating = false;
-        });
+        this.openAnimator = new Interpolator(
+                0,
+                1,
+                this.animateDuration,
+                Eases.EaseQuadOut,
+                value -> {
+                    float val = (float) value;
+                    this.animateX = (this.expandedPos.x - this.normalPos.x) * val + this.normalPos.x;
+                    this.animateY = (this.expandedPos.y - this.normalPos.y) * val + this.normalPos.y;
+                    this.animateWidth = (this.expandedSize.width - this.normalSize.width) * val + this.normalSize.width;
+                    this.animateHeight =
+                            (this.expandedSize.height - this.normalSize.height) * val + this.normalSize.height;
+                },
+                val -> {
+                    this.animateX = this.expandedPos.x;
+                    this.animateY = this.expandedPos.y;
+                    this.animateWidth = this.expandedSize.width;
+                    this.animateHeight = this.expandedSize.height;
+                    this.animating = false;
+                });
         this.closeAnimator = this.openAnimator.getReversed(this.animateDuration, Eases.EaseQuadIn);
         this.closeAnimator.setCallback(val -> {
             this.animateX = this.normalPos.x;
@@ -98,7 +107,6 @@ public class ExpandTab extends MultiChildWidget implements Interactable, IWidget
         }
     }
 
-
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
         ticktime = event.renderTickTime;
@@ -108,7 +116,7 @@ public class ExpandTab extends MultiChildWidget implements Interactable, IWidget
     public void onFrameUpdate() {
         if (this.animating) {
             if (expanded) {
-//                this.openAnimator.update(Minecraft.getMinecraft().getTickLength());
+                //                this.openAnimator.update(Minecraft.getMinecraft().getTickLength());
                 this.openAnimator.update(ticktime);
             } else {
                 this.closeAnimator.update(ticktime);
@@ -125,7 +133,8 @@ public class ExpandTab extends MultiChildWidget implements Interactable, IWidget
             for (IDrawable drawable : background) {
                 if (drawable != null) {
                     drawable.applyThemeColor(themeColor);
-                    drawable.draw(animateX - getPos().x, animateY - getPos().y, animateWidth, animateHeight, partialTicks);
+                    drawable.draw(
+                            animateX - getPos().x, animateY - getPos().y, animateWidth, animateHeight, partialTicks);
                 }
             }
         }
@@ -148,9 +157,14 @@ public class ExpandTab extends MultiChildWidget implements Interactable, IWidget
         if (isExpanded() || animating) {
             Pos2d parentPos = getParent().getAbsolutePos();
             if (animating) {
-                GuiHelper.useScissor((int) (parentPos.x + this.animateX), (int) (parentPos.y + this.animateY), (int) this.animateWidth, (int) this.animateHeight, () -> {
-                    super.drawChildren(partialTicks);
-                });
+                GuiHelper.useScissor(
+                        (int) (parentPos.x + this.animateX),
+                        (int) (parentPos.y + this.animateY),
+                        (int) this.animateWidth,
+                        (int) this.animateHeight,
+                        () -> {
+                            super.drawChildren(partialTicks);
+                        });
             } else {
                 super.drawChildren(partialTicks);
             }

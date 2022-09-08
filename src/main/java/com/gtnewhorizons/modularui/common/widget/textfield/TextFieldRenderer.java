@@ -5,13 +5,12 @@ import com.gtnewhorizons.modularui.api.drawable.TextRenderer;
 import com.gtnewhorizons.modularui.api.math.Color;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.Tessellator;
-import org.apache.commons.lang3.tuple.Pair;
-
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.Collections;
 import java.util.List;
+import net.minecraft.client.renderer.Tessellator;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class TextFieldRenderer extends TextRenderer {
 
@@ -93,7 +92,8 @@ public class TextFieldRenderer extends TextRenderer {
         int index = (int) (y / (getFontHeight()));
         if (index < 0) return new Point();
         if (index >= measuredLines.size())
-            return new Point(measuredLines.get(measuredLines.size() - 1).getKey().length(), measuredLines.size() - 1);
+            return new Point(
+                    measuredLines.get(measuredLines.size() - 1).getKey().length(), measuredLines.size() - 1);
         Pair<String, Float> line = measuredLines.get(index);
         x -= getStartX(line.getValue()) + this.x;
         if (line.getValue() <= 0) return new Point(0, index);
@@ -115,7 +115,9 @@ public class TextFieldRenderer extends TextRenderer {
         }
         Pair<String, Float> line = measuredLines.get(cursorPos.y);
         String sub = line.getKey().substring(0, Math.min(line.getKey().length(), cursorPos.x));
-        return new Point2D.Float(getStartX(line.getRight()) + getFontRenderer().getStringWidth(sub) * scale, getStartY(measuredLines.size()) + cursorPos.y * getFontHeight());
+        return new Point2D.Float(
+                getStartX(line.getRight()) + getFontRenderer().getStringWidth(sub) * scale,
+                getStartY(measuredLines.size()) + cursorPos.y * getFontHeight());
     }
 
     @SideOnly(Side.CLIENT)
@@ -126,8 +128,7 @@ public class TextFieldRenderer extends TextRenderer {
         float green = Color.getGreenF(markedColor);
         float blue = Color.getBlueF(markedColor);
         float alpha = Color.getAlphaF(markedColor);
-        if (alpha == 0)
-            alpha = 1f;
+        if (alpha == 0) alpha = 1f;
         Tessellator tessellator = Tessellator.instance;
         GlStateManager.color(red, green, blue, alpha);
         GlStateManager.disableTexture2D();
@@ -152,8 +153,7 @@ public class TextFieldRenderer extends TextRenderer {
         float green = Color.getGreenF(color);
         float blue = Color.getBlueF(color);
         float alpha = Color.getAlphaF(color);
-        if (alpha == 0)
-            alpha = 1f;
+        if (alpha == 0) alpha = 1f;
         Tessellator tessellator = Tessellator.instance;
         GlStateManager.disableBlend();
         GlStateManager.pushMatrix();

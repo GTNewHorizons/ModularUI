@@ -1,7 +1,6 @@
 package com.gtnewhorizons.modularui.common.widget;
 
 import com.gtnewhorizons.modularui.api.drawable.Text;
-
 import java.util.function.Supplier;
 
 public class DynamicTextWidget extends TextWidget {

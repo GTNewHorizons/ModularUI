@@ -1,26 +1,25 @@
 package com.gtnewhorizons.modularui.api;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.text.DecimalFormat;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+import org.jetbrains.annotations.NotNull;
 
 public class NumberFormat {
 
     private static final NavigableMap<Double, String> suffixesByPower = new TreeMap<>();
     private static final java.text.NumberFormat[] NUMBER_FORMAT = {
-            new DecimalFormat("0."),
-            new DecimalFormat("0.#"),
-            new DecimalFormat("0.##"),
-            new DecimalFormat("0.###"),
-            new DecimalFormat("0.####"),
-            new DecimalFormat("0.#####"),
-            new DecimalFormat("0.######"),
-            new DecimalFormat("0.#######"),
-            new DecimalFormat("0.########"),
-            new DecimalFormat("0.#########"),
+        new DecimalFormat("0."),
+        new DecimalFormat("0.#"),
+        new DecimalFormat("0.##"),
+        new DecimalFormat("0.###"),
+        new DecimalFormat("0.####"),
+        new DecimalFormat("0.#####"),
+        new DecimalFormat("0.######"),
+        new DecimalFormat("0.#######"),
+        new DecimalFormat("0.########"),
+        new DecimalFormat("0.#########"),
     };
 
     static {
@@ -40,7 +39,7 @@ public class NumberFormat {
 
     @NotNull
     public static String format(double value, int precision) {
-        //Double.MIN_VALUE == -Double.MIN_VALUE so we need an adjustment here
+        // Double.MIN_VALUE == -Double.MIN_VALUE so we need an adjustment here
         if (value == Double.MIN_VALUE) return format(Double.MIN_VALUE + 1, precision);
         if (value == 0) return "0";
         if (value < 0) return '-' + format(-value, precision);
@@ -55,9 +54,11 @@ public class NumberFormat {
             suffix = e.getValue();
         }
 
-        double truncated = value / (divideBy / 10); //the number part of the output times 10
+        double truncated = value / (divideBy / 10); // the number part of the output times 10
         boolean hasDecimal = truncated < 100 && (truncated / 10D) != (truncated / 10);
-        return hasDecimal ? NUMBER_FORMAT[precision].format(truncated / 10D) + suffix : NUMBER_FORMAT[precision].format(truncated / 10) + suffix;
+        return hasDecimal
+                ? NUMBER_FORMAT[precision].format(truncated / 10D) + suffix
+                : NUMBER_FORMAT[precision].format(truncated / 10) + suffix;
     }
 
     @NotNull

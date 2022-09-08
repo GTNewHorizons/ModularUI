@@ -46,8 +46,7 @@ public interface Interactable {
      * @param deltaTime milliseconds since last mouse event
      */
     @ApiStatus.OverrideOnly
-    default void onMouseDragged(int buttonId, long deltaTime) {
-    }
+    default void onMouseDragged(int buttonId, long deltaTime) {}
 
     /**
      * Called the mouse wheel moved
@@ -88,13 +87,13 @@ public interface Interactable {
     }
 
     // todo resurrect this
-//    /**
-//     * @return if alt or alt gr is pressed
-//     */
-//    @SideOnly(Side.CLIENT)
-//    static boolean hasAltDown() {
-//        return GuiScreen.isAltKeyDown();
-//    }
+    //    /**
+    //     * @return if alt or alt gr is pressed
+    //     */
+    //    @SideOnly(Side.CLIENT)
+    //    static boolean hasAltDown() {
+    //        return GuiScreen.isAltKeyDown();
+    //    }
 
     /**
      * @param key key id, see {@link Keyboard}
@@ -110,7 +109,9 @@ public interface Interactable {
      */
     @SideOnly(Side.CLIENT)
     static void playButtonClickSound() {
-        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
+        Minecraft.getMinecraft()
+                .getSoundHandler()
+                .playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
     }
 
     enum ClickResult {

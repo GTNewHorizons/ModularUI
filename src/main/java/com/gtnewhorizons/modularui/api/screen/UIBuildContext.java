@@ -2,13 +2,11 @@ package com.gtnewhorizons.modularui.api.screen;
 
 import com.google.common.collect.ImmutableMap;
 import com.gtnewhorizons.modularui.ModularUI;
-
 import com.gtnewhorizons.modularui.api.widget.Widget;
-import net.minecraft.entity.player.EntityPlayer;
-
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
+import javax.annotation.Nullable;
+import net.minecraft.entity.player.EntityPlayer;
 
 public class UIBuildContext {
 
@@ -56,7 +54,8 @@ public class UIBuildContext {
         if (t != null) {
             consumer.accept(t);
         } else {
-            ModularUI.logger.error("Expected Widget with name {}, of class {}, but was not found!", name, clazz.getName());
+            ModularUI.logger.error(
+                    "Expected Widget with name {}, of class {}, but was not found!", name, clazz.getName());
         }
     }
 

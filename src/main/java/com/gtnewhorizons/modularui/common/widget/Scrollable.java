@@ -11,13 +11,13 @@ import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.api.widget.scroll.IHorizontalScrollable;
 import com.gtnewhorizons.modularui.api.widget.scroll.IVerticalScrollable;
 import com.gtnewhorizons.modularui.api.widget.scroll.ScrollType;
+import java.util.ArrayList;
+import java.util.List;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Scrollable extends Widget implements IWidgetBuilder<Scrollable>, IWidgetParent, Interactable, IHorizontalScrollable, IVerticalScrollable {
+public class Scrollable extends Widget
+        implements IWidgetBuilder<Scrollable>, IWidgetParent, Interactable, IHorizontalScrollable, IVerticalScrollable {
 
     private int xScroll = 0, yScroll = 0;
     private final List<Widget> children = new ArrayList<>();

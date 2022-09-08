@@ -1,6 +1,5 @@
 package com.gtnewhorizons.modularui.common.widget.textfield;
 
-import com.gtnewhorizons.modularui.api.widget.scroll.ScrollType;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
 import com.gtnewhorizons.modularui.api.math.Alignment;
@@ -9,18 +8,18 @@ import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.api.widget.scroll.IHorizontalScrollable;
+import com.gtnewhorizons.modularui.api.widget.scroll.ScrollType;
 import com.gtnewhorizons.modularui.common.widget.ScrollBar;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.Util;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.input.Keyboard;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.Util;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.input.Keyboard;
 
 /**
  * The base of a text input widget. Handles mouse/keyboard input and rendering.
@@ -37,11 +36,14 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
      * all positive and negative numbers
      */
     public static final Pattern WHOLE_NUMS = Pattern.compile("-?[0-9]*([+\\-*/%^][0-9]*)*");
-    public static final Pattern DECIMALS = Pattern.compile("[0-9]*(" + getDecimalSeparator() + "[0-9]*)?([+\\-*/%^][0-9]*(" + getDecimalSeparator() + "[0-9]*)?)*");
+
+    public static final Pattern DECIMALS = Pattern.compile(
+            "[0-9]*(" + getDecimalSeparator() + "[0-9]*)?([+\\-*/%^][0-9]*(" + getDecimalSeparator() + "[0-9]*)?)*");
     /**
      * alphabets
      */
     public static final Pattern LETTERS = Pattern.compile("[a-zA-Z]*");
+
     public static final Pattern ANY = Pattern.compile(".*");
     /**
      * ascii letters
@@ -104,13 +106,19 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
         if (!isRightBelowMouse()) {
             return ClickResult.IGNORE;
         }
-        handler.setCursor(renderer.getCursorPos(handler.getText(), getContext().getCursor().getX() - pos.x + scrollOffset, getContext().getCursor().getY() - pos.y));
+        handler.setCursor(renderer.getCursorPos(
+                handler.getText(),
+                getContext().getCursor().getX() - pos.x + scrollOffset,
+                getContext().getCursor().getY() - pos.y));
         return ClickResult.SUCCESS;
     }
 
     @Override
     public void onMouseDragged(int buttonId, long deltaTime) {
-        handler.setMainCursor(renderer.getCursorPos(handler.getText(), getContext().getCursor().getX() - pos.x + scrollOffset, getContext().getCursor().getY() - pos.y));
+        handler.setMainCursor(renderer.getCursorPos(
+                handler.getText(),
+                getContext().getCursor().getX() - pos.x + scrollOffset,
+                getContext().getCursor().getY() - pos.y));
     }
 
     @Override
@@ -272,15 +280,11 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
     /**
      * Returns true if either windows ctrl key is down or if either mac meta key is down
      */
-    public static boolean isCtrlKeyDown()
+    public static boolean isCtrlKeyDown() {
 
-    {
-        if (IS_RUNNING_ON_MAC)
-        {
+        if (IS_RUNNING_ON_MAC) {
             return Keyboard.isKeyDown(219) || Keyboard.isKeyDown(220);
-        }
-        else
-        {
+        } else {
             return Keyboard.isKeyDown(29) || Keyboard.isKeyDown(157);
         }
     }
@@ -288,36 +292,30 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
     /**
      * Returns true if either shift key is down
      */
-    public static boolean isShiftKeyDown()
-    {
+    public static boolean isShiftKeyDown() {
         return Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54);
     }
 
     /**
      * Returns true if either alt key is down
      */
-    public static boolean isAltKeyDown()
-    {
+    public static boolean isAltKeyDown() {
         return Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184);
     }
 
-    public static boolean isKeyComboCtrlX(int keyID)
-    {
+    public static boolean isKeyComboCtrlX(int keyID) {
         return keyID == 45 && isCtrlKeyDown() && !isShiftKeyDown() && !isAltKeyDown();
     }
 
-    public static boolean isKeyComboCtrlV(int keyID)
-    {
+    public static boolean isKeyComboCtrlV(int keyID) {
         return keyID == 47 && isCtrlKeyDown() && !isShiftKeyDown() && !isAltKeyDown();
     }
 
-    public static boolean isKeyComboCtrlC(int keyID)
-    {
+    public static boolean isKeyComboCtrlC(int keyID) {
         return keyID == 46 && isCtrlKeyDown() && !isShiftKeyDown() && !isAltKeyDown();
     }
 
-    public static boolean isKeyComboCtrlA(int keyID)
-    {
+    public static boolean isKeyComboCtrlA(int keyID) {
         return keyID == 30 && isCtrlKeyDown() && !isShiftKeyDown() && !isAltKeyDown();
     }
 }

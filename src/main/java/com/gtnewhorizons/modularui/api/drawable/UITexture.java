@@ -2,17 +2,15 @@ package com.gtnewhorizons.modularui.api.drawable;
 
 import com.google.gson.JsonObject;
 import com.gtnewhorizons.modularui.ModularUI;
-
 import com.gtnewhorizons.modularui.api.math.GuiArea;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.common.internal.JsonHelper;
+import java.util.HashMap;
+import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class UITexture implements IDrawable {
 
@@ -58,15 +56,22 @@ public class UITexture implements IDrawable {
         return fullImage(new ResourceLocation(mod, location));
     }
 
-    public static UITexture partly(ResourceLocation location, int imageWidth, int imageHeight, int u0, int v0, int u1, int v1) {
-        return new UITexture(location, u0 / (float) imageWidth, v0 / (float) imageHeight, u1 / (float) imageWidth, v1 / (float) imageHeight);
+    public static UITexture partly(
+            ResourceLocation location, int imageWidth, int imageHeight, int u0, int v0, int u1, int v1) {
+        return new UITexture(
+                location,
+                u0 / (float) imageWidth,
+                v0 / (float) imageHeight,
+                u1 / (float) imageWidth,
+                v1 / (float) imageHeight);
     }
 
     public static UITexture partly(String location, int imageWidth, int imageHeight, int u0, int v0, int u1, int v1) {
         return partly(new ResourceLocation(location), imageWidth, imageHeight, u0, v0, u1, v1);
     }
 
-    public static UITexture partly(String domain, String location, int imageWidth, int imageHeight, int u0, int v0, int u1, int v1) {
+    public static UITexture partly(
+            String domain, String location, int imageWidth, int imageHeight, int u0, int v0, int u1, int v1) {
         return partly(new ResourceLocation(domain, location), imageWidth, imageHeight, u0, v0, u1, v1);
     }
 
@@ -90,7 +95,14 @@ public class UITexture implements IDrawable {
     public UITexture exposeToJson() {
         if (JSON_TEXTURES.containsKey(location)) {
             UITexture texture = JSON_TEXTURES.get(location);
-            ModularUI.logger.error("{} '{}' is already exposed to json with uv {}, {}, {}, {}!", texture.getClass().getSimpleName(), location, texture.u0, texture.v0, texture.u1, texture.v1);
+            ModularUI.logger.error(
+                    "{} '{}' is already exposed to json with uv {}, {}, {}, {}!",
+                    texture.getClass().getSimpleName(),
+                    location,
+                    texture.u0,
+                    texture.v0,
+                    texture.u1,
+                    texture.v1);
         } else {
             JSON_TEXTURES.put(location, this);
         }
@@ -118,11 +130,21 @@ public class UITexture implements IDrawable {
         draw(location, x, y, width, height, u0, v0, u1, v1);
     }
 
-    public void drawSubArea(float x, float y, float width, float height, float uStart, float vStart, float uEnd, float vEnd) {
+    public void drawSubArea(
+            float x, float y, float width, float height, float uStart, float vStart, float uEnd, float vEnd) {
         draw(location, x, y, width, height, calcU(uStart), calcV(vStart), calcU(uEnd), calcV(vEnd));
     }
 
-    public static void draw(ResourceLocation location, float x0, float y0, float width, float height, float u0, float v0, float u1, float v1) {
+    public static void draw(
+            ResourceLocation location,
+            float x0,
+            float y0,
+            float width,
+            float height,
+            float u0,
+            float v0,
+            float u1,
+            float v1) {
         float x1 = x0 + width, y1 = y0 + height;
         Minecraft.getMinecraft().renderEngine.bindTexture(location);
         Tessellator tessellator = Tessellator.instance;
@@ -154,7 +176,8 @@ public class UITexture implements IDrawable {
         Size imageSize = JsonHelper.getElement(json, Size.ZERO, Size::ofJson, "imageSize");
         int borderWidth = JsonHelper.getInt(json, -1, "borderWidth");
         if (imageSize.width > 0 && imageSize.height > 0 && borderWidth >= 0) {
-            return AdaptableUITexture.of(rl, imageSize.width, imageSize.height, borderWidth).getSubArea(u0, v0, u1, v1);
+            return AdaptableUITexture.of(rl, imageSize.width, imageSize.height, borderWidth)
+                    .getSubArea(u0, v0, u1, v1);
         }
         return new UITexture(rl, u0, v0, u1, v1);
     }

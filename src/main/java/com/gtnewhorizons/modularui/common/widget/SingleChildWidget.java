@@ -1,22 +1,19 @@
 package com.gtnewhorizons.modularui.common.widget;
 
 import com.gtnewhorizons.modularui.ModularUI;
-
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
 import com.gtnewhorizons.modularui.api.widget.Widget;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public class SingleChildWidget extends Widget implements IWidgetParent {
 
     private Widget child;
 
-    public SingleChildWidget() {
-    }
+    public SingleChildWidget() {}
 
     public SingleChildWidget(Size size) {
         super(size);

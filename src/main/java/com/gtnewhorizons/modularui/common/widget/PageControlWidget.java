@@ -1,15 +1,13 @@
 package com.gtnewhorizons.modularui.common.widget;
 
 import com.gtnewhorizons.modularui.ModularUI;
-
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
 import com.gtnewhorizons.modularui.api.widget.Widget;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Parent widget that can contain children and switch them with pagination.
@@ -69,7 +67,8 @@ public class PageControlWidget extends Widget implements IWidgetParent {
 
     public void setActivePage(int page) {
         if (page > pages.size() - 1 || page < 0) {
-            throw new IndexOutOfBoundsException("Tried setting active page to " + page + " while only 0 - " + (pages.size() - 1) + " is allowed");
+            throw new IndexOutOfBoundsException(
+                    "Tried setting active page to " + page + " while only 0 - " + (pages.size() - 1) + " is allowed");
         }
         if (!isInitialised()) {
             this.currentPage = page;

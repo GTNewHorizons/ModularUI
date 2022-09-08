@@ -1,8 +1,7 @@
 package com.gtnewhorizons.modularui.api;
 
-import net.minecraft.client.settings.KeyBinding;
-
 import java.util.*;
+import net.minecraft.client.settings.KeyBinding;
 
 public class KeyBindAPI {
 
@@ -56,5 +55,4 @@ public class KeyBindAPI {
     public static Collection<KeyBinding> getCompatibles(KeyBinding keyBinding) {
         return compatibiliyMap.getOrDefault(keyBinding, Collections.emptySet());
     }
-
 }

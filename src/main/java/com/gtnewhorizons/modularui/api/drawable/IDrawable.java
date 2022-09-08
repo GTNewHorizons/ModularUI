@@ -9,7 +9,6 @@ import com.gtnewhorizons.modularui.common.internal.JsonHelper;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -20,8 +19,7 @@ public interface IDrawable {
     /**
      * Empty drawable
      */
-    IDrawable EMPTY = (x, y, width, height, partialTicks) -> {
-    };
+    IDrawable EMPTY = (x, y, width, height, partialTicks) -> {};
 
     /**
      * Called ever frame
@@ -40,12 +38,12 @@ public interface IDrawable {
         draw(pos.x, pos.y, size.width, size.height, partialTicks);
     }
 
-    default void tick() {
-    }
+    default void tick() {}
 
     @SideOnly(Side.CLIENT)
     default void applyThemeColor(int color) {
-        GlStateManager.color(Color.getRedF(color), Color.getGreenF(color), Color.getBlueF(color), Color.getAlphaF(color));
+        GlStateManager.color(
+                Color.getRedF(color), Color.getGreenF(color), Color.getBlueF(color), Color.getAlphaF(color));
     }
 
     @SideOnly(Side.CLIENT)
@@ -100,7 +98,8 @@ public interface IDrawable {
     static IDrawable ofJson(JsonObject json) {
         IDrawable drawable = EMPTY;
         if (json.has("type")) {
-            Function<JsonObject, IDrawable> function = JSON_DRAWABLE_MAP.get(json.get("type").getAsString());
+            Function<JsonObject, IDrawable> function =
+                    JSON_DRAWABLE_MAP.get(json.get("type").getAsString());
             if (function != null) {
                 drawable = function.apply(json);
             }

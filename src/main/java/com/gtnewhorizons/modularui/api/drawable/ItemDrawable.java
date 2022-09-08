@@ -23,8 +23,7 @@ public class ItemDrawable implements IDrawable {
     }
 
     @Override
-    public void applyThemeColor(int color) {
-    }
+    public void applyThemeColor(int color) {}
 
     @Override
     public void draw(float x, float y, float width, float height, float partialTicks) {
@@ -33,7 +32,9 @@ public class ItemDrawable implements IDrawable {
         RenderHelper.enableGUIStandardItemLighting();
         GlStateManager.enableDepth();
         GlStateManager.scale(width / 16, height / 16, 1);
-        itemRenderer.renderItemAndEffectIntoGUI(item.getItem().getFontRenderer(item), Minecraft.getMinecraft().getTextureManager(), item, (int) x, (int) y);
+        itemRenderer.renderItemAndEffectIntoGUI(
+                item.getItem().getFontRenderer(item), Minecraft.getMinecraft().getTextureManager(), item, (int) x, (int)
+                        y);
         GlStateManager.disableDepth();
         RenderHelper.enableStandardItemLighting();
         GlStateManager.disableLighting();

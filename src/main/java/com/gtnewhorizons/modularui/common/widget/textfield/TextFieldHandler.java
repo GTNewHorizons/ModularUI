@@ -2,14 +2,13 @@ package com.gtnewhorizons.modularui.common.widget.textfield;
 
 import com.google.common.base.Joiner;
 import com.gtnewhorizons.modularui.common.widget.ScrollBar;
-import org.jetbrains.annotations.Nullable;
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Handles the text itself like inserting and deleting text. Also handles the cursor and marking text.
@@ -21,12 +20,16 @@ public class TextFieldHandler {
     private final List<String> text = new ArrayList<>();
     private final Point cursor = new Point(), cursorEnd = new Point();
     private TextFieldRenderer renderer;
+
     @Nullable
     private ScrollBar scrollBar;
+
     private boolean mainCursorStart = true;
     private int maxLines = 1;
+
     @Nullable
     private Pattern pattern;
+
     private int maxCharacters = -1;
 
     public void setPattern(@Nullable Pattern pattern) {
@@ -89,7 +92,8 @@ public class TextFieldHandler {
                 this.renderer.draw(this.text);
                 this.renderer.setSimulate(false);
                 String line = this.text.get(main.y);
-                this.scrollBar.setScrollOffsetOfCursor(this.renderer.getPosOf(this.renderer.measureLines(Collections.singletonList(line)), main).x);
+                this.scrollBar.setScrollOffsetOfCursor(
+                        this.renderer.getPosOf(this.renderer.measureLines(Collections.singletonList(line)), main).x);
             }
         }
     }
@@ -217,8 +221,7 @@ public class TextFieldHandler {
         return this.text;
     }
 
-    public void onChanged() {
-    }
+    public void onChanged() {}
 
     public String getSelectedText() {
         if (!hasTextMarked()) return "";
@@ -239,7 +242,9 @@ public class TextFieldHandler {
     }
 
     public boolean test(String text) {
-        return maxLines > 1 || ((pattern == null || pattern.matcher(text).matches()) && (maxCharacters < 0 || maxCharacters >= text.length()));
+        return maxLines > 1
+                || ((pattern == null || pattern.matcher(text).matches())
+                        && (maxCharacters < 0 || maxCharacters >= text.length()));
     }
 
     public void insert(String text) {

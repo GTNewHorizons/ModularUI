@@ -3,9 +3,7 @@ package com.gtnewhorizons.modularui.api.math;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.gtnewhorizons.modularui.ModularUI;
-
 import com.gtnewhorizons.modularui.common.internal.JsonHelper;
-
 import java.awt.*;
 import java.util.Objects;
 
@@ -71,10 +69,7 @@ public class Pos2d {
     }
 
     public static boolean isInside(int posX, int posY, int areaX, int areaY, int width, int height) {
-        return  posX >= areaX &&
-                posX < areaX + width &&
-                posY >= areaY &&
-                posY < areaY + height;
+        return posX >= areaX && posX < areaX + width && posY >= areaY && posY < areaY + height;
     }
 
     public boolean isInside(Pos2d pos, Size size) {

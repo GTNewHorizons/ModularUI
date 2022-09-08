@@ -11,6 +11,7 @@ import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.nei.IGhostIngredientHandler;
+import com.gtnewhorizons.modularui.api.widget.*;
 import com.gtnewhorizons.modularui.api.widget.IGhostIngredientTarget;
 import com.gtnewhorizons.modularui.api.widget.IIngredientProvider;
 import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
@@ -22,9 +23,15 @@ import com.gtnewhorizons.modularui.common.internal.wrapper.BaseSlot;
 import com.gtnewhorizons.modularui.common.internal.wrapper.GhostIngredientWrapper;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 import com.gtnewhorizons.modularui.mixins.GuiContainerMixin;
-import com.gtnewhorizons.modularui.api.widget.*;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
@@ -37,21 +44,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-
-public class SlotWidget extends Widget implements IVanillaSlot, Interactable, ISyncedWidget, IIngredientProvider, IGhostIngredientTarget {
+public class SlotWidget extends Widget
+        implements IVanillaSlot, Interactable, ISyncedWidget, IIngredientProvider, IGhostIngredientTarget {
 
     public static final Size SIZE = new Size(18, 18);
 
     private final TextRenderer textRenderer = new TextRenderer();
     private final BaseSlot slot;
     private ItemStack lastStoredPhantomItem = null;
+
     @Nullable
     private String sortAreaName = null;
 
@@ -116,7 +117,8 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
 
     @Override
     public void onRebuild() {
-        Pos2d pos = getAbsolutePos().subtract(getContext().getMainWindow().getPos()).add(1, 1);
+        Pos2d pos =
+                getAbsolutePos().subtract(getContext().getMainWindow().getPos()).add(1, 1);
         if (this.slot.xDisplayPosition != pos.x || this.slot.yDisplayPosition != pos.y) {
             this.slot.xDisplayPosition = pos.x;
             this.slot.yDisplayPosition = pos.y;
@@ -224,9 +226,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     }
 
     @Override
-    public void readOnClient(int id, PacketBuffer buf) {
-
-    }
+    public void readOnClient(int id, PacketBuffer buf) {}
 
     @Override
     public void readOnServer(int id, PacketBuffer buf) throws IOException {
@@ -345,25 +345,37 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         int y = slotIn.yDisplayPosition;
         ItemStack itemstack = slotIn.getStack();
         boolean flag = false;
-        boolean flag1 = slotIn == getGuiAccessor().getClickedSlot() && getGuiAccessor().getDraggedStack() != null && !getGuiAccessor().getIsRightMouseClick();
+        boolean flag1 = slotIn == getGuiAccessor().getClickedSlot()
+                && getGuiAccessor().getDraggedStack() != null
+                && !getGuiAccessor().getIsRightMouseClick();
         ItemStack itemstack1 = getScreen().mc.thePlayer.inventory.getItemStack();
         int amount = -1;
         String format = null;
 
-        if (slotIn == this.getGuiAccessor().getClickedSlot() && getGuiAccessor().getDraggedStack() != null && getGuiAccessor().getIsRightMouseClick() && itemstack != null) {
+        if (slotIn == this.getGuiAccessor().getClickedSlot()
+                && getGuiAccessor().getDraggedStack() != null
+                && getGuiAccessor().getIsRightMouseClick()
+                && itemstack != null) {
             itemstack = itemstack.copy();
             itemstack.stackSize = itemstack.stackSize / 2;
-        } else if (getScreen().isDragSplitting2() && getScreen().getDragSlots().contains(slotIn) && itemstack1 != null) {
+        } else if (getScreen().isDragSplitting2()
+                && getScreen().getDragSlots().contains(slotIn)
+                && itemstack1 != null) {
             if (getScreen().getDragSlots().size() == 1) {
                 return;
             }
 
             // Container#canAddItemToSlot
-            if (Container.func_94527_a(slotIn, itemstack1, true) && getScreen().inventorySlots.canDragIntoSlot(slotIn)) {
+            if (Container.func_94527_a(slotIn, itemstack1, true)
+                    && getScreen().inventorySlots.canDragIntoSlot(slotIn)) {
                 itemstack = itemstack1.copy();
                 flag = true;
                 // Container#computeStackSize
-                Container.func_94525_a(getScreen().getDragSlots(), getGuiAccessor().getDragSplittingLimit(), itemstack, slotIn.getStack() == null ? 0 : slotIn.getStack().stackSize);
+                Container.func_94525_a(
+                        getScreen().getDragSlots(),
+                        getGuiAccessor().getDragSplittingLimit(),
+                        itemstack,
+                        slotIn.getStack() == null ? 0 : slotIn.getStack().stackSize);
                 int k = Math.min(itemstack.getMaxStackSize(), slotIn.getSlotStackLimit());
 
                 if (itemstack.stackSize > k) {
@@ -391,7 +403,14 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
                 RenderHelper.enableGUIStandardItemLighting();
                 GlStateManager.enableDepth();
                 // render the item itself
-                getScreen().getItemRenderer().renderItemAndEffectIntoGUI(getScreen().getFontRenderer(), Minecraft.getMinecraft().getTextureManager(), itemstack, 1, 1);
+                getScreen()
+                        .getItemRenderer()
+                        .renderItemAndEffectIntoGUI(
+                                getScreen().getFontRenderer(),
+                                Minecraft.getMinecraft().getTextureManager(),
+                                itemstack,
+                                1,
+                                1);
                 if (amount < 0) {
                     amount = itemstack.stackSize;
                 }
@@ -426,7 +445,15 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
                 int cachedCount = itemstack.stackSize;
                 itemstack.stackSize = 1; // required to not render the amount overlay
                 // render other overlays like durability bar
-                getScreen().getItemRenderer().renderItemOverlayIntoGUI(getScreen().getFontRenderer(), Minecraft.getMinecraft().getTextureManager(), itemstack, 1, 1, null);
+                getScreen()
+                        .getItemRenderer()
+                        .renderItemOverlayIntoGUI(
+                                getScreen().getFontRenderer(),
+                                Minecraft.getMinecraft().getTextureManager(),
+                                itemstack,
+                                1,
+                                1,
+                                null);
                 itemstack.stackSize = cachedCount;
                 GlStateManager.disableDepth();
             }

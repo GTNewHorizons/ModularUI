@@ -6,11 +6,10 @@ import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.Theme;
+import java.util.function.BiConsumer;
 import net.minecraft.network.PacketBuffer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.BiConsumer;
 
 /**
  * Clickable button widget.
@@ -20,8 +19,7 @@ public class ButtonWidget extends SyncedWidget implements Interactable {
     public static ButtonWidget openSyncedWindowButton(int id) {
         return (ButtonWidget) new ButtonWidget()
                 .setOnClick((clickData, widget) -> {
-                    if (!widget.isClient())
-                        widget.getContext().openSyncedWindow(id);
+                    if (!widget.isClient()) widget.getContext().openSyncedWindow(id);
                 })
                 .setBackground(ModularUITextures.VANILLA_BACKGROUND, new Text("Window"));
     }
@@ -72,8 +70,7 @@ public class ButtonWidget extends SyncedWidget implements Interactable {
     }
 
     @Override
-    public void readOnClient(int id, PacketBuffer buf) {
-    }
+    public void readOnClient(int id, PacketBuffer buf) {}
 
     @Override
     public void readOnServer(int id, PacketBuffer buf) {

@@ -7,6 +7,9 @@ import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.List;
+import java.util.Stack;
+import java.util.stream.Collectors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -21,14 +24,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import java.util.List;
-import java.util.Stack;
-import java.util.stream.Collectors;
-
 @SideOnly(Side.CLIENT)
 public class GuiHelper {
 
-    //==== Screen helpers ====
+    // ==== Screen helpers ====
 
     public static boolean hasScreen() {
         return Minecraft.getMinecraft().currentScreen != null;
@@ -62,10 +61,16 @@ public class GuiHelper {
         return Pos2d.ZERO;
     }
 
+    // ==== Tooltip helpers ====
 
-    //==== Tooltip helpers ====
-
-    public static void drawHoveringText(List<Text> textLines, Pos2d mousePos, Size screenSize, int maxWidth, float scale, boolean forceShadow, Alignment alignment) {
+    public static void drawHoveringText(
+            List<Text> textLines,
+            Pos2d mousePos,
+            Size screenSize,
+            int maxWidth,
+            float scale,
+            boolean forceShadow,
+            Alignment alignment) {
         if (textLines.isEmpty()) {
             return;
         }
@@ -77,21 +82,29 @@ public class GuiHelper {
         drawHoveringTextFormatted(lines, mousePos, screenSize, maxWidth, 1f, false, Alignment.TopLeft);
     }
 
-    public static void drawHoveringTextFormatted(List<String> lines, Pos2d mousePos, Size screenSize, int maxWidth, float scale, boolean forceShadow, Alignment alignment) {
+    public static void drawHoveringTextFormatted(
+            List<String> lines,
+            Pos2d mousePos,
+            Size screenSize,
+            int maxWidth,
+            float scale,
+            boolean forceShadow,
+            Alignment alignment) {
         if (lines.isEmpty()) {
             return;
         }
         if (maxWidth < 0) {
             maxWidth = Integer.MAX_VALUE;
         }
-//        RenderTooltipEvent.Pre event = new RenderTooltipEvent.Pre(ItemStack.EMPTY, lines, mousePos.x, mousePos.y, screenSize.width, screenSize.height, maxWidth, TextRenderer.getFontRenderer());
-//        if (MinecraftForge.EVENT_BUS.post(event)) {
-//            return;
-//        }
-//        lines = event.getLines();
-//        mousePos = new Pos2d(event.x(), event.getY());
-//        screenSize = new Size(event.getScreenWidth(), event.getScreenHeight());
-//        maxWidth = event.getMaxWidth();
+        //        RenderTooltipEvent.Pre event = new RenderTooltipEvent.Pre(ItemStack.EMPTY, lines, mousePos.x,
+        // mousePos.y, screenSize.width, screenSize.height, maxWidth, TextRenderer.getFontRenderer());
+        //        if (MinecraftForge.EVENT_BUS.post(event)) {
+        //            return;
+        //        }
+        //        lines = event.getLines();
+        //        mousePos = new Pos2d(event.x(), event.getY());
+        //        screenSize = new Size(event.getScreenWidth(), event.getScreenHeight());
+        //        maxWidth = event.getMaxWidth();
 
         int maxTextWidth = maxWidth;
 
@@ -139,22 +152,87 @@ public class GuiHelper {
         int backgroundColor = 0xF0100010;
         int borderColorStart = 0x505000FF;
         int borderColorEnd = (borderColorStart & 0xFEFEFE) >> 1 | borderColorStart & 0xFF000000;
-//        RenderTooltipEvent.Color colorEvent = new RenderTooltipEvent.Color(ItemStack.EMPTY, lines, tooltipX, tooltipY, TextRenderer.getFontRenderer(), backgroundColor, borderColorStart, borderColorEnd);
-//        MinecraftForge.EVENT_BUS.post(colorEvent);
-//        backgroundColor = colorEvent.getBackground();
-//        borderColorStart = colorEvent.getBorderStart();
-//        borderColorEnd = colorEvent.getBorderEnd();
-        drawGradientRect(zLevel, tooltipX - 3, tooltipY - 4, tooltipX + tooltipTextWidth + 3, tooltipY - 3, backgroundColor, backgroundColor);
-        drawGradientRect(zLevel, tooltipX - 3, tooltipY + tooltipHeight + 3, tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 4, backgroundColor, backgroundColor);
-        drawGradientRect(zLevel, tooltipX - 3, tooltipY - 3, tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 3, backgroundColor, backgroundColor);
-        drawGradientRect(zLevel, tooltipX - 4, tooltipY - 3, tooltipX - 3, tooltipY + tooltipHeight + 3, backgroundColor, backgroundColor);
-        drawGradientRect(zLevel, tooltipX + tooltipTextWidth + 3, tooltipY - 3, tooltipX + tooltipTextWidth + 4, tooltipY + tooltipHeight + 3, backgroundColor, backgroundColor);
-        drawGradientRect(zLevel, tooltipX - 3, tooltipY - 3 + 1, tooltipX - 3 + 1, tooltipY + tooltipHeight + 3 - 1, borderColorStart, borderColorEnd);
-        drawGradientRect(zLevel, tooltipX + tooltipTextWidth + 2, tooltipY - 3 + 1, tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 3 - 1, borderColorStart, borderColorEnd);
-        drawGradientRect(zLevel, tooltipX - 3, tooltipY - 3, tooltipX + tooltipTextWidth + 3, tooltipY - 3 + 1, borderColorStart, borderColorStart);
-        drawGradientRect(zLevel, tooltipX - 3, tooltipY + tooltipHeight + 2, tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 3, borderColorEnd, borderColorEnd);
+        //        RenderTooltipEvent.Color colorEvent = new RenderTooltipEvent.Color(ItemStack.EMPTY, lines, tooltipX,
+        // tooltipY, TextRenderer.getFontRenderer(), backgroundColor, borderColorStart, borderColorEnd);
+        //        MinecraftForge.EVENT_BUS.post(colorEvent);
+        //        backgroundColor = colorEvent.getBackground();
+        //        borderColorStart = colorEvent.getBorderStart();
+        //        borderColorEnd = colorEvent.getBorderEnd();
+        drawGradientRect(
+                zLevel,
+                tooltipX - 3,
+                tooltipY - 4,
+                tooltipX + tooltipTextWidth + 3,
+                tooltipY - 3,
+                backgroundColor,
+                backgroundColor);
+        drawGradientRect(
+                zLevel,
+                tooltipX - 3,
+                tooltipY + tooltipHeight + 3,
+                tooltipX + tooltipTextWidth + 3,
+                tooltipY + tooltipHeight + 4,
+                backgroundColor,
+                backgroundColor);
+        drawGradientRect(
+                zLevel,
+                tooltipX - 3,
+                tooltipY - 3,
+                tooltipX + tooltipTextWidth + 3,
+                tooltipY + tooltipHeight + 3,
+                backgroundColor,
+                backgroundColor);
+        drawGradientRect(
+                zLevel,
+                tooltipX - 4,
+                tooltipY - 3,
+                tooltipX - 3,
+                tooltipY + tooltipHeight + 3,
+                backgroundColor,
+                backgroundColor);
+        drawGradientRect(
+                zLevel,
+                tooltipX + tooltipTextWidth + 3,
+                tooltipY - 3,
+                tooltipX + tooltipTextWidth + 4,
+                tooltipY + tooltipHeight + 3,
+                backgroundColor,
+                backgroundColor);
+        drawGradientRect(
+                zLevel,
+                tooltipX - 3,
+                tooltipY - 3 + 1,
+                tooltipX - 3 + 1,
+                tooltipY + tooltipHeight + 3 - 1,
+                borderColorStart,
+                borderColorEnd);
+        drawGradientRect(
+                zLevel,
+                tooltipX + tooltipTextWidth + 2,
+                tooltipY - 3 + 1,
+                tooltipX + tooltipTextWidth + 3,
+                tooltipY + tooltipHeight + 3 - 1,
+                borderColorStart,
+                borderColorEnd);
+        drawGradientRect(
+                zLevel,
+                tooltipX - 3,
+                tooltipY - 3,
+                tooltipX + tooltipTextWidth + 3,
+                tooltipY - 3 + 1,
+                borderColorStart,
+                borderColorStart);
+        drawGradientRect(
+                zLevel,
+                tooltipX - 3,
+                tooltipY + tooltipHeight + 2,
+                tooltipX + tooltipTextWidth + 3,
+                tooltipY + tooltipHeight + 3,
+                borderColorEnd,
+                borderColorEnd);
 
-//        MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostBackground(ItemStack.EMPTY, lines, tooltipX, tooltipY, TextRenderer.getFontRenderer(), tooltipTextWidth, tooltipHeight));
+        //        MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostBackground(ItemStack.EMPTY, lines, tooltipX,
+        // tooltipY, TextRenderer.getFontRenderer(), tooltipTextWidth, tooltipHeight));
 
         renderer.setSimulate(false);
         renderer.setPos(tooltipX, tooltipY);
@@ -162,7 +240,8 @@ public class GuiHelper {
         renderer.setColor(color);
         renderer.drawMeasuredLines(measuredLines);
 
-//        MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostText(ItemStack.EMPTY, lines, tooltipX, tooltipY, TextRenderer.getFontRenderer(), tooltipTextWidth, tooltipHeight));
+        //        MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostText(ItemStack.EMPTY, lines, tooltipX,
+        // tooltipY, TextRenderer.getFontRenderer(), tooltipTextWidth, tooltipHeight));
 
         GlStateManager.enableLighting();
         GlStateManager.enableDepth();
@@ -170,9 +249,10 @@ public class GuiHelper {
         GlStateManager.enableRescaleNormal();
     }
 
-    //==== Draw helpers ====
+    // ==== Draw helpers ====
 
-    public static void drawGradientRect(float zLevel, float left, float top, float right, float bottom, int startColor, int endColor) {
+    public static void drawGradientRect(
+            float zLevel, float left, float top, float right, float bottom, int startColor, int endColor) {
         float startAlpha = (float) (startColor >> 24 & 255) / 255.0F;
         float startRed = (float) (startColor >> 16 & 255) / 255.0F;
         float startGreen = (float) (startColor >> 8 & 255) / 255.0F;
@@ -185,7 +265,11 @@ public class GuiHelper {
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
         GlStateManager.disableAlpha();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.tryBlendFuncSeparate(
+                GlStateManager.SourceFactor.SRC_ALPHA,
+                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                GlStateManager.SourceFactor.ONE,
+                GlStateManager.DestFactor.ZERO);
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
 
         Tessellator tessellator = Tessellator.instance;
@@ -216,12 +300,18 @@ public class GuiHelper {
         GlStateManager.enableBlend();
         Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 
-        float u0 = fluidStill.getMinU(), u1 = fluidStill.getMaxU(), v0 = fluidStill.getMinV(), v1 = fluidStill.getMaxV();
+        float u0 = fluidStill.getMinU(),
+                u1 = fluidStill.getMaxU(),
+                v0 = fluidStill.getMinV(),
+                v1 = fluidStill.getMaxV();
         float x1 = x0 + width, y1 = y0 + height;
-        float r = Color.getRedF(fluidColor), g = Color.getGreenF(fluidColor), b = Color.getBlueF(fluidColor), a = Color.getAlphaF(fluidColor);
+        float r = Color.getRedF(fluidColor),
+                g = Color.getGreenF(fluidColor),
+                b = Color.getBlueF(fluidColor),
+                a = Color.getAlphaF(fluidColor);
 
         Tessellator tessellator = Tessellator.instance;
-//        tessellator.startDrawing(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+        //        tessellator.startDrawing(7, DefaultVertexFormats.POSITION_TEX_COLOR);
         tessellator.startDrawingQuads();
         tessellator.setColorRGBA_F(r, g, b, a);
         tessellator.setTextureUV(u0, v1);
@@ -236,8 +326,7 @@ public class GuiHelper {
         GlStateManager.disableBlend();
     }
 
-
-    //==== Scissor helpers ====
+    // ==== Scissor helpers ====
 
     private static final Stack<int[]> scissorFrameStack = new Stack<>();
 
@@ -254,7 +343,7 @@ public class GuiHelper {
         int[] currentTopFrame = scissorFrameStack.isEmpty() ? null : scissorFrameStack.peek();
         if (currentTopFrame == null) {
             Minecraft minecraft = Minecraft.getMinecraft();
-            return new int[]{0, 0, minecraft.displayWidth, minecraft.displayHeight};
+            return new int[] {0, 0, minecraft.displayWidth, minecraft.displayHeight};
         }
         return currentTopFrame;
     }
@@ -278,11 +367,11 @@ public class GuiHelper {
                 newWidth = Math.min(maxWidth, newWidth);
                 newHeight = Math.min(maxHeight, newHeight);
                 applyScissor(newX, newY, newWidth, newHeight);
-                //finally, push applied scissor on top of scissor stack
+                // finally, push applied scissor on top of scissor stack
                 if (scissorFrameStack.isEmpty()) {
                     GL11.glEnable(GL11.GL_SCISSOR_TEST);
                 }
-                scissorFrameStack.push(new int[]{newX, newY, newWidth, newHeight});
+                scissorFrameStack.push(new int[] {newX, newY, newWidth, newHeight});
                 pushedFrame = true;
             }
         }
@@ -290,7 +379,7 @@ public class GuiHelper {
             if (scissorFrameStack.isEmpty()) {
                 GL11.glEnable(GL11.GL_SCISSOR_TEST);
             }
-            scissorFrameStack.push(new int[]{parentX, parentY, parentWidth, parentHeight});
+            scissorFrameStack.push(new int[] {parentX, parentY, parentWidth, parentHeight});
         }
     }
 
@@ -307,9 +396,9 @@ public class GuiHelper {
         }
     }
 
-    //applies scissor with gui-space coordinates and sizes
+    // applies scissor with gui-space coordinates and sizes
     private static void applyScissor(int x, int y, int w, int h) {
-        //translate upper-left to bottom-left
+        // translate upper-left to bottom-left
         ScaledResolution r = ((GuiIngameForge) Minecraft.getMinecraft().ingameGUI).getResolution();
         int s = r == null ? 1 : r.getScaleFactor();
         int translatedY = r == null ? 0 : (r.getScaledHeight() - y - h);

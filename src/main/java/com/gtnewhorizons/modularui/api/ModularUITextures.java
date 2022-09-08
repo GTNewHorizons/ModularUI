@@ -7,10 +7,14 @@ import com.gtnewhorizons.modularui.api.drawable.UITexture;
 public class ModularUITextures {
 
     public static final UITexture ICON_INFO = UITexture.fullImage(ModularUI.MODID, "gui/widgets/information");
-    public static final UITexture VANILLA_BACKGROUND = AdaptableUITexture.of(ModularUI.MODID, "gui/background/vanilla_background", 195, 136, 4);
-    public static final AdaptableUITexture BASE_BUTTON = AdaptableUITexture.of(ModularUI.MODID, "gui/widgets/base_button", 18, 18, 1);
-    public static final AdaptableUITexture ITEM_SLOT = AdaptableUITexture.of(ModularUI.MODID, "gui/slot/item", 18, 18, 1);
-    public static final AdaptableUITexture FLUID_SLOT = AdaptableUITexture.of(ModularUI.MODID, "gui/slot/fluid", 18, 18, 1);
+    public static final UITexture VANILLA_BACKGROUND =
+            AdaptableUITexture.of(ModularUI.MODID, "gui/background/vanilla_background", 195, 136, 4);
+    public static final AdaptableUITexture BASE_BUTTON =
+            AdaptableUITexture.of(ModularUI.MODID, "gui/widgets/base_button", 18, 18, 1);
+    public static final AdaptableUITexture ITEM_SLOT =
+            AdaptableUITexture.of(ModularUI.MODID, "gui/slot/item", 18, 18, 1);
+    public static final AdaptableUITexture FLUID_SLOT =
+            AdaptableUITexture.of(ModularUI.MODID, "gui/slot/fluid", 18, 18, 1);
 
     public static final UITexture ARROW_LEFT = UITexture.fullImage(ModularUI.MODID, "gui/icons/arrow_left");
     public static final UITexture ARROW_RIGHT = UITexture.fullImage(ModularUI.MODID, "gui/icons/arrow_right");

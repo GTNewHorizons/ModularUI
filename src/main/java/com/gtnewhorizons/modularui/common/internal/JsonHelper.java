@@ -7,7 +7,6 @@ import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.api.widget.IWidgetBuilder;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.widget.WidgetJsonRegistry;
-
 import java.util.function.Function;
 
 public class JsonHelper {

@@ -1,9 +1,9 @@
 package com.gtnewhorizons.modularui.test;
 
-
 import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.drawable.AdaptableUITexture;
+import com.gtnewhorizons.modularui.api.drawable.ItemDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
@@ -13,8 +13,11 @@ import com.gtnewhorizons.modularui.api.math.CrossAxisAlignment;
 import com.gtnewhorizons.modularui.api.math.MainAxisAlignment;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
+import com.gtnewhorizons.modularui.api.screen.ITileWithModularUI;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
+import com.gtnewhorizons.modularui.api.widget.IWidgetBuilder;
+import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.ChangeableWidget;
 import com.gtnewhorizons.modularui.common.widget.Column;
@@ -34,10 +37,9 @@ import com.gtnewhorizons.modularui.common.widget.TabButton;
 import com.gtnewhorizons.modularui.common.widget.TabContainer;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
-import com.gtnewhorizons.modularui.api.drawable.ItemDrawable;
-import com.gtnewhorizons.modularui.api.screen.ITileWithModularUI;
-import com.gtnewhorizons.modularui.api.widget.IWidgetBuilder;
-import com.gtnewhorizons.modularui.api.widget.Widget;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -47,10 +49,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fluids.FluidTank;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class TestTile extends SyncedTileEntityBase implements ITileWithModularUI {
 
@@ -70,47 +68,57 @@ public class TestTile extends SyncedTileEntityBase implements ITileWithModularUI
     private int ticks = 0;
     private float sliderValue = 0;
     private int serverCounter = 0;
-    private static final AdaptableUITexture DISPLAY = AdaptableUITexture.of("modularui:gui/background/display", 143, 75, 2);
-    private static final AdaptableUITexture BACKGROUND = AdaptableUITexture.of("modularui:gui/background/background", 176, 166, 3);
+    private static final AdaptableUITexture DISPLAY =
+            AdaptableUITexture.of("modularui:gui/background/display", 143, 75, 2);
+    private static final AdaptableUITexture BACKGROUND =
+            AdaptableUITexture.of("modularui:gui/background/background", 176, 166, 3);
     private static final UITexture PROGRESS_BAR = UITexture.fullImage("modularui", "gui/widgets/progress_bar_arrow");
-    private static final UITexture PROGRESS_BAR_MIXER = UITexture.fullImage("modularui", "gui/widgets/progress_bar_mixer");
+    private static final UITexture PROGRESS_BAR_MIXER =
+            UITexture.fullImage("modularui", "gui/widgets/progress_bar_mixer");
 
     @Override
     public ModularWindow createWindow(UIBuildContext buildContext) {
         phantomInventory.setStackInSlot(1, new ItemStack(Items.diamond, Integer.MAX_VALUE));
-        Text[] TEXT = {new Text("Blue \u00a7nUnderlined\u00a7rBlue ").color(0x3058B8), new Text("Mint").color(0x469E8F)};
+        Text[] TEXT = {new Text("Blue \u00a7nUnderlined\u00a7rBlue ").color(0x3058B8), new Text("Mint").color(0x469E8F)
+        };
         ModularWindow.Builder builder = ModularWindow.builder(new Size(176, 272));
-        //.addFromJson("modularui:test", buildContext);
+        // .addFromJson("modularui:test", buildContext);
         /*buildContext.applyToWidget("background", DrawableWidget.class, widget -> {
             widget.addTooltip("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.")
                     .addTooltip("Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.")
                     .addTooltip("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet");
         });*/
         List<Integer> nums = IntStream.range(1, 101).boxed().collect(Collectors.toList());
-        builder.setBackground(ModularUITextures.VANILLA_BACKGROUND)
-                .bindPlayerInventory(buildContext.getPlayer());
+        builder.setBackground(ModularUITextures.VANILLA_BACKGROUND).bindPlayerInventory(buildContext.getPlayer());
         Column column = new Column();
         addInfo(column);
         ChangeableWidget changeableWidget = new ChangeableWidget(this::dynamicWidget);
         buildContext.addSyncedWindow(1, this::createAnotherWindow);
-        return builder
-                .widget(new TabContainer()
+        return builder.widget(new TabContainer()
                         .setButtonSize(new Size(28, 32))
                         .addTabButton(new TabButton(0)
-                                .setBackground(false, ModularUITextures.VANILLA_TAB_TOP_START.getSubArea(0, 0, 1f, 0.5f))
-                                .setBackground(true, ModularUITextures.VANILLA_TAB_TOP_START.getSubArea(0, 0.5f, 1f, 1f))
+                                .setBackground(
+                                        false, ModularUITextures.VANILLA_TAB_TOP_START.getSubArea(0, 0, 1f, 0.5f))
+                                .setBackground(
+                                        true, ModularUITextures.VANILLA_TAB_TOP_START.getSubArea(0, 0.5f, 1f, 1f))
                                 .setPos(0, -28))
                         .addTabButton(new TabButton(1)
-                                .setBackground(false, ModularUITextures.VANILLA_TAB_TOP_MIDDLE.getSubArea(0, 0, 1f, 0.5f))
-                                .setBackground(true, ModularUITextures.VANILLA_TAB_TOP_MIDDLE.getSubArea(0, 0.5f, 1f, 1f))
+                                .setBackground(
+                                        false, ModularUITextures.VANILLA_TAB_TOP_MIDDLE.getSubArea(0, 0, 1f, 0.5f))
+                                .setBackground(
+                                        true, ModularUITextures.VANILLA_TAB_TOP_MIDDLE.getSubArea(0, 0.5f, 1f, 1f))
                                 .setPos(28, -28))
                         .addTabButton(new TabButton(2)
-                                .setBackground(false, ModularUITextures.VANILLA_TAB_TOP_MIDDLE.getSubArea(0, 0, 1f, 0.5f))
-                                .setBackground(true, ModularUITextures.VANILLA_TAB_TOP_MIDDLE.getSubArea(0, 0.5f, 1f, 1f))
+                                .setBackground(
+                                        false, ModularUITextures.VANILLA_TAB_TOP_MIDDLE.getSubArea(0, 0, 1f, 0.5f))
+                                .setBackground(
+                                        true, ModularUITextures.VANILLA_TAB_TOP_MIDDLE.getSubArea(0, 0.5f, 1f, 1f))
                                 .setPos(56, -28))
                         .addTabButton(new TabButton(3)
-                                .setBackground(false, ModularUITextures.VANILLA_TAB_TOP_MIDDLE.getSubArea(0, 0, 1f, 0.5f))
-                                .setBackground(true, ModularUITextures.VANILLA_TAB_TOP_MIDDLE.getSubArea(0, 0.5f, 1f, 1f))
+                                .setBackground(
+                                        false, ModularUITextures.VANILLA_TAB_TOP_MIDDLE.getSubArea(0, 0, 1f, 0.5f))
+                                .setBackground(
+                                        true, ModularUITextures.VANILLA_TAB_TOP_MIDDLE.getSubArea(0, 0.5f, 1f, 1f))
                                 .setPos(84, -28))
                         .addPage(new MultiChildWidget()
                                 .addChild(new TextWidget("Page 1"))
@@ -118,21 +126,20 @@ public class TestTile extends SyncedTileEntityBase implements ITileWithModularUI
                                         .setChangeListener(() -> {
                                             serverCounter = 0;
                                             changeableWidget.notifyChangeServer();
-                                        }).setShiftClickPrio(0)
+                                        })
+                                        .setShiftClickPrio(0)
                                         .setPos(10, 30))
                                 .addChild(SlotWidget.phantom(phantomInventory, 1)
                                         .setShiftClickPrio(1)
                                         .setIgnoreStackSizeLimit(true)
                                         .setPos(28, 30))
-                                .addChild(changeableWidget
-                                        .setPos(12, 55))
+                                .addChild(changeableWidget.setPos(12, 55))
                                 .addChild(SlotGroup.ofItemHandler(items, 3, false, "inv")
                                         .setPos(12, 80))
                                 .setPos(10, 10)
                                 .setDebugLabel("Page1"))
                         .addPage(new MultiChildWidget()
-                                .addChild(new TextWidget("Page 2")
-                                        .setPos(10, 10))
+                                .addChild(new TextWidget("Page 2").setPos(10, 10))
                                 .addChild(column.setPos(7, 19))
                                 .addChild(new ButtonWidget()
                                         .setOnClick((clickData, widget) -> {
@@ -142,7 +149,8 @@ public class TestTile extends SyncedTileEntityBase implements ITileWithModularUI
                                         .setBackground(ModularUITextures.VANILLA_BACKGROUND, new Text("Window"))
                                         .setSize(80, 20)
                                         .setPos(20, 100))
-                                .addChild(new ItemDrawable(new ItemStack(Blocks.command_block)).asWidget()
+                                .addChild(new ItemDrawable(new ItemStack(Blocks.command_block))
+                                        .asWidget()
                                         .setSize(32, 16)
                                         .setPos(20, 80))
                                 .addChild(new SliderWidget()
@@ -163,9 +171,15 @@ public class TestTile extends SyncedTileEntityBase implements ITileWithModularUI
                                         .setGetter(() -> serverValue)
                                         .setSetter(val -> this.serverValue = val)
                                         .setTexture(UITexture.fullImage("modularui", "gui/widgets/cycle_button_demo"))
-                                        .addTooltip(0, "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.")
-                                        .addTooltip(1, "Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.")
-                                        .addTooltip(2, "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet")
+                                        .addTooltip(
+                                                0,
+                                                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.")
+                                        .addTooltip(
+                                                1,
+                                                "Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.")
+                                        .addTooltip(
+                                                2,
+                                                "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet")
                                         .setPos(new Pos2d(68, 0)))
                                 .addChild(new TextFieldWidget()
                                         .setGetter(() -> textFieldValue)
@@ -201,7 +215,8 @@ public class TestTile extends SyncedTileEntityBase implements ITileWithModularUI
                                         .setDirection(ProgressBar.Direction.CIRCULAR_CW)
                                         .setTexture(PROGRESS_BAR_MIXER, 20)
                                         .setPos(99, 85))
-                                .addChild(FluidSlotWidget.phantom(fluidTank2, true).setPos(38, 47))
+                                .addChild(FluidSlotWidget.phantom(fluidTank2, true)
+                                        .setPos(38, 47))
                                 .addChild(new FluidSlotWidget(fluidTank1).setPos(20, 47))
                                 .addChild(new ButtonWidget()
                                         .setOnClick((clickData, widget) -> {
@@ -226,21 +241,66 @@ public class TestTile extends SyncedTileEntityBase implements ITileWithModularUI
                                 .addChild(new Scrollable()
                                         .setHorizontalScroll()
                                         .setVerticalScroll()
-                                        .widget(ModularUITextures.ICON_INFO.asWidget().setSize(20, 20).setPos(0, 0))
-                                        .widget(ModularUITextures.ICON_INFO.asWidget().setSize(20, 20).setPos(20, 20))
-                                        .widget(ModularUITextures.ICON_INFO.asWidget().setSize(20, 20).setPos(40, 40))
-                                        .widget(ModularUITextures.ICON_INFO.asWidget().setSize(20, 20).setPos(60, 60))
-                                        .widget(ModularUITextures.ICON_INFO.asWidget().setSize(20, 20).setPos(80, 80))
-                                        .widget(ModularUITextures.ICON_INFO.asWidget().setSize(20, 20).setPos(100, 100))
-                                        .widget(ModularUITextures.ICON_INFO.asWidget().setSize(20, 20).setPos(120, 120))
-                                        .widget(ModularUITextures.ICON_INFO.asWidget().setSize(20, 20).setPos(140, 140))
-                                        .widget(ModularUITextures.ICON_INFO.asWidget().setSize(20, 20).setPos(160, 160))
-                                        .widget(ModularUITextures.ICON_INFO.asWidget().setSize(20, 20).setPos(180, 180))
-                                        .widget(ModularUITextures.ICON_INFO.asWidget().setSize(20, 20).setPos(200, 200))
-                                        .widget(ModularUITextures.ICON_INFO.asWidget().setSize(20, 20).setPos(220, 220))
-                                        .widget(ModularUITextures.ICON_INFO.asWidget().setSize(20, 20).setPos(240, 240))
-                                        .widget(ModularUITextures.ICON_INFO.asWidget().setSize(20, 20).setPos(260, 260))
-                                        .widget(ModularUITextures.ICON_INFO.asWidget().setSize(20, 20).setPos(280, 280))
+                                        .widget(ModularUITextures.ICON_INFO
+                                                .asWidget()
+                                                .setSize(20, 20)
+                                                .setPos(0, 0))
+                                        .widget(ModularUITextures.ICON_INFO
+                                                .asWidget()
+                                                .setSize(20, 20)
+                                                .setPos(20, 20))
+                                        .widget(ModularUITextures.ICON_INFO
+                                                .asWidget()
+                                                .setSize(20, 20)
+                                                .setPos(40, 40))
+                                        .widget(ModularUITextures.ICON_INFO
+                                                .asWidget()
+                                                .setSize(20, 20)
+                                                .setPos(60, 60))
+                                        .widget(ModularUITextures.ICON_INFO
+                                                .asWidget()
+                                                .setSize(20, 20)
+                                                .setPos(80, 80))
+                                        .widget(ModularUITextures.ICON_INFO
+                                                .asWidget()
+                                                .setSize(20, 20)
+                                                .setPos(100, 100))
+                                        .widget(ModularUITextures.ICON_INFO
+                                                .asWidget()
+                                                .setSize(20, 20)
+                                                .setPos(120, 120))
+                                        .widget(ModularUITextures.ICON_INFO
+                                                .asWidget()
+                                                .setSize(20, 20)
+                                                .setPos(140, 140))
+                                        .widget(ModularUITextures.ICON_INFO
+                                                .asWidget()
+                                                .setSize(20, 20)
+                                                .setPos(160, 160))
+                                        .widget(ModularUITextures.ICON_INFO
+                                                .asWidget()
+                                                .setSize(20, 20)
+                                                .setPos(180, 180))
+                                        .widget(ModularUITextures.ICON_INFO
+                                                .asWidget()
+                                                .setSize(20, 20)
+                                                .setPos(200, 200))
+                                        .widget(ModularUITextures.ICON_INFO
+                                                .asWidget()
+                                                .setSize(20, 20)
+                                                .setPos(220, 220))
+                                        .widget(ModularUITextures.ICON_INFO
+                                                .asWidget()
+                                                .setSize(20, 20)
+                                                .setPos(240, 240))
+                                        .widget(ModularUITextures.ICON_INFO
+                                                .asWidget()
+                                                .setSize(20, 20)
+                                                .setPos(260, 260))
+                                        .widget(ModularUITextures.ICON_INFO
+                                                .asWidget()
+                                                .setSize(20, 20)
+                                                .setPos(280, 280))
                                         .widget(new TextFieldWidget()
                                                 .setGetter(() -> textFieldValue)
                                                 .setSetter(val -> textFieldValue = val)
@@ -260,7 +320,9 @@ public class TestTile extends SyncedTileEntityBase implements ITileWithModularUI
                                 .setSize(14, 14)
                                 .setPos(3, 3))
                         .widget(new SortableListWidget<>(nums)
-                                .setWidgetCreator(integer -> new TextWidget(integer.toString()).setSize(20, 20).addTooltip(integer.toString()))
+                                .setWidgetCreator(integer -> new TextWidget(integer.toString())
+                                        .setSize(20, 20)
+                                        .addTooltip(integer.toString()))
                                 .setSize(50, 135)
                                 .setPos(5, 20))
                         .setExpandedSize(60, 160)
@@ -283,8 +345,7 @@ public class TestTile extends SyncedTileEntityBase implements ITileWithModularUI
 
     public <T extends Widget & IWidgetBuilder<T>> void addInfo(T builder) {
         builder.widget(new TextWidget(new Text("Probably a Machine Name").color(0x13610C)))
-                .widget(new TextWidget("Invalid Structure or whatever")
-                        .addTooltip("This has a tooltip"));
+                .widget(new TextWidget("Invalid Structure or whatever").addTooltip("This has a tooltip"));
         if (true) {
             builder.widget(new TextWidget("Maintanance Problems"));
         }
@@ -324,9 +385,7 @@ public class TestTile extends SyncedTileEntityBase implements ITileWithModularUI
     }
 
     @Override
-    public void receiveCustomData(int discriminator, PacketBuffer buf) {
-
-    }
+    public void receiveCustomData(int discriminator, PacketBuffer buf) {}
 
     @Override
     public void writeToNBT(NBTTagCompound nbt) {

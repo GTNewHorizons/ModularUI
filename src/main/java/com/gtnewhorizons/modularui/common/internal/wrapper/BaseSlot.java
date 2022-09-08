@@ -3,12 +3,11 @@ package com.gtnewhorizons.modularui.common.internal.wrapper;
 import com.gtnewhorizons.modularui.api.forge.IItemHandlerModifiable;
 import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
 import com.gtnewhorizons.modularui.api.forge.SlotItemHandler;
+import java.util.function.Predicate;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Predicate;
 
 public class BaseSlot extends SlotItemHandler {
 
@@ -40,9 +39,9 @@ public class BaseSlot extends SlotItemHandler {
     public BaseSlot(IItemHandlerModifiable inventory, int index, boolean phantom) {
         super(inventory, index, 0, 0);
         this.phantom = phantom;
-//        if (inventory instanceof PlayerMainInvWrapper) {
-//            setShiftClickPriority(index > 8 ? 40 : 20);
-//        }
+        //        if (inventory instanceof PlayerMainInvWrapper) {
+        //            setShiftClickPriority(index > 8 ? 40 : 20);
+        //        }
         if (this.phantom) {
             this.shiftClickPriority += 10;
         }
@@ -74,7 +73,9 @@ public class BaseSlot extends SlotItemHandler {
     }
 
     public boolean isItemValidPhantom(ItemStack stack) {
-        return this.canInsert && (filter == null || filter.test(stack)) && getItemHandler().isItemValid(getSlotIndex(), stack);
+        return this.canInsert
+                && (filter == null || filter.test(stack))
+                && getItemHandler().isItemValid(getSlotIndex(), stack);
     }
 
     @Override
@@ -143,17 +144,17 @@ public class BaseSlot extends SlotItemHandler {
         return null;
     }
 
-//    @Nullable
-//    @Override
-//    public String getSlotTexture() {
-//        return null;
-//    }
-//
-//    @Nullable
-//    @Override
-//    public TextureAtlasSprite getBackgroundSprite() {
-//        return null;
-//    }
+    //    @Nullable
+    //    @Override
+    //    public String getSlotTexture() {
+    //        return null;
+    //    }
+    //
+    //    @Nullable
+    //    @Override
+    //    public TextureAtlasSprite getBackgroundSprite() {
+    //        return null;
+    //    }
 
     public void incrementStackCount(int amount) {
         ItemStack stack = getStack();

@@ -5,11 +5,8 @@ import net.minecraft.client.renderer.texture.TextureManager;
 
 public class Widget {
 
-    public void drawForeGround(int mouseX, int mouseY, FontRenderer fontRenderer){
+    public void drawForeGround(int mouseX, int mouseY, FontRenderer fontRenderer) {}
 
-    }
-
-    public void drawBackGround(int mouseX, int mouseY, TextureManager textureManager, int WindowStartX, int windwStartY){
-
-    }
+    public void drawBackGround(
+            int mouseX, int mouseY, TextureManager textureManager, int WindowStartX, int windwStartY) {}
 }

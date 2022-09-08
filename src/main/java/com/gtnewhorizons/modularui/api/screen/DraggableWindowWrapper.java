@@ -4,8 +4,8 @@ import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.widget.IDraggable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
-import org.jetbrains.annotations.Nullable;
 import java.awt.*;
+import org.jetbrains.annotations.Nullable;
 
 public class DraggableWindowWrapper implements IDraggable {
 
@@ -44,8 +44,7 @@ public class DraggableWindowWrapper implements IDraggable {
     }
 
     @Override
-    public void onDrag(int mouseButton, long timeSinceLastClick) {
-    }
+    public void onDrag(int mouseButton, long timeSinceLastClick) {}
 
     @Override
     public boolean canDropHere(@Nullable Widget widget, boolean isInBounds) {

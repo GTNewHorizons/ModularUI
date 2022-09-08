@@ -5,22 +5,19 @@ package com.gtnewhorizons.modularui.api.forge;
 //
 
 import javax.annotation.Nullable;
-
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-//import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public class ItemHandlerHelper {
 
-    public ItemHandlerHelper() {
-    }
+    public ItemHandlerHelper() {}
 
     public static ItemStack insertItem(IItemHandler dest, ItemStack stack, boolean simulate) {
         if (dest != null && stack != null) {
-            for(int i = 0; i < dest.getSlots(); ++i) {
+            for (int i = 0; i < dest.getSlots(); ++i) {
                 stack = dest.insertItem(i, stack, simulate);
                 if (stack == null) {
                     return null;
@@ -75,7 +72,7 @@ public class ItemHandlerHelper {
                 int sizeInventory = inventory.getSlots();
 
                 int i;
-                for(i = 0; i < sizeInventory; ++i) {
+                for (i = 0; i < sizeInventory; ++i) {
                     ItemStack slot = inventory.getStackInSlot(i);
                     if (canItemStacksStackRelaxed(slot, stack)) {
                         stack = inventory.insertItem(i, stack, simulate);
@@ -86,7 +83,7 @@ public class ItemHandlerHelper {
                 }
 
                 if (stack != null) {
-                    for(i = 0; i < sizeInventory; ++i) {
+                    for (i = 0; i < sizeInventory; ++i) {
                         if (inventory.getStackInSlot(i) == null) {
                             stack = inventory.insertItem(i, stack, simulate);
                             if (stack == null) {
@@ -121,7 +118,11 @@ public class ItemHandlerHelper {
             }
 
             if (remainder == null || remainder.stackSize != stack.stackSize) {
-                world.playSoundAtEntity(player, "random.pop", 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                world.playSoundAtEntity(
+                        player,
+                        "random.pop",
+                        0.2F,
+                        ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
             }
 
             if (remainder != null && !world.isRemote) {
@@ -131,7 +132,6 @@ public class ItemHandlerHelper {
                 entityitem.motionZ = 0.0D;
                 world.spawnEntityInWorld(entityitem);
             }
-
         }
     }
 
@@ -142,17 +142,17 @@ public class ItemHandlerHelper {
             int itemsFound = 0;
             float proportion = 0.0F;
 
-            for(int j = 0; j < inv.getSlots(); ++j) {
+            for (int j = 0; j < inv.getSlots(); ++j) {
                 ItemStack itemstack = inv.getStackInSlot(j);
                 if (itemstack != null) {
-                    proportion += (float)itemstack.stackSize / (float)Math.min(inv.getSlotLimit(j), itemstack.getMaxStackSize());
+                    proportion += (float) itemstack.stackSize
+                            / (float) Math.min(inv.getSlotLimit(j), itemstack.getMaxStackSize());
                     ++itemsFound;
                 }
             }
 
-            proportion /= (float)inv.getSlots();
+            proportion /= (float) inv.getSlots();
             return MathHelper.floor_float(proportion * 14.0F) + (itemsFound > 0 ? 1 : 0);
         }
     }
 }
-

@@ -1,24 +1,25 @@
-//package com.gtnewhorizons.modularui.integration.jei;
+// package com.gtnewhorizons.modularui.integration.jei;
 //
-//import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-//import com.gtnewhorizons.modularui.api.widget.IGhostIngredientTarget;
-//import com.gtnewhorizons.modularui.api.widget.IIngredientProvider;
-//import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
-//import com.gtnewhorizons.modularui.api.widget.Widget;
-//import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
-//import mezz.jei.api.gui.IAdvancedGuiHandler;
-//import mezz.jei.api.gui.IGhostIngredientHandler;
-//import mezz.jei.api.gui.IGuiProperties;
-//import mezz.jei.api.gui.IGuiScreenHandler;
-//import mezz.jei.gui.overlay.GuiProperties;
-//import org.jetbrains.annotations.NotNull;
-//import org.jetbrains.annotations.Nullable;
+// import com.gtnewhorizons.modularui.api.screen.ModularWindow;
+// import com.gtnewhorizons.modularui.api.widget.IGhostIngredientTarget;
+// import com.gtnewhorizons.modularui.api.widget.IIngredientProvider;
+// import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
+// import com.gtnewhorizons.modularui.api.widget.Widget;
+// import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
+// import mezz.jei.api.gui.IAdvancedGuiHandler;
+// import mezz.jei.api.gui.IGhostIngredientHandler;
+// import mezz.jei.api.gui.IGuiProperties;
+// import mezz.jei.api.gui.IGuiScreenHandler;
+// import mezz.jei.gui.overlay.GuiProperties;
+// import org.jetbrains.annotations.NotNull;
+// import org.jetbrains.annotations.Nullable;
 //
-//import java.awt.*;
-//import java.util.LinkedList;
-//import java.util.List;
+// import java.awt.*;
+// import java.util.LinkedList;
+// import java.util.List;
 //
-//public class ModularUIHandler implements IAdvancedGuiHandler<ModularGui>, IGhostIngredientHandler<ModularGui>, IGuiScreenHandler<ModularGui> {
+// public class ModularUIHandler implements IAdvancedGuiHandler<ModularGui>, IGhostIngredientHandler<ModularGui>,
+// IGuiScreenHandler<ModularGui> {
 //
 //    @Override
 //    public @NotNull Class<ModularGui> getGuiContainerClass() {
@@ -64,4 +65,4 @@
 //    public IGuiProperties apply(@NotNull ModularGui guiScreen) {
 //        return guiScreen.getContext().doShowJei() ? GuiProperties.create(guiScreen) : null;
 //    }
-//}
+// }

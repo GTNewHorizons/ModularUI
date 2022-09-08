@@ -2,7 +2,6 @@ package com.gtnewhorizons.modularui.api.widget;
 
 import com.google.gson.JsonObject;
 import com.gtnewhorizons.modularui.ModularUI;
-
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
@@ -11,11 +10,10 @@ import com.gtnewhorizons.modularui.common.internal.JsonLoader;
 import com.gtnewhorizons.modularui.common.internal.wrapper.BaseSlot;
 import com.gtnewhorizons.modularui.common.widget.SlotGroup;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
+import java.util.Collection;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
-
-import java.util.Collection;
 
 public interface IWidgetBuilder<T extends IWidgetBuilder<T>> {
 

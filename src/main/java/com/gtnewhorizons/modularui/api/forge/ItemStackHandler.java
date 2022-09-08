@@ -4,12 +4,11 @@ package com.gtnewhorizons.modularui.api.forge;
 // (powered by FernFlower decompiler)
 //
 
+import java.util.Arrays;
+import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class ItemStackHandler implements IItemHandler, IItemHandlerModifiable, INBTSerializable<NBTTagCompound> {
     protected List<ItemStack> stacks;
@@ -28,8 +27,7 @@ public class ItemStackHandler implements IItemHandler, IItemHandlerModifiable, I
         this.stacks = stacks;
     }
 
-    public void setSize(int size)
-    {
+    public void setSize(int size) {
         ItemStack[] stacks = new ItemStack[size];
         Arrays.fill(stacks, null);
         this.stacks = Arrays.asList(stacks);
@@ -50,7 +48,7 @@ public class ItemStackHandler implements IItemHandler, IItemHandlerModifiable, I
     @Override
     public ItemStack getStackInSlot(int slot) {
         this.validateSlotIndex(slot);
-        return (ItemStack)this.stacks.get(slot);
+        return (ItemStack) this.stacks.get(slot);
     }
 
     @Override
@@ -59,7 +57,7 @@ public class ItemStackHandler implements IItemHandler, IItemHandlerModifiable, I
             return null;
         } else {
             this.validateSlotIndex(slot);
-            ItemStack existing = (ItemStack)this.stacks.get(slot);
+            ItemStack existing = (ItemStack) this.stacks.get(slot);
             int limit = this.getStackLimit(slot, stack);
             if (existing != null) {
                 if (!ItemHandlerHelper.canItemStacksStack(stack, existing)) {
@@ -94,7 +92,7 @@ public class ItemStackHandler implements IItemHandler, IItemHandlerModifiable, I
             return null;
         } else {
             this.validateSlotIndex(slot);
-            ItemStack existing = (ItemStack)this.stacks.get(slot);
+            ItemStack existing = (ItemStack) this.stacks.get(slot);
             if (existing == null) {
                 return null;
             } else {
@@ -108,7 +106,8 @@ public class ItemStackHandler implements IItemHandler, IItemHandlerModifiable, I
                     return existing;
                 } else {
                     if (!simulate) {
-                        this.stacks.set(slot, ItemHandlerHelper.copyStackWithSize(existing, existing.stackSize - toExtract));
+                        this.stacks.set(
+                                slot, ItemHandlerHelper.copyStackWithSize(existing, existing.stackSize - toExtract));
                         this.onContentsChanged(slot);
                     }
 
@@ -136,11 +135,11 @@ public class ItemStackHandler implements IItemHandler, IItemHandlerModifiable, I
     public NBTTagCompound serializeNBT() {
         NBTTagList nbtTagList = new NBTTagList();
 
-        for(int i = 0; i < this.stacks.size(); ++i) {
-            if ((ItemStack)this.stacks.get(i) != null) {
+        for (int i = 0; i < this.stacks.size(); ++i) {
+            if ((ItemStack) this.stacks.get(i) != null) {
                 NBTTagCompound itemTag = new NBTTagCompound();
                 itemTag.setInteger("Slot", i);
-                ((ItemStack)this.stacks.get(i)).writeToNBT(itemTag);
+                ((ItemStack) this.stacks.get(i)).writeToNBT(itemTag);
                 nbtTagList.appendTag(itemTag);
             }
         }
@@ -156,11 +155,11 @@ public class ItemStackHandler implements IItemHandler, IItemHandlerModifiable, I
         this.setSize(nbt.hasKey("Size", 3) ? nbt.getInteger("Size") : this.stacks.size());
         NBTTagList tagList = nbt.getTagList("Items", 10);
 
-        for(int i = 0; i < tagList.tagCount(); ++i) {
+        for (int i = 0; i < tagList.tagCount(); ++i) {
             NBTTagCompound itemTags = tagList.getCompoundTagAt(i);
             int slot = itemTags.getInteger("Slot");
             if (slot >= 0 && slot < this.stacks.size()) {
-//                this.stacks.set(slot, new ItemStack(itemTags));
+                //                this.stacks.set(slot, new ItemStack(itemTags));
             }
         }
 
@@ -173,9 +172,7 @@ public class ItemStackHandler implements IItemHandler, IItemHandlerModifiable, I
         }
     }
 
-    protected void onLoad() {
-    }
+    protected void onLoad() {}
 
-    protected void onContentsChanged(int slot) {
-    }
+    protected void onContentsChanged(int slot) {}
 }

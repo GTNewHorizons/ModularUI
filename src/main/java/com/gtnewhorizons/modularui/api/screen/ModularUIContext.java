@@ -4,7 +4,10 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.gtnewhorizons.modularui.ModularUI;
-
+import com.gtnewhorizons.modularui.api.math.Pos2d;
+import com.gtnewhorizons.modularui.api.math.Size;
+import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
+import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.network.CWidgetUpdate;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkHandler;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
@@ -12,23 +15,18 @@ import com.gtnewhorizons.modularui.common.internal.network.SWidgetUpdate;
 import com.gtnewhorizons.modularui.common.internal.wrapper.BaseSlot;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularUIContainer;
-import com.gtnewhorizons.modularui.api.math.Pos2d;
-import com.gtnewhorizons.modularui.api.math.Size;
-import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
-import com.gtnewhorizons.modularui.api.widget.Widget;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.Unpooled;
+import java.awt.*;
+import java.io.IOException;
+import java.util.*;
+import java.util.List;
+import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
-
-import java.awt.*;
-import java.io.IOException;
-import java.util.List;
-import java.util.*;
-import java.util.function.Consumer;
 
 public class ModularUIContext {
 
@@ -37,8 +35,10 @@ public class ModularUIContext {
     private final BiMap<Integer, ModularWindow> syncedWindows = HashBiMap.create(4);
     private final Map<Integer, Pos2d> lastWindowPos = new HashMap<>();
     private ModularWindow mainWindow;
+
     @SideOnly(Side.CLIENT)
     private ModularGui screen;
+
     private final EntityPlayer player;
     private final com.gtnewhorizons.modularui.api.screen.Cursor cursor;
     private final List<Widget> jeiExclusionZone = new ArrayList<>();
@@ -48,7 +48,9 @@ public class ModularUIContext {
     private final List<Runnable> closeListeners;
     private final boolean showJei;
 
-    private Size screenSize = NetworkUtils.isDedicatedClient() ? new Size(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight) : Size.ZERO;
+    private Size screenSize = NetworkUtils.isDedicatedClient()
+            ? new Size(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight)
+            : Size.ZERO;
 
     private ModularUIContainer container;
 
@@ -319,9 +321,9 @@ public class ModularUIContext {
         getContainer().sendSlotChange(slot.getStack(), slot.slotNumber);
     }
 
-//    public void syncHeldItem() {
-//        getContainer().sendHeldItemUpdate();
-//    }
+    //    public void syncHeldItem() {
+    //        getContainer().sendHeldItemUpdate();
+    //    }
 
     public void readClientPacket(PacketBuffer buf, int widgetId) throws IOException {
         int id = buf.readVarIntFromBuffer();
@@ -363,7 +365,11 @@ public class ModularUIContext {
     }
 
     @SideOnly(Side.CLIENT)
-    public void sendClientPacket(int discriminator, ISyncedWidget syncedWidget, ModularWindow window, Consumer<PacketBuffer> bufferConsumer) {
+    public void sendClientPacket(
+            int discriminator,
+            ISyncedWidget syncedWidget,
+            ModularWindow window,
+            Consumer<PacketBuffer> bufferConsumer) {
         if (isClient() && !isClientOnly()) {
             if (!syncedWindows.containsValue(window)) {
                 ModularUI.logger.error("Window is not synced!");
@@ -379,7 +385,11 @@ public class ModularUIContext {
         }
     }
 
-    public void sendServerPacket(int discriminator, ISyncedWidget syncedWidget, ModularWindow window, Consumer<PacketBuffer> bufferConsumer) {
+    public void sendServerPacket(
+            int discriminator,
+            ISyncedWidget syncedWidget,
+            ModularWindow window,
+            Consumer<PacketBuffer> bufferConsumer) {
         if (!isClient()) {
             if (!syncedWindows.containsValue(window)) {
                 ModularUI.logger.error("Window is not synced!");

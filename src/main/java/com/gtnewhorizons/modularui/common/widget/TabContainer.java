@@ -2,7 +2,6 @@ package com.gtnewhorizons.modularui.common.widget;
 
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.Widget;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +18,6 @@ public class TabContainer extends PageControlWidget {
     private final List<Widget> allChildren = new ArrayList<>();
     private Size buttonSize = null;
 
-
     @Override
     public void initChildren() {
         allChildren.clear();
@@ -33,7 +31,9 @@ public class TabContainer extends PageControlWidget {
         for (TabButton tabButton : tabButtons) {
             tabButton.setTabController(this);
             if (tabButton.getPage() < 0 || tabButton.getPage() >= getPages().size()) {
-                throw new IndexOutOfBoundsException(String.format("TabButton page is %s, but must be 0 - %s", tabButton.getPage(), getPages().size() - 1));
+                throw new IndexOutOfBoundsException(String.format(
+                        "TabButton page is %s, but must be 0 - %s",
+                        tabButton.getPage(), getPages().size() - 1));
             }
             if (buttonSize != null && tabButton.isAutoSized()) {
                 tabButton.setSize(buttonSize);

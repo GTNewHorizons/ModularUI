@@ -12,16 +12,15 @@ import com.gtnewhorizons.modularui.common.internal.JsonHelper;
 import com.gtnewhorizons.modularui.common.internal.Theme;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.network.PacketBuffer;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import net.minecraft.network.PacketBuffer;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * This class draws a functional element of ModularUI
@@ -38,10 +37,13 @@ public abstract class Widget {
     protected Pos2d relativePos = Pos2d.ZERO;
     protected Pos2d pos = Pos2d.ZERO;
     protected Pos2d fixedPos = null;
+
     @Nullable
     private SizeProvider sizeProvider;
+
     @Nullable
     private PosProvider posProvider;
+
     private boolean fillParent = false;
     private boolean autoSized = true;
     private boolean autoPositioned = true;
@@ -56,17 +58,18 @@ public abstract class Widget {
     // visuals
     @Nullable
     private IDrawable[] background;
+
     private final List<Text> additionalTooltip = new ArrayList<>();
     private final List<Text> mainTooltip = new ArrayList<>();
     private int tooltipShowUpDelay = 0;
+
     @Nullable
     private String debugLabel;
 
     @Nullable
     private Consumer<Widget> ticker;
 
-    public Widget() {
-    }
+    public Widget() {}
 
     public Widget(Size size) {
         this();
@@ -111,8 +114,7 @@ public abstract class Widget {
         }
     }
 
-
-    //==== Internal methods ====
+    // ==== Internal methods ====
 
     /**
      * You shall not call this
@@ -184,7 +186,8 @@ public abstract class Widget {
             pos = fixedPos;
         } else {
             if (this.posProvider != null) {
-                this.relativePos = this.posProvider.getPos(getContext().getScaledScreenSize(), getWindow(), this.parent);
+                this.relativePos =
+                        this.posProvider.getPos(getContext().getScaledScreenSize(), getWindow(), this.parent);
             }
             this.pos = this.parent.getAbsolutePos().add(this.relativePos);
         }
@@ -239,8 +242,7 @@ public abstract class Widget {
         }
     }
 
-
-    //==== Sizing & Positioning ====
+    // ==== Sizing & Positioning ====
 
     /**
      * Called before this widget ask for the children Size.
@@ -248,8 +250,7 @@ public abstract class Widget {
      * @param constraints constraints to modify
      */
     @SideOnly(Side.CLIENT)
-    protected void modifyConstraints(Dimension constraints) {
-    }
+    protected void modifyConstraints(Dimension constraints) {}
 
     /**
      * Called during rebuild
@@ -268,16 +269,14 @@ public abstract class Widget {
      */
     @ApiStatus.OverrideOnly
     @SideOnly(Side.CLIENT)
-    public void onRebuild() {
-    }
+    public void onRebuild() {}
 
     /**
      * Called the first time this widget is fully build
      */
     @ApiStatus.OverrideOnly
     @SideOnly(Side.CLIENT)
-    public void onFirstRebuild() {
-    }
+    public void onFirstRebuild() {}
 
     /**
      * Causes the modular ui to re-layout all children next screen update
@@ -288,27 +287,23 @@ public abstract class Widget {
         }
     }
 
-
-    //==== Update ====
+    // ==== Update ====
 
     /**
      * Called once per tick
      */
     @ApiStatus.OverrideOnly
     @SideOnly(Side.CLIENT)
-    public void onScreenUpdate() {
-    }
+    public void onScreenUpdate() {}
 
     /**
      * Called each frame, approximately 60 times per second
      */
     @ApiStatus.OverrideOnly
     @SideOnly(Side.CLIENT)
-    public void onFrameUpdate() {
-    }
+    public void onFrameUpdate() {}
 
-
-    //==== Rendering ====
+    // ==== Rendering ====
 
     @SideOnly(Side.CLIENT)
     public void drawBackground(float partialTicks) {
@@ -331,8 +326,7 @@ public abstract class Widget {
      */
     @ApiStatus.OverrideOnly
     @SideOnly(Side.CLIENT)
-    public void draw(float partialTicks) {
-    }
+    public void draw(float partialTicks) {}
 
     /**
      * Is called after all widgets of the window are drawn. Can be used for special tooltip rendering.
@@ -341,8 +335,7 @@ public abstract class Widget {
      */
     @ApiStatus.OverrideOnly
     @SideOnly(Side.CLIENT)
-    public void drawInForeground(float partialTicks) {
-    }
+    public void drawInForeground(float partialTicks) {}
 
     /**
      * Called after {@link #notifyTooltipChange()} is called. Result list is cached
@@ -351,8 +344,7 @@ public abstract class Widget {
      */
     @ApiStatus.OverrideOnly
     @SideOnly(Side.CLIENT)
-    public void buildTooltip(List<Text> tooltip) {
-    }
+    public void buildTooltip(List<Text> tooltip) {}
 
     /**
      * @return the color key for the background
@@ -364,47 +356,40 @@ public abstract class Widget {
         return Theme.KEY_BACKGROUND;
     }
 
-
-    //==== Lifecycle ====
+    // ==== Lifecycle ====
 
     /**
      * Called once when the window opens, before children get initialised.
      */
     @ApiStatus.OverrideOnly
-    public void onInit() {
-    }
+    public void onInit() {}
 
     /**
      * Called once when the window opens, after children get initialised.
      */
     @ApiStatus.OverrideOnly
-    public void onPostInit() {
-    }
+    public void onPostInit() {}
 
     /**
      * Called when another window opens over the current one
      * or when this window is active and it closes
      */
     @ApiStatus.OverrideOnly
-    public void onPause() {
-    }
+    public void onPause() {}
 
     /**
      * Called when this window becomes active after being paused
      */
     @ApiStatus.OverrideOnly
-    public void onResume() {
-    }
+    public void onResume() {}
 
     /**
      * Called when this window closes
      */
     @ApiStatus.OverrideOnly
-    public void onDestroy() {
-    }
+    public void onDestroy() {}
 
-
-    //==== focus ====
+    // ==== focus ====
 
     /**
      * Called when this widget is clicked. Also acts as a onReceiveFocus method.
@@ -422,8 +407,7 @@ public abstract class Widget {
      */
     @ApiStatus.OverrideOnly
     @SideOnly(Side.CLIENT)
-    public void onRemoveFocus() {
-    }
+    public void onRemoveFocus() {}
 
     /**
      * @return if the modular ui currently has this widget focused
@@ -459,8 +443,7 @@ public abstract class Widget {
         return getContext().getCursor().isRightBelow(this);
     }
 
-
-    //==== Debug ====
+    // ==== Debug ====
 
     @Override
     public String toString() {
@@ -473,8 +456,7 @@ public abstract class Widget {
         return getClass().getSimpleName() + "#" + name + "#" + debugLabel;
     }
 
-
-    //==== Getter ====
+    // ==== Getter ====
 
     public boolean isUnderMouse(Pos2d mousePos) {
         return mousePos.isInside(pos, size);
@@ -587,18 +569,17 @@ public abstract class Widget {
     }
 
     public boolean intersects(Widget widget) {
-        return !(widget.getAbsolutePos().x > getAbsolutePos().x + getSize().width ||
-                widget.getAbsolutePos().x + widget.getSize().width < getAbsolutePos().x ||
-                widget.getAbsolutePos().y > getAbsolutePos().y + getSize().height ||
-                widget.getAbsolutePos().y + widget.getSize().height < getAbsolutePos().y);
+        return !(widget.getAbsolutePos().x > getAbsolutePos().x + getSize().width
+                || widget.getAbsolutePos().x + widget.getSize().width < getAbsolutePos().x
+                || widget.getAbsolutePos().y > getAbsolutePos().y + getSize().height
+                || widget.getAbsolutePos().y + widget.getSize().height < getAbsolutePos().y);
     }
 
     public Rectangle getRectangle() {
         return new Rectangle(pos.x, pos.y, size.width, size.height);
     }
 
-
-    //==== Setter/Builder ====
+    // ==== Setter/Builder ====
 
     /**
      * If widgets are NOT enabled, they won't be rendered and they can not be interacted with.
@@ -769,8 +750,7 @@ public abstract class Widget {
         return this;
     }
 
-
-    //==== Utility ====
+    // ==== Utility ====
 
     public interface SizeProvider {
         Size getSize(Size screenSize, ModularWindow window, IWidgetParent parent);
@@ -785,14 +765,14 @@ public abstract class Widget {
         public final boolean doubleClick;
         public final boolean shift;
         public final boolean ctrl;
-//        public final boolean alt;
+        //        public final boolean alt;
 
         public ClickData(int mouseButton, boolean doubleClick, boolean shift, boolean ctrl) {
             this.mouseButton = mouseButton;
             this.doubleClick = doubleClick;
             this.shift = shift;
             this.ctrl = ctrl;
-//            this.alt = alt;
+            //            this.alt = alt;
         }
 
         public void writeToPacket(PacketBuffer buffer) {

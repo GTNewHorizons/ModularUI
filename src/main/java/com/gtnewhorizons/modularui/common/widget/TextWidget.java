@@ -1,16 +1,15 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import com.google.gson.JsonObject;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.drawable.TextRenderer;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.Theme;
-import com.google.gson.JsonObject;
+import java.util.function.Supplier;
 import net.minecraft.util.EnumChatFormatting;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Supplier;
 
 /**
  * Draws text. Accepts some text formatting rules.
@@ -55,7 +54,7 @@ public class TextWidget extends Widget {
     @Override
     public void readJson(JsonObject json, String type) {
         super.readJson(json, type);
-        //getText().readJson(json);
+        // getText().readJson(json);
     }
 
     @Override

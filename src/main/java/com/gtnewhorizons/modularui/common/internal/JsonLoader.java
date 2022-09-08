@@ -2,13 +2,9 @@ package com.gtnewhorizons.modularui.common.internal;
 
 import com.google.gson.*;
 import com.gtnewhorizons.modularui.ModularUI;
-
 import com.gtnewhorizons.modularui.api.forge.CraftingHelper;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
-import net.minecraft.util.ResourceLocation;
-//import net.minecraftforge.common.crafting.CraftingHelper;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,6 +14,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.util.ResourceLocation;
 
 public class JsonLoader {
 
@@ -30,7 +27,10 @@ public class JsonLoader {
         List<ModContainer> mods = Loader.instance().getActiveModList();
         mods.forEach((mod) -> {
             String id = mod.getModId();
-            CraftingHelper.findFiles(mod, String.format("assets/%s/guis", id), (path) -> Files.exists(path),
+            CraftingHelper.findFiles(
+                    mod,
+                    String.format("assets/%s/guis", id),
+                    (path) -> Files.exists(path),
                     (path, file) -> {
                         if (file.toString().endsWith(".json")) {
                             JsonObject json = tryExtractFromFile(file);
@@ -43,7 +43,9 @@ public class JsonLoader {
                             }
                         }
                         return true;
-                    }, false, true);
+                    },
+                    false,
+                    true);
         });
         ModularUI.logger.info("Loaded {} guis from json", GUIS.size());
     }

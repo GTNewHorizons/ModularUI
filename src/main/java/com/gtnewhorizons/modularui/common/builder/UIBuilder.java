@@ -18,9 +18,7 @@ public class UIBuilder {
     private IContainerCreator containerCreator = DUMMY_CONTAINER_CREATOR;
     private IGuiCreator guiCreator = DUMMY_GUI_CREATOR;
 
-    private UIBuilder() {
-
-    }
+    private UIBuilder() {}
 
     public UIBuilder container(IContainerCreator containerCreator) {
         this.containerCreator = containerCreator;
@@ -35,5 +33,4 @@ public class UIBuilder {
     public UIInfo<IContainerCreator, IGuiCreator> build() {
         return new UIInfo<>(this.containerCreator, this.guiCreator);
     }
-
 }
