@@ -177,6 +177,9 @@ public class BaseSlot extends SlotItemHandler {
         }
         if (oldAmount != amount) {
             stack.stackSize = amount;
+            if (stack.stackSize < 1) {
+                putStack(null);
+            }
             onSlotChanged();
         }
     }
