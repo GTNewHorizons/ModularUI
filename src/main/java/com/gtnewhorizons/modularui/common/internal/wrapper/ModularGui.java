@@ -3,7 +3,9 @@ package com.gtnewhorizons.modularui.common.internal.wrapper;
 import static codechicken.lib.render.FontUtils.fontRenderer;
 
 import com.gtnewhorizons.modularui.api.GlStateManager;
+import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
 import com.gtnewhorizons.modularui.api.drawable.Text;
+import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
@@ -21,7 +23,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -255,11 +256,14 @@ public class ModularGui extends GuiContainer {
             } else if (hovered.getTooltipShowUpDelay() <= context.getCursor().getTimeHovered()) {
                 List<Text> tooltip = hovered.getTooltip();
                 if (!tooltip.isEmpty()) {
-                    renderToolTip(
-                            null,
-                            context.getMousePos().x,
-                            context.getMousePos().y,
-                            tooltip.stream().map(line -> line.getFormatted()).collect(Collectors.toList()));
+                    GuiHelper.drawHoveringText(
+                            tooltip,
+                            context.getMousePos(),
+                            context.getScaledScreenSize(),
+                            400,
+                            1,
+                            false,
+                            Alignment.CenterLeft);
                 }
             }
         }
