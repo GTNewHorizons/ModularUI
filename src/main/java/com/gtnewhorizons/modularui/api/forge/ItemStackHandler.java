@@ -159,7 +159,7 @@ public class ItemStackHandler implements IItemHandler, IItemHandlerModifiable, I
             NBTTagCompound itemTags = tagList.getCompoundTagAt(i);
             int slot = itemTags.getInteger("Slot");
             if (slot >= 0 && slot < this.stacks.size()) {
-                //                this.stacks.set(slot, new ItemStack(itemTags));
+                this.stacks.set(slot, ItemStack.loadItemStackFromNBT(itemTags));
             }
         }
 
