@@ -19,6 +19,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidget {
 
+    private boolean needsUpdate;
+
     private Supplier<String> getter;
     private Consumer<String> setter;
     private Function<String, String> validator = val -> val;
@@ -92,6 +94,7 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
             if (init || !getText().equals(val)) {
                 setText(val);
                 syncToClient(1, buffer -> NetworkUtils.writeStringSafe(buffer, getText()));
+                markForUpdate();
             }
         }
     }
@@ -123,7 +126,23 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
             if (this.setter != null) {
                 this.setter.accept(getText());
             }
+            markForUpdate();
         }
+    }
+
+    @Override
+    public void markForUpdate() {
+        needsUpdate = true;
+    }
+
+    @Override
+    public void unMarkForUpdate() {
+        needsUpdate = false;
+    }
+
+    @Override
+    public boolean isMarkedForUpdate() {
+        return needsUpdate;
     }
 
     /**

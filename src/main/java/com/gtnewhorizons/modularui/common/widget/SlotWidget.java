@@ -47,6 +47,8 @@ import org.lwjgl.opengl.GL11;
 public class SlotWidget extends Widget
         implements IVanillaSlot, Interactable, ISyncedWidget, IIngredientProvider, IGhostIngredientTarget {
 
+    private boolean needsUpdate;
+
     public static final Size SIZE = new Size(18, 18);
 
     private final TextRenderer textRenderer = new TextRenderer();
@@ -58,6 +60,7 @@ public class SlotWidget extends Widget
 
     public SlotWidget(BaseSlot slot) {
         this.slot = slot;
+        slot.setParentWidget(this);
     }
 
     public SlotWidget(IItemHandlerModifiable handler, int index) {
@@ -129,6 +132,9 @@ public class SlotWidget extends Widget
     public void detectAndSendChanges(boolean init) {
         if (init || this.slot.isNeedsSyncing()) {
             getContext().syncSlotContent(this.slot);
+            if (this.slot.isNeedsSyncing()) {
+                markForUpdate();
+            }
             this.slot.resetNeedsSyncing();
         }
     }
@@ -242,6 +248,22 @@ public class SlotWidget extends Widget
         } else if (id == 5) {
             this.slot.putStack(buf.readItemStackFromBuffer());
         }
+        markForUpdate();
+    }
+
+    @Override
+    public void markForUpdate() {
+        needsUpdate = true;
+    }
+
+    @Override
+    public void unMarkForUpdate() {
+        needsUpdate = false;
+    }
+
+    @Override
+    public boolean isMarkedForUpdate() {
+        return needsUpdate;
     }
 
     @Override

@@ -10,6 +10,8 @@ import com.gtnewhorizons.modularui.common.internal.JsonHelper;
  */
 public abstract class SyncedWidget extends Widget implements ISyncedWidget {
 
+    private boolean needsUpdate;
+
     private boolean syncsToServer = true;
     private boolean syncsToClient = true;
 
@@ -46,5 +48,20 @@ public abstract class SyncedWidget extends Widget implements ISyncedWidget {
         this.syncsToClient = syncsToClient;
         this.syncsToServer = syncsToServer;
         return this;
+    }
+
+    @Override
+    public void markForUpdate() {
+        needsUpdate = true;
+    }
+
+    @Override
+    public void unMarkForUpdate() {
+        needsUpdate = false;
+    }
+
+    @Override
+    public boolean isMarkedForUpdate() {
+        return needsUpdate;
     }
 }

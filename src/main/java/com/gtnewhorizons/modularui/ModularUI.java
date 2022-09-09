@@ -67,15 +67,15 @@ public class ModularUI {
     }
 
     public static ModularUIContainer createContainer(
-            EntityPlayer player, Function<UIBuildContext, ModularWindow> windowCreator) {
+            EntityPlayer player, Function<UIBuildContext, ModularWindow> windowCreator, Runnable onWidgetUpdate) {
         UIBuildContext buildContext = new UIBuildContext(player);
         ModularWindow window = windowCreator.apply(buildContext);
-        return new ModularUIContainer(new ModularUIContext(buildContext), window);
+        return new ModularUIContainer(new ModularUIContext(buildContext, onWidgetUpdate), window);
     }
 
     @SideOnly(Side.CLIENT)
     public static ModularGui createGuiScreen(
             EntityPlayer player, Function<UIBuildContext, ModularWindow> windowCreator) {
-        return new ModularGui(createContainer(player, windowCreator));
+        return new ModularGui(createContainer(player, windowCreator, null));
     }
 }

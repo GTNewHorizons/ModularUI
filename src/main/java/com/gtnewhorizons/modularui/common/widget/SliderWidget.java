@@ -100,6 +100,7 @@ public class SliderWidget extends SyncedWidget implements Interactable {
             float val = getter.get();
             if (init || val != value) {
                 setValue(val, true);
+                markForUpdate();
             }
         }
     }
@@ -115,6 +116,7 @@ public class SliderWidget extends SyncedWidget implements Interactable {
     public void readOnServer(int id, PacketBuffer buf) throws IOException {
         if (id == 1) {
             setValue(buf.readFloat(), false);
+            markForUpdate();
         }
     }
 
