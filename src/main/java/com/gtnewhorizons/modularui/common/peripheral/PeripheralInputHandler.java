@@ -1,0 +1,47 @@
+package com.gtnewhorizons.modularui.common.peripheral;
+
+import codechicken.nei.guihook.IContainerInputHandler;
+import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
+import net.minecraft.client.gui.inventory.GuiContainer;
+
+public class PeripheralInputHandler implements IContainerInputHandler {
+
+    @Override
+    public boolean keyTyped(GuiContainer gui, char keyChar, int keyCode) {
+        return false;
+    }
+
+    @Override
+    public void onKeyTyped(GuiContainer gui, char keyChar, int keyID) {}
+
+    @Override
+    public boolean lastKeyTyped(GuiContainer gui, char keyChar, int keyID) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseClicked(GuiContainer gui, int mousex, int mousey, int button) {
+        return false;
+    }
+
+    @Override
+    public void onMouseClicked(GuiContainer gui, int mousex, int mousey, int button) {}
+
+    @Override
+    public void onMouseUp(GuiContainer gui, int mousex, int mousey, int button) {}
+
+    @Override
+    public boolean mouseScrolled(GuiContainer gui, int mousex, int mousey, int scrolled) {
+        return false;
+    }
+
+    @Override
+    public void onMouseScrolled(GuiContainer gui, int mousex, int mousey, int scrolled) {
+        if (gui instanceof ModularGui && scrolled != 0) {
+            ((ModularGui) gui).mouseScroll(scrolled);
+        }
+    }
+
+    @Override
+    public void onMouseDragged(GuiContainer gui, int mousex, int mousey, int button, long heldTime) {}
+}
