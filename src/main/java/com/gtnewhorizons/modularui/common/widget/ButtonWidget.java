@@ -77,6 +77,7 @@ public class ButtonWidget extends SyncedWidget implements Interactable {
         if (id == 1) {
             Widget.ClickData data = Widget.ClickData.readPacket(buf);
             clickAction.accept(data, this);
+            markForUpdate();
         }
     }
 }

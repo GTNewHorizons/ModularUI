@@ -18,6 +18,8 @@ import org.jetbrains.annotations.Nullable;
 @ApiStatus.Experimental
 public class ChangeableWidget extends Widget implements ISyncedWidget, IWidgetParent {
 
+    private boolean needsUpdate;
+
     private final List<Widget> child = new ArrayList<>();
 
     @Nullable
@@ -129,6 +131,21 @@ public class ChangeableWidget extends Widget implements ISyncedWidget, IWidgetPa
         if (id == 1) {
             initQueuedChild();
         }
+    }
+
+    @Override
+    public void markForUpdate() {
+        needsUpdate = true;
+    }
+
+    @Override
+    public void unMarkForUpdate() {
+        needsUpdate = false;
+    }
+
+    @Override
+    public boolean isMarkedForUpdate() {
+        return needsUpdate;
     }
 
     @Override

@@ -143,6 +143,7 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
             int actualValue = getter.getAsInt();
             if (init || actualValue != state) {
                 setState(actualValue, true, false);
+                markForUpdate();
             }
         }
     }
@@ -164,6 +165,7 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
     public void readOnServer(int id, PacketBuffer buf) {
         if (id == 1) {
             setState(buf.readVarIntFromBuffer(), false, true);
+            markForUpdate();
         }
     }
 

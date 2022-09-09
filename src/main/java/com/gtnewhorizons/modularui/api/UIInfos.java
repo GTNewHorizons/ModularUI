@@ -34,7 +34,7 @@ public class UIInfos {
             .container((player, world, x, y, z) -> {
                 TileEntity te = world.getTileEntity(x, y, z);
                 if (te instanceof ITileWithModularUI) {
-                    return ModularUI.createContainer(player, ((ITileWithModularUI) te)::createWindow);
+                    return ModularUI.createContainer(player, ((ITileWithModularUI) te)::createWindow, te::markDirty);
                 }
                 return null;
             })
@@ -48,7 +48,8 @@ public class UIInfos {
         }
         UIBuildContext buildContext = new UIBuildContext(player);
         ModularWindow window = uiCreator.apply(buildContext);
-        GuiScreen screen = new ModularGui(new ModularUIContainer(new ModularUIContext(buildContext, true), window));
+        GuiScreen screen =
+                new ModularGui(new ModularUIContainer(new ModularUIContext(buildContext, null, true), window));
         FMLCommonHandler.instance().showGuiScreen(screen);
     }
 }

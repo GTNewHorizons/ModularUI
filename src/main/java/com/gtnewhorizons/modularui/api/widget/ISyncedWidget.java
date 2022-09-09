@@ -9,13 +9,18 @@ import net.minecraft.network.PacketBuffer;
 
 /**
  * Implement this to let them synchronize data between server and client.
- * See also: {@link Interactable}
  */
 public interface ISyncedWidget {
 
+    /**
+     * Receive packet sent from server.
+     */
     @SideOnly(Side.CLIENT)
     void readOnClient(int id, PacketBuffer buf) throws IOException;
 
+    /**
+     * Receive packet sent from client.
+     */
     void readOnServer(int id, PacketBuffer buf) throws IOException;
 
     /**
@@ -24,6 +29,16 @@ public interface ISyncedWidget {
      * @param init true if it is called the first time after init
      */
     default void detectAndSendChanges(boolean init) {}
+
+    /**
+     * Mark this widget as "updated". Call this on appropriate timing on
+     * {@link #detectAndSendChanges} or {@link #readOnServer} etc. invocation.
+     */
+    void markForUpdate();
+
+    void unMarkForUpdate();
+
+    boolean isMarkedForUpdate();
 
     /**
      * Sends the written data to {@link #readOnServer(int, PacketBuffer)}

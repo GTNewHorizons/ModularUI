@@ -3,6 +3,7 @@ package com.gtnewhorizons.modularui.common.internal.wrapper;
 import com.gtnewhorizons.modularui.api.forge.IItemHandlerModifiable;
 import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
 import com.gtnewhorizons.modularui.api.forge.SlotItemHandler;
+import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
 import java.util.function.Predicate;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -13,6 +14,8 @@ public class BaseSlot extends SlotItemHandler {
 
     protected final boolean phantom;
     protected boolean canInsert = true, canTake = true;
+
+    private ISyncedWidget parentWidget;
 
     protected boolean enabled = true;
     // lower priority means it gets targeted first
@@ -64,6 +67,11 @@ public class BaseSlot extends SlotItemHandler {
 
     public BaseSlot setIgnoreStackSizeLimit(boolean ignoreStackSizeLimit) {
         this.ignoreStackSizeLimit = ignoreStackSizeLimit;
+        return this;
+    }
+
+    public BaseSlot setParentWidget(ISyncedWidget parentWidget) {
+        this.parentWidget = parentWidget;
         return this;
     }
 
@@ -128,6 +136,10 @@ public class BaseSlot extends SlotItemHandler {
         if (this.changeListener != null) {
             this.changeListener.run();
         }
+        if (parentWidget == null) {
+            throw new IllegalStateException("BaseSlot does not have parent widget to mark for update!");
+        }
+        this.parentWidget.markForUpdate();
     }
 
     public boolean isNeedsSyncing() {
@@ -179,8 +191,9 @@ public class BaseSlot extends SlotItemHandler {
             stack.stackSize = amount;
             if (stack.stackSize < 1) {
                 putStack(null);
+            } else {
+                onSlotChanged();
             }
-            onSlotChanged();
         }
     }
 }

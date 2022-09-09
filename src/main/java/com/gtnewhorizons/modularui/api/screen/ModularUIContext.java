@@ -28,6 +28,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 
+/**
+ * Holds meta info around {@link ModularUIContainer}.
+ */
 public class ModularUIContext {
 
     private final ImmutableMap<Integer, IWindowCreator> syncedWindowsCreators;
@@ -46,6 +49,7 @@ public class ModularUIContext {
     public final boolean clientOnly;
     private boolean isClosing = false;
     private final List<Runnable> closeListeners;
+    private final Runnable onWidgetUpdate;
     private final boolean showJei;
 
     private Size screenSize = NetworkUtils.isDedicatedClient()
@@ -54,11 +58,11 @@ public class ModularUIContext {
 
     private ModularUIContainer container;
 
-    public ModularUIContext(UIBuildContext context) {
-        this(context, false);
+    public ModularUIContext(UIBuildContext context, Runnable onWidgetUpdate) {
+        this(context, onWidgetUpdate, false);
     }
 
-    public ModularUIContext(UIBuildContext context, boolean clientOnly) {
+    public ModularUIContext(UIBuildContext context, Runnable onWidgetUpdate, boolean clientOnly) {
         this.player = context.player;
         if (!isClient() && clientOnly) {
             throw new IllegalArgumentException("Client only ModularUI can not be opened on server!");
@@ -67,6 +71,7 @@ public class ModularUIContext {
         this.syncedWindowsCreators = context.syncedWindows.build();
         this.cursor = new com.gtnewhorizons.modularui.api.screen.Cursor(this);
         this.closeListeners = context.closeListeners;
+        this.onWidgetUpdate = onWidgetUpdate;
         this.showJei = context.showJei;
     }
 
@@ -402,6 +407,12 @@ public class ModularUIContext {
             bufferConsumer.accept(buffer);
             SWidgetUpdate packet = new SWidgetUpdate(buffer, syncId);
             NetworkHandler.sendToPlayer(packet, (EntityPlayerMP) player);
+        }
+    }
+
+    public void onWidgetUpdate() {
+        if (onWidgetUpdate != null) {
+            onWidgetUpdate.run();
         }
     }
 

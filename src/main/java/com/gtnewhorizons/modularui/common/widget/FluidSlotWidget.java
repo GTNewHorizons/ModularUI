@@ -241,6 +241,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IIngr
         if (init || fluidChanged(currentFluid, this.cachedFluid)) {
             this.cachedFluid = currentFluid == null ? null : currentFluid.copy();
             syncToClient(1, buffer -> NetworkUtils.writeFluidStack(buffer, currentFluid));
+            markForUpdate();
         }
     }
 
@@ -277,6 +278,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IIngr
             this.fluidTank.drain(Integer.MAX_VALUE, true);
             this.fluidTank.fill(NetworkUtils.readFluidStack(buf), true);
         }
+        markForUpdate();
     }
 
     private void tryClickContainer(int mouseButton, boolean isShiftKeyDown) {

@@ -225,8 +225,16 @@ public class ModularWindow implements IWidgetParent {
     }
 
     public void serverUpdate() {
+        boolean needsUpdate = false;
         for (ISyncedWidget syncedWidget : syncedWidgets.values()) {
             syncedWidget.detectAndSendChanges(this.initSync);
+            if (syncedWidget.isMarkedForUpdate()) {
+                needsUpdate = true;
+                syncedWidget.unMarkForUpdate();
+            }
+        }
+        if (needsUpdate) {
+            getContext().onWidgetUpdate();
         }
         this.initSync = false;
     }
