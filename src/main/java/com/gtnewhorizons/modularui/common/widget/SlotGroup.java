@@ -16,8 +16,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fluids.IFluidTank;
-import org.jetbrains.annotations.Nullable;
 
+/**
+ * Parent widget that contains multiple slots, like items or fluids.
+ * Pass number of slots per row, and it will automatically place slots.
+ */
 public class SlotGroup extends MultiChildWidget {
 
     public static final int PLAYER_INVENTORY_HEIGHT = 76;
@@ -41,60 +44,21 @@ public class SlotGroup extends MultiChildWidget {
         return slotGroup;
     }
 
-    public static SlotGroup ofItemHandler(
-            IItemHandlerModifiable itemHandler, int slotsWidth, boolean output, @Nullable String sortArea) {
-        return ofItemHandler(itemHandler, slotsWidth, 0, 0, itemHandler.getSlots() - 1, sortArea, output);
+    /**
+     * Create SlotGroup from ItemHandler.
+     * You need to call {@link ItemGroupBuilder#build()} to retrieve actual widget.
+     */
+    public static ItemGroupBuilder ofItemHandler(IItemHandlerModifiable itemHandler, int slotsPerRow) {
+        return new ItemGroupBuilder(itemHandler, slotsPerRow);
     }
 
-    public static SlotGroup ofItemHandler(
-            IItemHandlerModifiable itemHandler, int slotsWidth, int shiftClickPriority, @Nullable String sortArea) {
-        return ofItemHandler(
-                itemHandler, slotsWidth, shiftClickPriority, 0, itemHandler.getSlots() - 1, sortArea, false);
+    /**
+     * Create SlotGroup from FluidTanks.
+     * You need to call {@link FluidGroupBuilder#build()} to retrieve actual widget.
+     */
+    public static FluidGroupBuilder ofFluidTanks(List<IFluidTank> fluidTanks, int slotsPerRow) {
+        return new FluidGroupBuilder(fluidTanks, slotsPerRow);
     }
-
-    public static SlotGroup ofItemHandler(
-            IItemHandlerModifiable itemHandler,
-            int slotsWidth,
-            int shiftClickPriority,
-            int startFromSlot,
-            int endAtSlot,
-            @Nullable String sortArea) {
-        return ofItemHandler(itemHandler, slotsWidth, shiftClickPriority, startFromSlot, endAtSlot, sortArea, false);
-    }
-
-    public static SlotGroup ofItemHandler(
-            IItemHandlerModifiable itemHandler,
-            int slotsWidth,
-            int shiftClickPriority,
-            int startFromSlot,
-            int endAtSlot,
-            @Nullable String sortArea,
-            boolean output) {
-        SlotGroup slotGroup = new SlotGroup();
-        if (itemHandler.getSlots() >= endAtSlot) {
-            endAtSlot = itemHandler.getSlots() - 1;
-        }
-        startFromSlot = Math.max(startFromSlot, 0);
-        if (startFromSlot > endAtSlot) {
-            return slotGroup;
-        }
-        slotsWidth = Math.max(slotsWidth, 1);
-        int x = 0, y = 0;
-        for (int i = startFromSlot; i < endAtSlot + 1; i++) {
-            slotGroup.addSlot(new SlotWidget(new BaseSlot(itemHandler, i, false)
-                            .setAccess(!output, true)
-                            .setShiftClickPriority(shiftClickPriority))
-                    .setPos(new Pos2d(x * 18, y * 18)));
-            if (++x == slotsWidth) {
-                x = 0;
-                y++;
-            }
-        }
-        return slotGroup;
-    }
-
-    private String section = null;
-    private int slotsPerRow = 9;
 
     @Override
     public void onInit() {}
@@ -104,59 +68,212 @@ public class SlotGroup extends MultiChildWidget {
         return this;
     }
 
-    public SlotGroup setSortable(String areaName) {
-        return setSortable(areaName, 9);
+    /**
+     * Builder for group of items.
+     */
+    public static class ItemGroupBuilder {
+
+        private final IItemHandlerModifiable itemHandler;
+        private final int slotsPerRow;
+        private Integer startFromSlot;
+        private Integer endAtSlot;
+        private Integer shiftClickPriority;
+        private Boolean canInsert;
+        private Boolean canTake;
+        private Boolean phantom;
+
+        private ItemGroupBuilder(IItemHandlerModifiable itemHandler, int slotsPerRow) {
+            this.itemHandler = itemHandler;
+            this.slotsPerRow = Math.max(slotsPerRow, 1);
+        }
+
+        public SlotGroup build() {
+            if (startFromSlot == null) {
+                startFromSlot = 0;
+            }
+            if (endAtSlot == null) {
+                endAtSlot = itemHandler.getSlots() - 1;
+            }
+            if (canInsert == null) {
+                canInsert = true;
+            }
+            if (canTake == null) {
+                canTake = true;
+            }
+            if (phantom == null) {
+                phantom = false;
+            }
+
+            SlotGroup slotGroup = new SlotGroup();
+            if (startFromSlot > endAtSlot) {
+                return slotGroup;
+            }
+            int x = 0, y = 0;
+            for (int i = startFromSlot; i < endAtSlot + 1; i++) {
+                BaseSlot baseSlot = new BaseSlot(itemHandler, i, phantom).setAccess(canInsert, canTake);
+                if (shiftClickPriority != null) {
+                    baseSlot.setShiftClickPriority(shiftClickPriority);
+                }
+                slotGroup.addSlot(new SlotWidget(baseSlot).setPos(new Pos2d(x * 18, y * 18)));
+                if (++x == slotsPerRow) {
+                    x = 0;
+                    y++;
+                }
+            }
+            return slotGroup;
+        }
+
+        public ItemGroupBuilder startFromSlot(int startFromSlot) {
+            this.startFromSlot = Math.max(startFromSlot, 0);
+            return this;
+        }
+
+        public ItemGroupBuilder endAtSlot(int endAtSlot) {
+            this.endAtSlot = Math.min(endAtSlot, itemHandler.getSlots() - 1);
+            return this;
+        }
+
+        public ItemGroupBuilder shiftClickPriority(int shiftClickPriority) {
+            this.shiftClickPriority = shiftClickPriority;
+            return this;
+        }
+
+        public ItemGroupBuilder canInsert(boolean canInsert) {
+            this.canInsert = canInsert;
+            return this;
+        }
+
+        public ItemGroupBuilder canTake(boolean canTake) {
+            this.canTake = canTake;
+            return this;
+        }
+
+        public ItemGroupBuilder phantom(boolean phantom) {
+            this.phantom = phantom;
+            return this;
+        }
     }
 
-    public SlotGroup setSortable(String areaName, int rowSize) {
-        section = areaName;
-        slotsPerRow = rowSize;
-        return this;
+    /**
+     * Builder for group of fluids.
+     */
+    public static class FluidGroupBuilder {
+
+        private final List<IFluidTank> fluidTanks;
+        private final int slotsPerRow;
+        private Integer startFromSlot;
+        private Integer endAtSlot;
+        private Boolean phantom;
+        private Boolean controlsAmount;
+
+        private FluidGroupBuilder(List<IFluidTank> fluidTanks, int slotsPerRow) {
+            this.fluidTanks = fluidTanks;
+            this.slotsPerRow = slotsPerRow;
+        }
+
+        public SlotGroup build() {
+            if (startFromSlot == null) {
+                startFromSlot = 0;
+            }
+            if (endAtSlot == null) {
+                endAtSlot = fluidTanks.size() - 1;
+            }
+            if (phantom == null) {
+                phantom = false;
+            }
+            if (controlsAmount == null) {
+                controlsAmount = true;
+            }
+
+            SlotGroup slotGroup = new SlotGroup();
+            if (startFromSlot > endAtSlot) {
+                return slotGroup;
+            }
+            int x = 0, y = 0;
+            for (int i = startFromSlot; i < endAtSlot + 1; i++) {
+                FluidSlotWidget toAdd;
+                if (phantom) {
+                    toAdd = new FluidSlotWidget(fluidTanks.get(i));
+                } else {
+                    toAdd = FluidSlotWidget.phantom(fluidTanks.get(i), controlsAmount);
+                }
+                toAdd.setPos(new Pos2d(x * 18, y * 18));
+                slotGroup.addChild(toAdd);
+                if (++x == slotsPerRow) {
+                    x = 0;
+                    y++;
+                }
+            }
+            return slotGroup;
+        }
+
+        public FluidGroupBuilder startFromSlot(int startFromSlot) {
+            this.startFromSlot = Math.max(startFromSlot, 0);
+            return this;
+        }
+
+        public FluidGroupBuilder endAtSlot(int endAtSlot) {
+            this.endAtSlot = Math.min(endAtSlot, fluidTanks.size() - 1);
+            return this;
+        }
+
+        public FluidGroupBuilder phantom(boolean phantom) {
+            this.phantom = phantom;
+            return this;
+        }
+
+        public FluidGroupBuilder controlsAmount(boolean controlsAmount) {
+            this.controlsAmount = controlsAmount;
+            return this;
+        }
     }
 
-    public static class Builder {
+    /**
+     * Builder but allows more complex slot placement.
+     */
+    public static class BuilderWithPattern {
         private final List<String> rows = new ArrayList<>();
         private final Map<Character, Function<Integer, Widget>> widgetCreatorMap = new HashMap<>();
         private Size cellSize = new Size(18, 18);
         private Size totalSize;
         private Alignment alignment = Alignment.TopLeft;
 
-        public Builder setCellSize(Size cellSize) {
+        public BuilderWithPattern setCellSize(Size cellSize) {
             this.cellSize = cellSize;
             return this;
         }
 
-        public Builder setSize(Size totalSize, Alignment contentAlignment) {
+        public BuilderWithPattern setSize(Size totalSize, Alignment contentAlignment) {
             this.totalSize = totalSize;
             this.alignment = contentAlignment;
             return this;
         }
 
-        public Builder setSize(Size totalSize) {
+        public BuilderWithPattern setSize(Size totalSize) {
             return setSize(totalSize, this.alignment);
         }
 
-        public Builder row(String row) {
+        public BuilderWithPattern row(String row) {
             this.rows.add(row);
             return this;
         }
 
-        public Builder where(char c, Function<Integer, Widget> widgetCreator) {
+        public BuilderWithPattern where(char c, Function<Integer, Widget> widgetCreator) {
             this.widgetCreatorMap.put(c, widgetCreator);
             return this;
         }
 
-        public Builder where(char c, IItemHandlerModifiable inventory) {
+        public BuilderWithPattern where(char c, IItemHandlerModifiable inventory) {
             this.widgetCreatorMap.put(c, i -> new SlotWidget(inventory, i));
             return this;
         }
 
-        public Builder where(char c, IFluidTank[] inventory) {
+        public BuilderWithPattern where(char c, IFluidTank[] inventory) {
             this.widgetCreatorMap.put(c, i -> new FluidSlotWidget(inventory[i]));
             return this;
         }
 
-        public Builder where(char c, List<IFluidTank> inventory) {
+        public BuilderWithPattern where(char c, List<IFluidTank> inventory) {
             this.widgetCreatorMap.put(c, i -> new FluidSlotWidget(inventory.get(i)));
             return this;
         }
