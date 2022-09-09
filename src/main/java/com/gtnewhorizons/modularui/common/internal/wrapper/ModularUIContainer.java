@@ -135,10 +135,10 @@ public class ModularUIContainer extends Container {
                     && slot.isItemValidPhantom(stack)) {
                 ItemStack itemstack = slot.getStack();
                 if (slot.isPhantom()) {
-                    if (itemstack == null
-                            || (ItemHandlerHelper.canItemStacksStackRelaxed(stack, itemstack)
-                                    && itemstack.stackSize < slot.getItemStackLimit(itemstack))) {
-                        slot.putStack(stack.copy());
+                    if (itemstack == null || ItemHandlerHelper.canItemStacksStackRelaxed(stack, itemstack)) {
+                        ItemStack toPush = stack.copy();
+                        toPush.stackSize = Math.min(stack.stackSize, slot.getItemStackLimit(stack));
+                        slot.putStack(toPush);
                         return stack;
                     }
                 } else {
