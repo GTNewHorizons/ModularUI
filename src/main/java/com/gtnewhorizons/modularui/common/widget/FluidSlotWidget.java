@@ -109,12 +109,12 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IIngr
                 tooltip.add(new Text(fluid.getLocalizedName()));
                 if (controlsAmount) {
                     tooltip.add(Text.localised("modularui.fluid.phantom.amount", fluid.amount));
+                    tooltip.add(Text.localised("modularui.fluid.phantom.control"));
+                } else {
+                    tooltip.add(Text.localised("modularui.phantom.single.clear"));
                 }
             } else {
                 tooltip.add(Text.localised("modularui.fluid.empty"));
-            }
-            if (controlsAmount) {
-                tooltip.add(Text.localised("modularui.fluid.phantom.control"));
             }
         } else {
             if (fluid != null) {

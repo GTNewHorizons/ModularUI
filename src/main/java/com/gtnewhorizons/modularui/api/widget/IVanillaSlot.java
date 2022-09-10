@@ -8,6 +8,10 @@ public interface IVanillaSlot {
 
     BaseSlot getMcSlot();
 
+    /**
+     * Called when slot has actual ItemStack.
+     * If slot is empty, {@link Widget#getTooltip()} is called instead.
+     */
     default List<String> getExtraTooltip() {
         return Collections.emptyList();
     }

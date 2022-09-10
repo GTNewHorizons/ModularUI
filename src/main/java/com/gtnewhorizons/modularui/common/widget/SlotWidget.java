@@ -142,7 +142,9 @@ public class SlotWidget extends Widget
     @Override
     public void buildTooltip(List<Text> tooltip) {
         if (isPhantom()) {
-            tooltip.add(Text.localised("modularui.item.phantom.control"));
+            if (slot.getSlotStackLimit() > 1) {
+                tooltip.add(Text.localised("modularui.item.phantom.control"));
+            }
         }
     }
 
@@ -153,8 +155,12 @@ public class SlotWidget extends Widget
             extraLines.add(I18n.format("modularui.amount", slot.getStack().stackSize));
         }
         if (isPhantom()) {
-            String[] lines = I18n.format("modularui.item.phantom.control").split("\\\\n");
-            extraLines.addAll(Arrays.asList(lines));
+            if (slot.getSlotStackLimit() > 1) {
+                String[] lines = I18n.format("modularui.item.phantom.control").split("\\\\n");
+                extraLines.addAll(Arrays.asList(lines));
+            } else {
+                extraLines.add(I18n.format("modularui.phantom.single.clear"));
+            }
         }
         return extraLines.isEmpty() ? Collections.emptyList() : extraLines;
     }
