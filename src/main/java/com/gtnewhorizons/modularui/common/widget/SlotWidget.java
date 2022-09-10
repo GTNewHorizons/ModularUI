@@ -305,6 +305,7 @@ public class SlotWidget extends Widget
             if (clickData.mouseButton == 1) {
                 stackToPut.stackSize = 1;
             }
+            stackToPut.stackSize = Math.min(stackToPut.stackSize, slot.getItemStackLimit(stackToPut));
             slot.putStack(stackToPut);
             this.lastStoredPhantomItem = stackToPut.copy();
         } else {
