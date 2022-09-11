@@ -9,8 +9,8 @@ public class Config {
 
     public static int openCloseDurationMs = 250;
     public static boolean openCloseFade = false;
-    public static boolean openCloseScale = true;
-    public static boolean openCloseTranslateFromBottom = true;
+    public static boolean openCloseScale = false;
+    public static boolean openCloseTranslateFromBottom = false;
     public static boolean openCloseRotateFast = false;
     public static boolean smoothProgressbar = true;
 
