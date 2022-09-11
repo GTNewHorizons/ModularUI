@@ -62,11 +62,6 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
         this.textRenderer.setShadow(true);
     }
 
-    public FluidSlotWidget setOnDragAndDropComplete(Consumer<Widget> onDragAndDropComplete) {
-        this.onDragAndDropComplete = onDragAndDropComplete;
-        return this;
-    }
-
     public static FluidSlotWidget phantom(IFluidTank fluidTank, boolean controlsAmount) {
         FluidSlotWidget slot = new FluidSlotWidget(fluidTank);
         slot.phantom = true;
@@ -503,6 +498,11 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
 
     public FluidSlotWidget setOverlayTexture(@Nullable IDrawable overlayTexture) {
         this.overlayTexture = overlayTexture;
+        return this;
+    }
+
+    public FluidSlotWidget setOnDragAndDropComplete(Consumer<Widget> onDragAndDropComplete) {
+        this.onDragAndDropComplete = onDragAndDropComplete;
         return this;
     }
 }

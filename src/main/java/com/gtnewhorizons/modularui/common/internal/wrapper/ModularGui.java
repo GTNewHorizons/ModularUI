@@ -171,7 +171,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
             if (getAccessor().getDraggedStack() != null && getAccessor().getIsRightMouseClick()) {
                 itemstack = itemstack.copy();
                 itemstack.stackSize = (int) Math.ceil((float) itemstack.stackSize / 2.0F);
-            } else if (this.isDragSplitting2() && this.getDragSlots().size() > 1) {
+            } else if (this.isDragSplitting() && this.getDragSlots().size() > 1) {
                 itemstack = itemstack.copy();
                 itemstack.stackSize = getAccessor().getDragSplittingRemnant();
 
@@ -558,8 +558,8 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         context.getCloseListeners().forEach(Runnable::run);
     }
 
-    public boolean isDragSplitting2() {
-        return getAccessor().isDragSplitting();
+    public boolean isDragSplitting() {
+        return getAccessor().isDragSplittingInternal();
     }
 
     public Set<Slot> getDragSlots() {

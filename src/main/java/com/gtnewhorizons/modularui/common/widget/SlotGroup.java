@@ -206,9 +206,9 @@ public class SlotGroup extends MultiChildWidget {
             for (int i = startFromSlot; i < endAtSlot + 1; i++) {
                 FluidSlotWidget toAdd;
                 if (phantom) {
-                    toAdd = new FluidSlotWidget(fluidTanks.get(i));
-                } else {
                     toAdd = FluidSlotWidget.phantom(fluidTanks.get(i), controlsAmount);
+                } else {
+                    toAdd = new FluidSlotWidget(fluidTanks.get(i));
                 }
                 toAdd.setPos(new Pos2d(x * 18, y * 18));
                 slotGroup.addChild(toAdd);

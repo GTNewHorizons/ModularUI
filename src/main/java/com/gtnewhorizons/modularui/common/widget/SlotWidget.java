@@ -64,11 +64,6 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         this(new BaseSlot(handler, index, false));
     }
 
-    public SlotWidget setOnDragAndDropComplete(Consumer<Widget> onDragAndDropComplete) {
-        this.onDragAndDropComplete = onDragAndDropComplete;
-        return this;
-    }
-
     public static SlotWidget phantom(IItemHandlerModifiable handler, int index) {
         return new SlotWidget(BaseSlot.phantom(handler, index));
     }
@@ -234,6 +229,11 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         return this;
     }
 
+    public SlotWidget setOnDragAndDropComplete(Consumer<Widget> onDragAndDropComplete) {
+        this.onDragAndDropComplete = onDragAndDropComplete;
+        return this;
+    }
+
     @Override
     public void readOnClient(int id, PacketBuffer buf) {}
 
@@ -386,9 +386,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
                 && itemstack != null) {
             itemstack = itemstack.copy();
             itemstack.stackSize = itemstack.stackSize / 2;
-        } else if (getScreen().isDragSplitting2()
-                && getScreen().getDragSlots().contains(slotIn)
-                && itemstack1 != null) {
+        } else if (getScreen().isDragSplitting() && getScreen().getDragSlots().contains(slotIn) && itemstack1 != null) {
             if (getScreen().getDragSlots().size() == 1) {
                 return;
             }
