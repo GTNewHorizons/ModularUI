@@ -330,7 +330,7 @@ public class TestTile extends SyncedTileEntityBase implements ITileWithModularUI
                         .setBackground(BACKGROUND)
                         .setSize(20, 20)
                         .setPos(177, 5)
-                        .respectAreaInNEI())
+                        .setRespectNEIArea(true))
                 .build();
     }
 

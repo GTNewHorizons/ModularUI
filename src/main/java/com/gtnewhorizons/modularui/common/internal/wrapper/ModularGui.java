@@ -2,6 +2,14 @@ package com.gtnewhorizons.modularui.common.internal.wrapper;
 
 import static codechicken.lib.render.FontUtils.fontRenderer;
 
+import codechicken.nei.ItemPanels;
+import codechicken.nei.NEIClientUtils;
+import codechicken.nei.VisiblityData;
+import codechicken.nei.api.INEIGuiHandler;
+import codechicken.nei.api.TaggedInventoryArea;
+import codechicken.nei.guihook.GuiContainerManager;
+import codechicken.nei.guihook.IContainerDrawHandler;
+import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
 import com.gtnewhorizons.modularui.api.drawable.Text;
@@ -12,15 +20,19 @@ import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.screen.Cursor;
 import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
+import com.gtnewhorizons.modularui.api.widget.IDragAndDropHandler;
 import com.gtnewhorizons.modularui.api.widget.IVanillaSlot;
 import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.config.Config;
 import com.gtnewhorizons.modularui.mixins.GuiContainerMixin;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import net.minecraft.client.Minecraft;
@@ -35,11 +47,13 @@ import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
-public class ModularGui extends GuiContainer {
+@Optional.Interface(modid = "NotEnoughItems", iface = "codechicken.nei.api.INEIGuiHandler")
+public class ModularGui extends GuiContainer implements INEIGuiHandler {
 
     private final ModularUIContext context;
     private Pos2d mousePos = Pos2d.ZERO;
@@ -119,6 +133,19 @@ public class ModularGui extends GuiContainer {
         RenderHelper.disableStandardItemLighting();
         this.drawGuiContainerForegroundLayer(mouseX, mouseY);
         RenderHelper.enableGUIStandardItemLighting();
+        if (shouldShowNEI()) {
+            // Copied from GuiContainerManager#renderObjects but without translation
+            for (IContainerDrawHandler drawHandler : GuiContainerManager.drawHandlers) {
+                drawHandler.renderObjects(this, mouseX, mouseY);
+            }
+            for (IContainerDrawHandler drawHandler : GuiContainerManager.drawHandlers) {
+                drawHandler.postRenderObjects(this, mouseX, mouseY);
+            }
+
+            if (!shouldRenderOurTooltip()) {
+                GuiContainerManager.getManager().renderToolTips(mouseX, mouseY);
+            }
+        }
 
         getAccessor().setHoveredSlot(null);
         Widget hovered = getCursor().getHovered();
@@ -245,7 +272,7 @@ public class ModularGui extends GuiContainer {
         GlStateManager.disableDepth();
 
         Widget hovered = context.getCursor().getHovered();
-        if (hovered != null && !context.getCursor().isHoldingSomething()) {
+        if (shouldRenderOurTooltip()) {
             if (hovered instanceof IVanillaSlot
                     && ((IVanillaSlot) hovered).getMcSlot().getHasStack()) {
                 renderToolTip(
@@ -279,13 +306,21 @@ public class ModularGui extends GuiContainer {
         GlStateManager.popMatrix();
     }
 
+    /**
+     * @return False if NEI wants to draw their own tooltip e.g. ItemPanel
+     */
+    protected boolean shouldRenderOurTooltip() {
+        return context.getCursor().getHovered() != null && !context.getCursor().isHoldingSomething();
+    }
+
     public void drawDebugScreen() {
         Size screenSize = context.getScaledScreenSize();
+        int neiYOffset = shouldShowNEI() ? 20 : 0;
         int color = Color.rgb(180, 40, 115);
-        int lineY = screenSize.height - 13;
+        int lineY = screenSize.height - 13 - neiYOffset;
         drawString(fontRenderer, "Mouse Pos: " + getMousePos(), 5, lineY, color);
         lineY -= 11;
-        drawString(fontRenderer, "FPS: " + fps, 5, screenSize.height - 24, color);
+        drawString(fontRenderer, "FPS: " + fps, 5, screenSize.height - 24 - neiYOffset, color);
         lineY -= 11;
         Widget hovered = context.getCursor().findHoveredWidget(true);
         if (hovered != null) {
@@ -331,7 +366,16 @@ public class ModularGui extends GuiContainer {
         List lines = new ArrayList();
         if (stack != null) {
             font = stack.getItem().getFontRenderer(stack);
-            lines.addAll(stack.getTooltip(context.getPlayer(), this.mc.gameSettings.advancedItemTooltips));
+            List<String> itemStackTooltips =
+                    stack.getTooltip(context.getPlayer(), this.mc.gameSettings.advancedItemTooltips);
+            for (int i = 0; i < itemStackTooltips.size(); i++) {
+                if (i == 0) {
+                    itemStackTooltips.set(0, stack.getRarity().rarityColor.toString() + itemStackTooltips.get(0));
+                } else {
+                    itemStackTooltips.set(i, EnumChatFormatting.GRAY + itemStackTooltips.get(i));
+                }
+            }
+            lines.addAll(itemStackTooltips);
         }
         lines.addAll(extraLines);
         this.drawHoveringText(lines, x, y, (font == null ? fontRenderer : font));
@@ -376,7 +420,16 @@ public class ModularGui extends GuiContainer {
         long time = Minecraft.getSystemTime();
         boolean doubleClick = isDoubleClick(lastClick, time);
         lastClick = time;
+        // For reference: in 1.12 JEI handles drag-and-drop on MouseInputEvent.Pre event,
+        // which is fired before GuiScreen#handleMouseInput call and able to dismiss it.
+        // In contrast, NEI injects GuiContainerManager#mouseClicked at the start of GuiContainer#mouseClicked,
+        // so at this point NEI has not handled drag-and-drop yet.
+        // See also: PanelWidget#handleClickExt
+        boolean isNEIWantToHandleDragAndDrop = shouldShowNEI()
+                && (ItemPanels.itemPanel.draggedStack != null || ItemPanels.bookmarkPanel.draggedStack != null);
+
         for (Interactable interactable : context.getCurrentWindow().getInteractionListeners()) {
+            if (isNEIWantToHandleDragAndDrop && interactable instanceof IDragAndDropHandler) continue;
             interactable.onClick(mouseButton, doubleClick);
         }
 
@@ -390,6 +443,7 @@ public class ModularGui extends GuiContainer {
         doubleClick = isDoubleClick(lastFocusedClick, time);
         loop:
         for (Object hovered : getCursor().getAllHovered()) {
+            if (isNEIWantToHandleDragAndDrop && hovered instanceof IDragAndDropHandler) continue;
             if (context.getCursor().onHoveredClick(mouseButton, hovered)) {
                 break;
             }
@@ -424,6 +478,7 @@ public class ModularGui extends GuiContainer {
             getCursor().updateFocused(null);
         }
         if (probablyClicked == null) {
+            // NEI injects GuiContainerManager#mouseClicked there
             super.mouseClicked(mouseX, mouseY, mouseButton);
         }
 
@@ -589,5 +644,71 @@ public class ModularGui extends GuiContainer {
         tessellator.draw();
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
+    }
+
+    private boolean shouldShowNEI() {
+        return ModularUI.isNEILoaded && getContext().doShowNEI();
+    }
+
+    // === NEI ===
+
+    @Override
+    @Optional.Method(modid = ModularUI.MODID_NEI)
+    public boolean handleDragNDrop(GuiContainer gui, int mousex, int mousey, ItemStack draggedStack, int button) {
+        if (!(gui instanceof ModularGui) || NEIClientUtils.getHeldItem() != null) return false;
+        Widget hovered = getContext().getCursor().getHovered();
+        if (hovered instanceof IDragAndDropHandler) {
+            return ((IDragAndDropHandler) hovered).handleDragAndDrop(draggedStack, button);
+        }
+        return false;
+    }
+
+    @Override
+    @Optional.Method(modid = ModularUI.MODID_NEI)
+    public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h) {
+        if (!(gui instanceof ModularGui)) return false;
+        List<Widget> activeWidgets = new ArrayList<>();
+        IWidgetParent.forEachByLayer(
+                getContext().getMainWindow(),
+                true,
+                // skip children search if parent does not respect NEI area
+                widget -> !widget.isRespectNEIArea(),
+                widget -> {
+                    if (widget.isRespectNEIArea()) {
+                        activeWidgets.add(widget);
+                    }
+                    return false;
+                });
+
+        for (Widget widget : activeWidgets) {
+            Rectangle widgetAbsoluteRectangle = new Rectangle(
+                    widget.getAbsolutePos().x,
+                    widget.getAbsolutePos().y,
+                    widget.getSize().width,
+                    widget.getSize().height);
+            Rectangle neiSlotRectangle = new Rectangle(x, y, w, h);
+            if (widgetAbsoluteRectangle.intersects(neiSlotRectangle)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    @Optional.Method(modid = ModularUI.MODID_NEI)
+    public VisiblityData modifyVisiblity(GuiContainer gui, VisiblityData currentVisibility) {
+        return currentVisibility;
+    }
+
+    @Override
+    @Optional.Method(modid = ModularUI.MODID_NEI)
+    public Iterable<Integer> getItemSpawnSlots(GuiContainer gui, ItemStack item) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    @Optional.Method(modid = ModularUI.MODID_NEI)
+    public List<TaggedInventoryArea> getInventoryAreas(GuiContainer gui) {
+        return null;
     }
 }

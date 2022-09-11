@@ -14,7 +14,7 @@ public class UIBuildContext {
     private final Map<String, Widget> jsonWidgets = new HashMap<>();
     protected final ImmutableMap.Builder<Integer, IWindowCreator> syncedWindows = new ImmutableMap.Builder<>();
     protected final List<Runnable> closeListeners = new ArrayList<>();
-    protected boolean showJei = true;
+    protected boolean showNEI = true;
 
     public UIBuildContext(EntityPlayer player) {
         this.player = player;
@@ -67,7 +67,7 @@ public class UIBuildContext {
         syncedWindows.put(id, Objects.requireNonNull(windowCreator));
     }
 
-    public void setShowJei(boolean showJei) {
-        this.showJei = showJei;
+    public void setShowNEI(boolean showNEI) {
+        this.showNEI = showNEI;
     }
 }

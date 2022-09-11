@@ -65,6 +65,14 @@ public interface IWidgetParent {
     }
 
     static boolean forEachByLayer(IWidgetParent parent, boolean onlyEnabled, Function<Widget, Boolean> consumer) {
+        return forEachByLayer(parent, onlyEnabled, widget -> false, consumer);
+    }
+
+    static boolean forEachByLayer(
+            IWidgetParent parent,
+            boolean onlyEnabled,
+            Function<Widget, Boolean> skipChildrenSearch,
+            Function<Widget, Boolean> consumer) {
         LinkedList<IWidgetParent> stack = new LinkedList<>();
         stack.addLast(parent);
         while (!stack.isEmpty()) {
@@ -75,6 +83,9 @@ public interface IWidgetParent {
                 }
                 if (consumer.apply(child)) {
                     return false;
+                }
+                if (skipChildrenSearch.apply(child)) {
+                    continue;
                 }
                 if (child instanceof IWidgetParent) {
                     stack.addLast((IWidgetParent) child);

@@ -7,7 +7,6 @@ import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
-import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.network.CWidgetUpdate;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkHandler;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
@@ -44,13 +43,12 @@ public class ModularUIContext {
 
     private final EntityPlayer player;
     private final com.gtnewhorizons.modularui.api.screen.Cursor cursor;
-    private final List<Widget> jeiExclusionZone = new ArrayList<>();
     private final List<Integer> queuedOpenWindow = new ArrayList<>();
     public final boolean clientOnly;
     private boolean isClosing = false;
     private final List<Runnable> closeListeners;
     private final Runnable onWidgetUpdate;
-    private final boolean showJei;
+    private final boolean showNEI;
 
     private Size screenSize = NetworkUtils.isDedicatedClient()
             ? new Size(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight)
@@ -72,7 +70,7 @@ public class ModularUIContext {
         this.cursor = new com.gtnewhorizons.modularui.api.screen.Cursor(this);
         this.closeListeners = context.closeListeners;
         this.onWidgetUpdate = onWidgetUpdate;
-        this.showJei = context.showJei;
+        this.showNEI = context.showNEI;
     }
 
     public boolean isClient() {
@@ -286,29 +284,8 @@ public class ModularUIContext {
         return screenSize;
     }
 
-    public boolean doShowJei() {
-        return showJei;
-    }
-
-    public void registerExclusionZone(Widget widget) {
-        this.jeiExclusionZone.add(widget);
-    }
-
-    public List<Rectangle> getJeiExclusionZones() {
-        List<Rectangle> zones = new ArrayList<>();
-        for (ModularWindow window : getOpenWindows()) {
-            if (window.isEnabled()) {
-                zones.add(window.getRectangle());
-            }
-        }
-        for (Widget widget : jeiExclusionZone) {
-            zones.add(widget.getRectangle());
-        }
-        Rectangle draggableArea = cursor.getDraggableArea();
-        if (draggableArea != null) {
-            zones.add(draggableArea);
-        }
-        return zones;
+    public boolean doShowNEI() {
+        return showNEI;
     }
 
     public List<Runnable> getCloseListeners() {

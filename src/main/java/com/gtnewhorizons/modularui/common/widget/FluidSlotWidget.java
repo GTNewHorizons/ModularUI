@@ -11,23 +11,26 @@ import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
-import com.gtnewhorizons.modularui.api.nei.IGhostIngredientHandler;
-import com.gtnewhorizons.modularui.api.widget.IGhostIngredientTarget;
-import com.gtnewhorizons.modularui.api.widget.IIngredientProvider;
+import com.gtnewhorizons.modularui.api.widget.IDragAndDropHandler;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
+import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.Theme;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.common.internal.wrapper.FluidTankHandler;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Consumer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.IFluidTank;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class FluidSlotWidget extends SyncedWidget implements Interactable, IIngredientProvider, IGhostIngredientTarget {
+public class FluidSlotWidget extends SyncedWidget implements Interactable, IDragAndDropHandler {
 
     public static final Size SIZE = new Size(18, 18);
 
@@ -50,11 +53,18 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IIngr
     private boolean controlsAmount = true;
     private boolean lastShift = false;
 
+    private Consumer<Widget> onDragAndDropComplete;
+
     public FluidSlotWidget(IFluidTank fluidTank) {
         this.fluidTank = fluidTank;
         this.tankHandler = FluidTankHandler.getTankFluidHandler(fluidTank);
         this.textRenderer.setColor(Color.WHITE.normal);
         this.textRenderer.setShadow(true);
+    }
+
+    public FluidSlotWidget setOnDragAndDropComplete(Consumer<Widget> onDragAndDropComplete) {
+        this.onDragAndDropComplete = onDragAndDropComplete;
+        return this;
     }
 
     public static FluidSlotWidget phantom(IFluidTank fluidTank, boolean controlsAmount) {
@@ -194,11 +204,6 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IIngr
     }
 
     @Override
-    public Object getIngredient() {
-        return cachedFluid;
-    }
-
-    @Override
     public ClickResult onClick(int buttonId, boolean doubleClick) {
         if (!this.canFillSlot && !this.canDrainSlot) {
             return ClickResult.ACKNOWLEDGED;
@@ -277,6 +282,9 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IIngr
         } else if (id == 4) {
             this.fluidTank.drain(Integer.MAX_VALUE, true);
             this.fluidTank.fill(NetworkUtils.readFluidStack(buf), true);
+            if (onDragAndDropComplete != null) {
+                onDragAndDropComplete.accept(this);
+            }
         }
         markForUpdate();
     }
@@ -350,7 +358,11 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IIngr
         //        }
     }
 
-    public void tryClickPhantom(int mouseButton, boolean isShiftKeyDown) {
+    protected void tryClickPhantom(int mouseButton, boolean isShiftKeyDown) {
+        tryClickPhantom(mouseButton, isShiftKeyDown, getContext().getCursor().getItemStack());
+    }
+
+    protected void tryClickPhantom(int mouseButton, boolean isShiftKeyDown, ItemStack cursorStack) {
         //        EntityPlayer player = getContext().getPlayer();
         //        ItemStack currentStack = getContext().getCursor().getItemStack();
         //        FluidStack currentFluid = this.fluidTank.getFluid();
@@ -398,7 +410,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IIngr
         //        }
     }
 
-    public void tryScrollPhantom(int direction) {
+    protected void tryScrollPhantom(int direction) {
         FluidStack currentFluid = this.fluidTank.getFluid();
         if (currentFluid == null) {
             if (direction > 0 && this.lastStoredPhantomFluid != null) {
@@ -426,26 +438,8 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IIngr
     }
 
     @Override
-    public IGhostIngredientHandler.@Nullable Target getTarget(@NotNull ItemStack ingredient) {
-        //        if (!isPhantom()) {
-        //            return null;
-        //        }
-        //        if (ingredient instanceof FluidStack) {
-        //            return ((FluidStack) ingredient).amount > 0 ? new GhostIngredientWrapper<>(this) : null;
-        //        }
-        //        if (ingredient instanceof ItemStack) {
-        //            if (((ItemStack) ingredient).isEmpty()) return null;
-        //            IFluidHandlerItem fluidHandlerItem = ((ItemStack)
-        // ingredient).getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
-        //            if (fluidHandlerItem != null) {
-        //                return new GhostIngredientWrapper<>(this);
-        //            }
-        //        }
-        return null;
-    }
-
-    @Override
-    public void accept(@NotNull ItemStack ingredient) {
+    public boolean handleDragAndDrop(ItemStack draggedStack, int button) {
+        if (!isPhantom()) return false;
         //        FluidStack fluid = null;
         //        if (ingredient instanceof FluidStack) {
         //            fluid = (FluidStack) ingredient;
@@ -458,6 +452,8 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IIngr
         //        if (fluid == null) return;
         //        final FluidStack finalFluid = fluid;
         //        syncToServer(4, buffer -> NetworkUtils.writeFluidStack(buffer, finalFluid));
+        draggedStack.stackSize = 0;
+        return true;
     }
 
     public boolean canFillSlot() {

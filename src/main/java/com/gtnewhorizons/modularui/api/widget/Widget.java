@@ -51,7 +51,7 @@ public abstract class Widget {
     // flags and stuff
     protected boolean enabled = true;
     private int layer = -1;
-    private boolean respectNEIArea = false;
+    private boolean respectNEIArea = true;
     private boolean tooltipDirty = true;
     private boolean firstRebuild = true;
 
@@ -127,10 +127,6 @@ public abstract class Widget {
         this.window = window;
         this.parent = parent;
         this.layer = layer;
-
-        if (this.respectNEIArea) {
-            getContext().registerExclusionZone(this);
-        }
 
         onInit();
 
@@ -579,6 +575,10 @@ public abstract class Widget {
         return new Rectangle(pos.x, pos.y, size.width, size.height);
     }
 
+    public boolean isRespectNEIArea() {
+        return respectNEIArea;
+    }
+
     // ==== Setter/Builder ====
 
     /**
@@ -737,16 +737,12 @@ public abstract class Widget {
     }
 
     /**
-     * Makes NEI always respect this widget's area.
-     * This should be used when the widget is outside its windows area and overlaps with NEI
+     * Makes NEI respect this widget's area or not.
+     * This is used when the widget is outside its windows area and overlaps with NEI.
+     * This is enabled by default.
      */
-    public Widget respectAreaInNEI() {
-        if (!this.respectNEIArea) {
-            this.respectNEIArea = true;
-            if (isInitialised()) {
-                getContext().registerExclusionZone(this);
-            }
-        }
+    public Widget setRespectNEIArea(boolean doRespect) {
+        this.respectNEIArea = doRespect;
         return this;
     }
 

@@ -10,6 +10,7 @@ import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularUIContainer;
 import com.gtnewhorizons.modularui.common.widget.WidgetJsonRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -32,10 +33,13 @@ import org.apache.logging.log4j.Logger;
 public class ModularUI {
 
     public static final String MODID = "modularui";
-    public static final String DEPENDENCIES = "required-after:CodeChickenLib; required-after:NotEnoughItems;";
+    public static final String DEPENDENCIES = "required-after:CodeChickenLib; after:NotEnoughItems;";
     public static final String GUI_FACTORY = Tags.GROUPNAME + ".config.GuiFactory";
 
     public static final Logger logger = LogManager.getLogger(Tags.MODID);
+
+    public static final String MODID_NEI = "NotEnoughItems";
+    public static final boolean isNEILoaded = Loader.isModLoaded(MODID_NEI);
 
     @Mod.Instance(ModularUI.MODID)
     public static ModularUI INSTANCE;

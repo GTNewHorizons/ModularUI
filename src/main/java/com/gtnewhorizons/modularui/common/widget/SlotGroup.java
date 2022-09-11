@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fluids.IFluidTank;
@@ -58,6 +59,18 @@ public class SlotGroup extends MultiChildWidget {
      */
     public static FluidGroupBuilder ofFluidTanks(List<IFluidTank> fluidTanks, int slotsPerRow) {
         return new FluidGroupBuilder(fluidTanks, slotsPerRow);
+    }
+
+    public SlotGroup setOnDragAndDropComplete(Consumer<Widget> onDragAndDropComplete) {
+        for (Widget child : children) {
+            if (child instanceof SlotWidget) {
+                ((SlotWidget) child).setOnDragAndDropComplete(onDragAndDropComplete);
+            }
+            if (child instanceof FluidSlotWidget) {
+                ((FluidSlotWidget) child).setOnDragAndDropComplete(onDragAndDropComplete);
+            }
+        }
+        return this;
     }
 
     @Override

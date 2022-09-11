@@ -10,17 +10,13 @@ import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
-import com.gtnewhorizons.modularui.api.nei.IGhostIngredientHandler;
-import com.gtnewhorizons.modularui.api.widget.*;
-import com.gtnewhorizons.modularui.api.widget.IGhostIngredientTarget;
-import com.gtnewhorizons.modularui.api.widget.IIngredientProvider;
+import com.gtnewhorizons.modularui.api.widget.IDragAndDropHandler;
 import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
 import com.gtnewhorizons.modularui.api.widget.IVanillaSlot;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.Theme;
 import com.gtnewhorizons.modularui.common.internal.wrapper.BaseSlot;
-import com.gtnewhorizons.modularui.common.internal.wrapper.GhostIngredientWrapper;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 import com.gtnewhorizons.modularui.mixins.GuiContainerMixin;
 import cpw.mods.fml.relauncher.Side;
@@ -44,8 +40,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
-public class SlotWidget extends Widget
-        implements IVanillaSlot, Interactable, ISyncedWidget, IIngredientProvider, IGhostIngredientTarget {
+public class SlotWidget extends Widget implements IVanillaSlot, Interactable, ISyncedWidget, IDragAndDropHandler {
 
     private boolean needsUpdate;
 
@@ -54,6 +49,8 @@ public class SlotWidget extends Widget
     private final TextRenderer textRenderer = new TextRenderer();
     private final BaseSlot slot;
     private ItemStack lastStoredPhantomItem = null;
+
+    private Consumer<Widget> onDragAndDropComplete;
 
     @Nullable
     private String sortAreaName = null;
@@ -65,6 +62,11 @@ public class SlotWidget extends Widget
 
     public SlotWidget(IItemHandlerModifiable handler, int index) {
         this(new BaseSlot(handler, index, false));
+    }
+
+    public SlotWidget setOnDragAndDropComplete(Consumer<Widget> onDragAndDropComplete) {
+        this.onDragAndDropComplete = onDragAndDropComplete;
+        return this;
     }
 
     public static SlotWidget phantom(IItemHandlerModifiable handler, int index) {
@@ -170,11 +172,6 @@ public class SlotWidget extends Widget
     }
 
     @Override
-    public Object getIngredient() {
-        return slot.getStack();
-    }
-
-    @Override
     public SlotWidget setPos(Pos2d relativePos) {
         return (SlotWidget) super.setPos(relativePos);
     }
@@ -252,7 +249,10 @@ public class SlotWidget extends Widget
         } else if (id == 4) {
             setEnabled(buf.readBoolean());
         } else if (id == 5) {
-            this.slot.putStack(buf.readItemStackFromBuffer());
+            phantomClick(ClickData.readPacket(buf), buf.readItemStackFromBuffer());
+            if (onDragAndDropComplete != null) {
+                onDragAndDropComplete.accept(this);
+            }
         }
         markForUpdate();
     }
@@ -295,7 +295,10 @@ public class SlotWidget extends Widget
     }
 
     protected void phantomClick(ClickData clickData) {
-        ItemStack cursorStack = getContext().getCursor().getItemStack();
+        phantomClick(clickData, getContext().getCursor().getItemStack());
+    }
+
+    protected void phantomClick(ClickData clickData, ItemStack cursorStack) {
         ItemStack slotStack = getMcSlot().getStack();
         ItemStack stackToPut;
         if (slotStack == null) {
@@ -339,22 +342,18 @@ public class SlotWidget extends Widget
     }
 
     @Override
-    public IGhostIngredientHandler.@Nullable Target getTarget(@NotNull ItemStack ingredient) {
-        if (!isPhantom() || !(ingredient instanceof ItemStack) || ((ItemStack) ingredient) == null) {
-            return null;
-        }
-        return new GhostIngredientWrapper<>(this);
-    }
-
-    @Override
-    public void accept(@NotNull ItemStack ingredient) {
+    public boolean handleDragAndDrop(ItemStack draggedStack, int button) {
+        if (!isPhantom()) return false;
         syncToServer(5, buffer -> {
             try {
-                buffer.writeItemStackToBuffer(ingredient);
+                ClickData.create(button, false).writeToPacket(buffer);
+                buffer.writeItemStackToBuffer(draggedStack);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
+        draggedStack.stackSize = 0;
+        return true;
     }
 
     private GuiContainerMixin getGuiAccessor() {
