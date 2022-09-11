@@ -17,7 +17,6 @@ import com.gtnewhorizons.modularui.common.internal.wrapper.ModularUIContainer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.Unpooled;
-import java.awt.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
@@ -166,10 +165,18 @@ public class ModularUIContext {
     }
 
     public void closeWindow(ModularWindow window) {
+        closeWindow(window, true);
+    }
+
+    /**
+     * @param window Window to close
+     * @param doRemoveWindow If actually remove window from {@link #windows}
+     */
+    public void closeWindow(ModularWindow window, boolean doRemoveWindow) {
         if (window == null) {
             return;
         }
-        if (windows.removeLastOccurrence(window)) {
+        if (!doRemoveWindow || windows.removeLastOccurrence(window)) {
             window.destroyWindow();
         }
         if (isClient()) {
@@ -200,6 +207,9 @@ public class ModularUIContext {
         return mainWindow;
     }
 
+    /**
+     * Close all windows displayed.
+     */
     public void tryClose() {
         if (this.isClosing) {
             for (ModularWindow window : getOpenWindows()) {
@@ -208,10 +218,11 @@ public class ModularUIContext {
             return;
         }
         for (ModularWindow window : getOpenWindows()) {
-            if (window.tryClose() && window == mainWindow) {
+            if (window.tryClose(false) && window == mainWindow) {
                 this.isClosing = true;
             }
         }
+        windows.clear();
     }
 
     public void close() {

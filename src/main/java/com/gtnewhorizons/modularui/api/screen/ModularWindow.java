@@ -178,8 +178,12 @@ public class ModularWindow implements IWidgetParent {
      * Called when the player tries to close the ui. Starts animation or closes directly.
      */
     public boolean tryClose() {
+        return tryClose(true);
+    }
+
+    public boolean tryClose(boolean doRemoveWindow) {
         if (closeAnimation == null) {
-            closeWindow();
+            closeWindow(doRemoveWindow);
         } else if (!closeAnimation.isRunning()) {
             closeAnimation.forward();
             return true;
@@ -252,8 +256,15 @@ public class ModularWindow implements IWidgetParent {
         needsRebuild = false;
     }
 
+    /**
+     * Close window instantly. For animated closing, use {@link #tryClose}
+     */
     public void closeWindow() {
-        context.closeWindow(this);
+        closeWindow(true);
+    }
+
+    public void closeWindow(boolean doRemoveWindow) {
+        context.closeWindow(this, doRemoveWindow);
     }
 
     protected void destroyWindow() {
