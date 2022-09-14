@@ -47,14 +47,14 @@ public class Config {
         openCloseScale = config.get(
                         CATEGORY_ANIMATIONS,
                         "openCloseScale",
-                        true,
+                        false,
                         "Whether to draw scale in/out animation on GUI open/close")
                 .getBoolean();
 
         openCloseTranslateFromBottom = config.get(
                         CATEGORY_ANIMATIONS,
                         "openCloseTranslateFromBottom",
-                        true,
+                        false,
                         "Whether to draw GUI coming out of / going out to the bottom of the screen on GUI open/close")
                 .getBoolean();
 
