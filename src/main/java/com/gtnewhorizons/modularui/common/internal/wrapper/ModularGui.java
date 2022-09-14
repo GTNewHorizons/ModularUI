@@ -667,30 +667,39 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
     @Optional.Method(modid = ModularUI.MODID_NEI)
     public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h) {
         if (!(gui instanceof ModularGui)) return false;
-        List<Widget> activeWidgets = new ArrayList<>();
-        IWidgetParent.forEachByLayer(
-                getContext().getMainWindow(),
-                true,
-                // skip children search if parent does not respect NEI area
-                widget -> !widget.isRespectNEIArea(),
-                widget -> {
-                    if (widget.isRespectNEIArea()) {
-                        activeWidgets.add(widget);
-                    }
-                    return false;
-                });
+        Rectangle neiSlotRectangle = new Rectangle(x, y, w, h);
 
+        for (ModularWindow window : getContext().getOpenWindows()) {
+            if (window.getRectangle().intersects(neiSlotRectangle)) {
+                return true;
+            }
+        }
+
+        List<Widget> activeWidgets = new ArrayList<>();
+        for (ModularWindow window : getContext().getOpenWindows()) {
+            IWidgetParent.forEachByLayer(
+                    window,
+                    true,
+                    // skip children search if parent does not respect NEI area
+                    widget -> !widget.isRespectNEIArea(),
+                    widget -> {
+                        if (widget.isRespectNEIArea()) {
+                            activeWidgets.add(widget);
+                        }
+                        return false;
+                    });
+        }
         for (Widget widget : activeWidgets) {
             Rectangle widgetAbsoluteRectangle = new Rectangle(
                     widget.getAbsolutePos().x,
                     widget.getAbsolutePos().y,
                     widget.getSize().width,
                     widget.getSize().height);
-            Rectangle neiSlotRectangle = new Rectangle(x, y, w, h);
             if (widgetAbsoluteRectangle.intersects(neiSlotRectangle)) {
                 return true;
             }
         }
+
         return false;
     }
 
