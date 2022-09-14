@@ -222,7 +222,6 @@ public class ModularUIContext {
                 this.isClosing = true;
             }
         }
-        windows.clear();
     }
 
     public void close() {
