@@ -142,7 +142,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                 drawHandler.postRenderObjects(this, mouseX, mouseY);
             }
 
-            if (!shouldRenderOurTooltip()) {
+            if (!shouldRenderOurTooltip() && GuiContainerManager.getManager() != null) {
                 GuiContainerManager.getManager().renderToolTips(mouseX, mouseY);
             }
         }
