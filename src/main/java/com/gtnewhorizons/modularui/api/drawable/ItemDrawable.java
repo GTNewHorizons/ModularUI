@@ -1,7 +1,6 @@
 package com.gtnewhorizons.modularui.api.drawable;
 
 import com.gtnewhorizons.modularui.api.GlStateManager;
-import com.gtnewhorizons.modularui.api.Widget;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
@@ -10,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Draws item. Can also be used for {@link Widget}
+ * Draws item. Can also be used for {@link com.gtnewhorizons.modularui.api.widget.Widget}
  */
 public class ItemDrawable implements IDrawable {
 
