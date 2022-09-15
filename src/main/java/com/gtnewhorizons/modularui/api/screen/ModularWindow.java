@@ -508,15 +508,16 @@ public class ModularWindow implements IWidgetParent {
             return this;
         }
 
-        public Builder bindPlayerInventory(EntityPlayer player, int marginBottom) {
-            return bindPlayerInventory(player, new Pos2d(size.width / 2 - 81, size.height - marginBottom - 76));
+        public Builder bindPlayerInventory(EntityPlayer player, int marginBottom, IDrawable background) {
+            return bindPlayerInventory(
+                    player, new Pos2d(size.width / 2 - 81, size.height - marginBottom - 76), background);
         }
 
         /**
          * Bind player inventory to window.
          */
         public Builder bindPlayerInventory(EntityPlayer player) {
-            return bindPlayerInventory(player, 7);
+            return bindPlayerInventory(player, 7, null);
         }
 
         public Builder addPlayerInventoryLabel(int x, int y) {

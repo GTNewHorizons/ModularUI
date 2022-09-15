@@ -61,8 +61,8 @@ public interface IWidgetBuilder<T extends IWidgetBuilder<T>> {
         return widget(new SlotWidget(slot));
     }
 
-    default T bindPlayerInventory(EntityPlayer player, Pos2d pos) {
-        return widget(SlotGroup.playerInventoryGroup(player).setPos(pos));
+    default T bindPlayerInventory(EntityPlayer player, Pos2d pos, IDrawable background) {
+        return widget(SlotGroup.playerInventoryGroup(player, background).setPos(pos));
     }
 
     default T bindPlayerInventory(EntityPlayer player, int x, int y) {

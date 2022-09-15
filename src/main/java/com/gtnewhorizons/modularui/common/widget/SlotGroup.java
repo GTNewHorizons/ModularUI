@@ -1,6 +1,7 @@
 package com.gtnewhorizons.modularui.common.widget;
 
 import com.gtnewhorizons.modularui.ModularUI;
+import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.forge.IItemHandlerModifiable;
 import com.gtnewhorizons.modularui.api.forge.PlayerMainInvWrapper;
 import com.gtnewhorizons.modularui.api.math.Alignment;
@@ -27,6 +28,10 @@ public class SlotGroup extends MultiChildWidget {
     public static final int PLAYER_INVENTORY_HEIGHT = 76;
 
     public static SlotGroup playerInventoryGroup(EntityPlayer player) {
+        return playerInventoryGroup(player, null);
+    }
+
+    public static SlotGroup playerInventoryGroup(EntityPlayer player, IDrawable background) {
         PlayerMainInvWrapper wrapper = new PlayerMainInvWrapper(player.inventory);
         SlotGroup slotGroup = new SlotGroup();
 
@@ -35,12 +40,18 @@ public class SlotGroup extends MultiChildWidget {
                 SlotWidget slot = new SlotWidget(new BaseSlot(wrapper, col + (row + 1) * 9))
                         .setPos(new Pos2d(col * 18, row * 18));
                 slotGroup.addSlot(slot);
+                if (background != null) {
+                    slot.setBackground(background);
+                }
             }
         }
 
         for (int i = 0; i < 9; i++) {
             SlotWidget slot = new SlotWidget(new BaseSlot(wrapper, i)).setPos(new Pos2d(i * 18, 58));
             slotGroup.addSlot(slot);
+            if (background != null) {
+                slot.setBackground(background);
+            }
         }
         return slotGroup;
     }
