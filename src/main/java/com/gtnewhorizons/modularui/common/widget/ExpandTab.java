@@ -133,6 +133,7 @@ public class ExpandTab extends MultiChildWidget implements Interactable, IWidget
             for (IDrawable drawable : background) {
                 if (drawable != null) {
                     drawable.applyThemeColor(themeColor);
+                    drawable.applyTintColor(getWindow().getGuiTint());
                     drawable.draw(
                             animateX - getPos().x, animateY - getPos().y, animateWidth, animateHeight, partialTicks);
                 }

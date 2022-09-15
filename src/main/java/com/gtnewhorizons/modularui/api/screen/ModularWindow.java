@@ -77,6 +77,7 @@ public class ModularWindow implements IWidgetParent {
     private float rotation = 0;
     private float translateX = 0, translateY = 0;
     private Interpolator openAnimation, closeAnimation;
+    private int guiTint = 0xffffff;
 
     public ModularWindow(Size size, List<Widget> children, IDrawable... background) {
         this.fullScreen = size.isZero();
@@ -301,6 +302,7 @@ public class ModularWindow implements IWidgetParent {
             int color = Color.withAlpha(Theme.INSTANCE.getBackground(), alpha);
             for (IDrawable drawable : background) {
                 drawable.applyThemeColor(color);
+                drawable.applyTintColor(getGuiTint());
                 drawable.draw(Pos2d.ZERO, size, partialTicks);
             }
             GlStateManager.popMatrix();
@@ -335,6 +337,14 @@ public class ModularWindow implements IWidgetParent {
 
     public boolean isDraggable() {
         return draggable;
+    }
+
+    public int getGuiTint() {
+        return guiTint;
+    }
+
+    public void setGuiTint(int guiTint) {
+        this.guiTint = guiTint;
     }
 
     public ModularUIContext getContext() {
@@ -457,6 +467,7 @@ public class ModularWindow implements IWidgetParent {
         private Size size;
         private PosProvider pos = null;
         private boolean draggable = true;
+        private Integer guiTint;
 
         private Builder(Size size) {
             this.size = size;
@@ -517,6 +528,11 @@ public class ModularWindow implements IWidgetParent {
             widgets.add(widget);
         }
 
+        public Builder setGuiTint(int guiTint) {
+            this.guiTint = guiTint;
+            return this;
+        }
+
         /**
          * Build this window.
          */
@@ -525,6 +541,9 @@ public class ModularWindow implements IWidgetParent {
             window.draggable = draggable;
             if (pos != null) {
                 window.posProvider = pos;
+            }
+            if (guiTint != null) {
+                window.guiTint = guiTint;
             }
             return window;
         }

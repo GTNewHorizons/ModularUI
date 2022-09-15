@@ -309,6 +309,7 @@ public abstract class Widget {
             for (IDrawable drawable : background) {
                 if (drawable != null) {
                     drawable.applyThemeColor(themeColor);
+                    drawable.applyTintColor(getWindow().getGuiTint());
                     drawable.draw(Pos2d.ZERO, getSize(), partialTicks);
                 }
             }

@@ -12,6 +12,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import org.lwjgl.opengl.GL11;
 
 @FunctionalInterface
 public interface IDrawable {
@@ -49,6 +50,11 @@ public interface IDrawable {
     @SideOnly(Side.CLIENT)
     default void applyThemeColor() {
         applyThemeColor(Color.WHITE.normal);
+    }
+
+    @SideOnly(Side.CLIENT)
+    default void applyTintColor(int color) {
+        GL11.glColor3ub((byte) ((color >> 16) & 0xFF), (byte) ((color >> 8) & 0xFF), (byte) (color & 0xFF));
     }
 
     /**
