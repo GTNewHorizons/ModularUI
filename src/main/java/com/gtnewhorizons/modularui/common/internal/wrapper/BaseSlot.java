@@ -27,12 +27,18 @@ public class BaseSlot extends SlotItemHandler {
     private ItemStack cachedItem = null;
     private boolean needsSyncing;
 
+    private static final IItemHandlerModifiable EMPTY = new ItemStackHandler();
+
     public static BaseSlot phantom() {
         return phantom(new ItemStackHandler(), 0);
     }
 
     public static BaseSlot phantom(IItemHandlerModifiable handler, int index) {
         return new BaseSlot(handler, index, true);
+    }
+
+    public static BaseSlot empty() {
+        return new BaseSlot(EMPTY, 0, true);
     }
 
     public BaseSlot(IItemHandlerModifiable inventory, int index) {
