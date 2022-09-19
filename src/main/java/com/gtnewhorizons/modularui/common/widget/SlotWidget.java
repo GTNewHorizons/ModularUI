@@ -376,7 +376,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         boolean flag1 = slotIn == getGuiAccessor().getClickedSlot()
                 && getGuiAccessor().getDraggedStack() != null
                 && !getGuiAccessor().getIsRightMouseClick();
-        ItemStack itemstack1 = getScreen().mc.thePlayer.inventory.getItemStack();
+        ItemStack itemstack1 = getContext().getPlayer().inventory.getItemStack();
         int amount = -1;
         String format = null;
 

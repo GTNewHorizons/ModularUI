@@ -52,4 +52,13 @@ public class UIInfos {
                 new ModularGui(new ModularUIContainer(new ModularUIContext(buildContext, null, true), window));
         FMLCommonHandler.instance().showGuiScreen(screen);
     }
+
+    /**
+     * Call this if you want to draw widgets in other mods' GUI.
+     * Don't call if you're using {@link UIInfo#open} or {@link #openClientUI}.
+     */
+    public static void initializeWindow(EntityPlayer player, ModularWindow window) {
+        UIBuildContext buildContext = new UIBuildContext(player);
+        new ModularGui(new ModularUIContainer(new ModularUIContext(buildContext, null, true), window));
+    }
 }
