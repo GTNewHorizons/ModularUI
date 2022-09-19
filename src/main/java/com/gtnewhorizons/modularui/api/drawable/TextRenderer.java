@@ -13,6 +13,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import org.apache.commons.lang3.tuple.Pair;
+import org.lwjgl.opengl.GL11;
 
 public class TextRenderer {
 
@@ -155,6 +156,7 @@ public class TextRenderer {
         GlStateManager.disableBlend();
         GlStateManager.pushMatrix();
         GlStateManager.scale(scale, scale, 0f);
+        GL11.glDisable(GL11.GL_LIGHTING);
         int width = getFontRenderer().drawString(text, (int) (x / scale), (int) (y / scale), color, shadow);
         GlStateManager.popMatrix();
         GlStateManager.enableBlend();
