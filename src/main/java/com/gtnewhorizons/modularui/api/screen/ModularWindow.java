@@ -395,6 +395,10 @@ public class ModularWindow implements IWidgetParent {
         return new Rectangle(pos.x, pos.y, size.width, size.height);
     }
 
+    public IDrawable[] getBackground() {
+        return background;
+    }
+
     /**
      * The events of the added listeners are always called.
      */
