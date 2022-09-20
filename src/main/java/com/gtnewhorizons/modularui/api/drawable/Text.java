@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import org.jetbrains.annotations.ApiStatus;
 
 public class Text implements IDrawable {
 
@@ -86,6 +87,15 @@ public class Text implements IDrawable {
         return text;
     }
 
+    public String getFormatting() {
+        return formatting;
+    }
+
+    @ApiStatus.Internal
+    public void setFormatting(String formatting) {
+        this.formatting = formatting;
+    }
+
     @Override
     public void applyThemeColor(int color) {
         renderer.setColor(hasColor() ? this.color : Theme.INSTANCE.getText());
@@ -99,6 +109,9 @@ public class Text implements IDrawable {
         renderer.draw(getFormatted());
     }
 
+    /**
+     * @return Text translated and formatted with {@link EnumChatFormatting}
+     */
     public String getFormatted() {
         String text = getRawText();
         if (localisationData != null && FMLCommonHandler.instance().getSide().isClient()) {

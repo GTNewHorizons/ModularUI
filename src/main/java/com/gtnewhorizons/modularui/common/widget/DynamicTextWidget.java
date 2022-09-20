@@ -1,31 +1,48 @@
 package com.gtnewhorizons.modularui.common.widget;
 
 import com.gtnewhorizons.modularui.api.drawable.Text;
+import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
+import java.io.IOException;
 import java.util.function.Supplier;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumChatFormatting;
 
-public class DynamicTextWidget extends TextWidget {
+/**
+ * Allows changing text dynamically.
+ * Syncs text from server to client.
+ */
+public class DynamicTextWidget extends TextWidget implements ISyncedWidget {
 
     private final Supplier<Text> textSupplier;
 
+    private Text lastText;
+
     private Integer defaultColor;
     private EnumChatFormatting defaultFormat;
+
+    private static final int MAX_PACKET_LENGTH = Short.MAX_VALUE;
 
     public DynamicTextWidget(Supplier<Text> text) {
         this.textSupplier = text;
     }
 
     @Override
-    public void onScreenUpdate() {
-        String l = textSupplier.get().getFormatted();
-        if (!l.equals(localised)) {
-            checkNeedsRebuild();
-            localised = l;
-        }
+    public void onInit() {
+        lastText = textSupplier.get();
     }
 
     @Override
+    public void onScreenUpdate() {}
+
+    @Override
     public Text getText() {
+        return lastText;
+    }
+
+    /**
+     * Executed only on server
+     */
+    private Text updateText() {
         Text ret = textSupplier.get();
         if (defaultColor != null) {
             ret.color(defaultColor);
@@ -46,5 +63,56 @@ public class DynamicTextWidget extends TextWidget {
     public TextWidget setDefaultColor(EnumChatFormatting color) {
         this.defaultFormat = color;
         return this;
+    }
+
+    @Override
+    public void readOnClient(int id, PacketBuffer buf) throws IOException {
+        if (id == 0) {
+            Text newText = new Text(buf.readStringFromBuffer(MAX_PACKET_LENGTH));
+            newText.color(buf.readVarIntFromBuffer());
+            newText.setFormatting(buf.readStringFromBuffer(MAX_PACKET_LENGTH));
+            lastText = newText;
+            checkNeedsRebuild();
+        }
+    }
+
+    @Override
+    public void readOnServer(int id, PacketBuffer buf) throws IOException {}
+
+    @Override
+    public void detectAndSendChanges(boolean init) {
+        Text newText = updateText();
+        if (init || needsSync(newText)) {
+            this.lastText = newText;
+            syncToClient(0, buffer -> {
+                try {
+                    buffer.writeStringToBuffer(newText.getRawText());
+                    buffer.writeVarIntToBuffer(newText.getColor());
+                    buffer.writeStringToBuffer(newText.getFormatting());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
+
+    @Override
+    public void markForUpdate() {}
+
+    @Override
+    public void unMarkForUpdate() {}
+
+    @Override
+    public boolean isMarkedForUpdate() {
+        // assume update was handled somewhere else
+        return false;
+    }
+
+    private boolean needsSync(Text newText) {
+        if (lastText == null && newText == null) return false;
+        else if (lastText == null) return false;
+        return !lastText.getRawText().equals(newText.getRawText())
+                || lastText.getColor() != newText.getColor()
+                || !lastText.getFormatting().equals(newText.getFormatting());
     }
 }
