@@ -4,18 +4,24 @@ import codechicken.lib.math.MathHelper;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
-import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.config.Config;
+import java.io.IOException;
 import java.util.function.Supplier;
+import net.minecraft.network.PacketBuffer;
 import org.jetbrains.annotations.NotNull;
 
-public class ProgressBar extends Widget {
+public class ProgressBar extends SyncedWidget {
 
     private Supplier<Float> progress;
     private UITexture emptyTexture;
-    private final UITexture fullTexture[] = new UITexture[4];
+    private final UITexture[] fullTexture = new UITexture[4];
     private Direction direction = Direction.RIGHT;
     private int imageSize = -1;
+
+    // vanilla furnace sends packet every tick during 200 ticks in the process
+    private float packetThreshold = 0.005f;
+
+    private float lastProgress;
 
     @Override
     public void onInit() {
@@ -40,7 +46,7 @@ public class ProgressBar extends Widget {
         if (emptyTexture != null) {
             emptyTexture.draw(Pos2d.ZERO, getSize(), partialTicks);
         }
-        float progress = this.progress.get();
+        float progress = lastProgress;
         if (fullTexture[0] != null && progress > 0) {
             if (direction == Direction.CIRCULAR_CW) {
                 drawCircular(progress);
@@ -137,6 +143,42 @@ public class ProgressBar extends Widget {
         return new Size(20, 20);
     }
 
+    @Override
+    public boolean syncsToServer() {
+        return false;
+    }
+
+    @Override
+    public void readOnClient(int id, PacketBuffer buf) throws IOException {
+        if (id == 0) {
+            lastProgress = buf.readFloat();
+        }
+    }
+
+    @Override
+    public void readOnServer(int id, PacketBuffer buf) throws IOException {}
+
+    @Override
+    public void detectAndSendChanges(boolean init) {
+        float newProgress = progress.get();
+        if (init || Math.abs(newProgress - lastProgress) > packetThreshold) {
+            lastProgress = newProgress;
+            syncToClient(0, buffer -> buffer.writeFloat(lastProgress));
+        }
+    }
+
+    @Override
+    public void markForUpdate() {}
+
+    @Override
+    public void unMarkForUpdate() {}
+
+    @Override
+    public boolean isMarkedForUpdate() {
+        // assume update was handled somewhere else
+        return false;
+    }
+
     public ProgressBar setProgress(Supplier<Float> progress) {
         this.progress = progress;
         return this;
@@ -170,6 +212,14 @@ public class ProgressBar extends Widget {
 
     public ProgressBar setDirection(Direction direction) {
         this.direction = direction;
+        return this;
+    }
+
+    /**
+     * @param threshold Minimum diff required for triggering packet transfer
+     */
+    public ProgressBar setPacketThreshold(float threshold) {
+        this.packetThreshold = threshold;
         return this;
     }
 
