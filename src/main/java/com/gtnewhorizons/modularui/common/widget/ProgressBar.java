@@ -46,7 +46,7 @@ public class ProgressBar extends SyncedWidget {
         if (emptyTexture != null) {
             emptyTexture.draw(Pos2d.ZERO, getSize(), partialTicks);
         }
-        float progress = lastProgress;
+        float progress = syncsToClient() ? lastProgress : this.progress.get();
         if (fullTexture[0] != null && progress > 0) {
             if (direction == Direction.CIRCULAR_CW) {
                 drawCircular(progress);
@@ -160,6 +160,7 @@ public class ProgressBar extends SyncedWidget {
 
     @Override
     public void detectAndSendChanges(boolean init) {
+        if (!syncsToClient()) return;
         float newProgress = progress.get();
         if (init || Math.abs(newProgress - lastProgress) > packetThreshold) {
             lastProgress = newProgress;
