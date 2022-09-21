@@ -28,7 +28,7 @@ public class DynamicTextWidget extends TextWidget implements ISyncedWidget {
 
     @Override
     public void onInit() {
-        lastText = textSupplier.get();
+        lastText = new Text("");
     }
 
     @Override
