@@ -53,7 +53,7 @@ public interface IDrawable {
     }
 
     @SideOnly(Side.CLIENT)
-    default void applyTintColor(int color) {
+    static void applyTintColor(int color) {
         GL11.glColor3ub((byte) ((color >> 16) & 0xFF), (byte) ((color >> 8) & 0xFF), (byte) (color & 0xFF));
     }
 

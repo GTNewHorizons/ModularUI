@@ -226,7 +226,7 @@ public abstract class Widget {
             float x = (windowPos.x + windowSize.width / 2f * (1 - scale) + (pos.x - windowPos.x) * scale) * sf;
             float y = (windowPos.y + windowSize.height / 2f * (1 - scale) + (pos.y - windowPos.y) * scale) * sf;
             GlStateManager.translate(x, y, 0);
-            GlStateManager.color(1, 1, 1, alpha);
+            IDrawable.applyTintColor(getWindow().getGuiTint());
             GlStateManager.enableBlend();
             drawBackground(partialTicks);
             draw(partialTicks);
@@ -309,7 +309,6 @@ public abstract class Widget {
             for (IDrawable drawable : background) {
                 if (drawable != null) {
                     drawable.applyThemeColor(themeColor);
-                    drawable.applyTintColor(getWindow().getGuiTint());
                     drawable.draw(Pos2d.ZERO, getSize(), partialTicks);
                 }
             }

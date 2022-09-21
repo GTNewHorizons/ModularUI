@@ -302,7 +302,7 @@ public class ModularWindow implements IWidgetParent {
             int color = Color.withAlpha(Theme.INSTANCE.getBackground(), alpha);
             for (IDrawable drawable : background) {
                 drawable.applyThemeColor(color);
-                drawable.applyTintColor(getGuiTint());
+                IDrawable.applyTintColor(getGuiTint());
                 drawable.draw(Pos2d.ZERO, size, partialTicks);
             }
             GlStateManager.popMatrix();
