@@ -4,19 +4,26 @@ import codechicken.lib.math.MathHelper;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
+import com.gtnewhorizons.modularui.api.widget.ITransferRectHandler;
 import com.gtnewhorizons.modularui.config.Config;
 import java.io.IOException;
 import java.util.function.Supplier;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.StatCollector;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class ProgressBar extends SyncedWidget {
+public class ProgressBar extends SyncedWidget implements ITransferRectHandler {
 
     private Supplier<Float> progress;
     private UITexture emptyTexture;
     private final UITexture[] fullTexture = new UITexture[4];
     private Direction direction = Direction.RIGHT;
     private int imageSize = -1;
+
+    private String transferRectID;
+    private String transferRectTooltip;
+    private Object[] transferRectArgs;
 
     // vanilla furnace sends packet every tick during 200 ticks in the process
     private float packetThreshold = 0.005f;
@@ -143,6 +150,22 @@ public class ProgressBar extends SyncedWidget {
         return new Size(20, 20);
     }
 
+    @Nullable
+    @Override
+    public String getNEITransferRectID() {
+        return transferRectID;
+    }
+
+    @Override
+    public String getNEITransferRectTooltip() {
+        return transferRectTooltip;
+    }
+
+    @Override
+    public Object[] getNEITransferRectArgs() {
+        return transferRectArgs;
+    }
+
     @Override
     public boolean syncsToServer() {
         return false;
@@ -214,6 +237,22 @@ public class ProgressBar extends SyncedWidget {
     public ProgressBar setDirection(Direction direction) {
         this.direction = direction;
         return this;
+    }
+
+    public ProgressBar setNEITransferRect(
+            String transferRectID, String transferRectTooltip, Object[] transferRectArgs) {
+        this.transferRectID = transferRectID;
+        this.transferRectTooltip = transferRectTooltip;
+        this.transferRectArgs = transferRectArgs;
+        return this;
+    }
+
+    public ProgressBar setNEITransferRect(String transferRectID, String transferRectTooltip) {
+        return setNEITransferRect(transferRectID, transferRectTooltip, new Object[0]);
+    }
+
+    public ProgressBar setNEITransferRect(String transferRectID) {
+        return setNEITransferRect(transferRectID, StatCollector.translateToLocal("nei.recipe.tooltip"));
     }
 
     /**

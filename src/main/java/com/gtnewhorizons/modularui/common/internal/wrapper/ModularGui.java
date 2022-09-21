@@ -22,6 +22,7 @@ import com.gtnewhorizons.modularui.api.screen.Cursor;
 import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.widget.IDragAndDropHandler;
+import com.gtnewhorizons.modularui.api.widget.ITransferRectHandler;
 import com.gtnewhorizons.modularui.api.widget.IVanillaSlot;
 import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
@@ -283,7 +284,13 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                         mouseY,
                         ((IVanillaSlot) hovered).getExtraTooltip());
             } else if (hovered.getTooltipShowUpDelay() <= context.getCursor().getTimeHovered()) {
-                List<Text> tooltip = hovered.getTooltip();
+                List<Text> tooltip = new ArrayList<>(hovered.getTooltip()); // avoid UOE
+                if (hovered instanceof ITransferRectHandler) {
+                    ITransferRectHandler transferRectHandler = (ITransferRectHandler) hovered;
+                    if (transferRectHandler.getNEITransferRectTooltip() != null) {
+                        tooltip.add(new Text(transferRectHandler.getNEITransferRectTooltip()));
+                    }
+                }
                 if (!tooltip.isEmpty()) {
                     GuiHelper.drawHoveringText(
                             tooltip,
