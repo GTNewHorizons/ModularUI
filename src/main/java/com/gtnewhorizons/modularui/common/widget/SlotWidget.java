@@ -176,8 +176,8 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         return (SlotWidget) super.setSize(size);
     }
 
-    public SlotWidget setShiftClickPrio(int prio) {
-        this.slot.setShiftClickPriority(prio);
+    public SlotWidget setShiftClickPriority(int priority) {
+        this.slot.setShiftClickPriority(priority);
         return this;
     }
 

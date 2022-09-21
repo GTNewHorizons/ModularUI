@@ -127,10 +127,10 @@ public class TestTile extends SyncedTileEntityBase implements ITileWithModularUI
                                             serverCounter = 0;
                                             changeableWidget.notifyChangeServer();
                                         })
-                                        .setShiftClickPrio(0)
+                                        .setShiftClickPriority(0)
                                         .setPos(10, 30))
                                 .addChild(SlotWidget.phantom(phantomInventory, 1)
-                                        .setShiftClickPrio(1)
+                                        .setShiftClickPriority(1)
                                         .setIgnoreStackSizeLimit(true)
                                         .setPos(28, 30))
                                 .addChild(changeableWidget.setPos(12, 55))
@@ -339,7 +339,7 @@ public class TestTile extends SyncedTileEntityBase implements ITileWithModularUI
                 .setBackground(ModularUITextures.VANILLA_BACKGROUND)
                 .widget(ButtonWidget.closeWindowButton(true).setPos(85, 5))
                 .widget(SlotWidget.phantom(phantomInventory, 0)
-                        .setShiftClickPrio(0)
+                        .setShiftClickPriority(0)
                         .setPos(30, 30))
                 .build();
     }
