@@ -115,6 +115,7 @@ public class ModularUIContainer extends Container {
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
         Slot slot = (Slot) (this.inventorySlots.get(index));
         if (slot instanceof BaseSlot && !((BaseSlot) slot).isPhantom()) {
+            if (!slot.canTakeStack(playerIn)) return null;
             ItemStack stack = slot.getStack();
             if (stack != null) {
                 ItemStack remainder = transferItem((BaseSlot) slot, stack.copy());
@@ -128,58 +129,73 @@ public class ModularUIContainer extends Container {
         return null;
     }
 
-    protected ItemStack transferItem(BaseSlot fromSlot, ItemStack stack) {
+    protected ItemStack transferItem(BaseSlot fromSlot, ItemStack fromStack) {
+        // slice slots based on priorities and handle transfer for each same-priority slots
+        List<List<BaseSlot>> priorityList = new ArrayList<>();
+        List<BaseSlot> tmpSlots = new ArrayList<>();
+        int lastPriority = Integer.MAX_VALUE;
         for (BaseSlot slot : this.sortedShiftClickSlots) {
-            if (fromSlot.getShiftClickPriority() != slot.getShiftClickPriority()
-                    && slot.canTake
-                    && slot.isItemValidPhantom(stack)) {
-                ItemStack itemstack = slot.getStack();
-                if (slot.isPhantom()) {
-                    if (itemstack == null || ItemHandlerHelper.canItemStacksStackRelaxed(stack, itemstack)) {
-                        ItemStack toPush = stack.copy();
-                        toPush.stackSize = Math.min(stack.stackSize, slot.getItemStackLimit(stack));
-                        slot.putStack(toPush);
-                        return stack;
-                    }
-                } else {
-                    int maxSize = Math.min(slot.getSlotStackLimit(), stack.getMaxStackSize());
-                    if (itemstack == null) {
-                        int toMove = Math.min(maxSize, stack.stackSize);
-                        ItemStack newStack = stack.copy();
-                        stack.stackSize -= toMove;
-                        newStack.stackSize = toMove;
-                        slot.putStack(newStack);
-                    } else if (ItemHandlerHelper.canItemStacksStackRelaxed(stack, itemstack)) {
-                        int toMove = Math.max(Math.min(maxSize - itemstack.stackSize, stack.stackSize), 0);
-                        stack.stackSize -= toMove;
-                        itemstack.stackSize += toMove;
-                        slot.onSlotChanged();
-                    }
+            if (fromSlot.getShiftClickPriority() == slot.getShiftClickPriority()
+                    && fromSlot.getItemHandler() == slot.getItemHandler()) continue;
+            if (!slot.canInsert || !slot.isItemValidPhantom(fromStack)) continue;
+            if (lastPriority != slot.getShiftClickPriority() && !tmpSlots.isEmpty()) {
+                priorityList.add(tmpSlots);
+                tmpSlots = new ArrayList<>();
+            }
+            lastPriority = slot.getShiftClickPriority();
+            tmpSlots.add(slot);
+        }
+        if (!tmpSlots.isEmpty()) {
+            priorityList.add(tmpSlots);
+        }
 
-                    if (stack.stackSize < 1) {
-                        return stack;
+        for (List<BaseSlot> samePrioritySlots : priorityList) {
+            // try to merge to existing stacks first
+            for (BaseSlot toSlot : samePrioritySlots) {
+                ItemStack toStack = toSlot.getStack();
+                if (toSlot.isPhantom()) {
+                    if (ItemHandlerHelper.canItemStacksStackRelaxed(fromStack, toStack)) {
+                        ItemStack toPush = fromStack.copy();
+                        toPush.stackSize = Math.min(fromStack.stackSize, toSlot.getItemStackLimit(fromStack));
+                        toSlot.putStack(toPush);
+                        return fromStack;
+                    }
+                } else if (toStack != null) {
+                    int maxSize = Math.min(toSlot.getSlotStackLimit(), fromStack.getMaxStackSize());
+                    if (ItemHandlerHelper.canItemStacksStackRelaxed(fromStack, toStack)) {
+                        int toMove = Math.max(Math.min(maxSize - toStack.stackSize, fromStack.stackSize), 0);
+                        fromStack.stackSize -= toMove;
+                        toStack.stackSize += toMove;
+                        toSlot.onSlotChanged();
+                        if (fromStack.stackSize < 1) {
+                            return fromStack;
+                        }
+                    }
+                }
+            }
+
+            // push to empty slots
+            for (BaseSlot toSlot : samePrioritySlots) {
+                ItemStack toStack = toSlot.getStack();
+                if (toStack != null) continue;
+                if (toSlot.isPhantom()) {
+                    ItemStack toPush = fromStack.copy();
+                    toPush.stackSize = Math.min(fromStack.stackSize, toSlot.getItemStackLimit(fromStack));
+                    toSlot.putStack(toPush);
+                    return fromStack;
+                } else {
+                    int maxSize = Math.min(toSlot.getSlotStackLimit(), fromStack.getMaxStackSize());
+                    int toMove = Math.min(maxSize, fromStack.stackSize);
+                    ItemStack newStack = fromStack.copy();
+                    fromStack.stackSize -= toMove;
+                    newStack.stackSize = toMove;
+                    toSlot.putStack(newStack);
+                    if (fromStack.stackSize < 1) {
+                        return fromStack;
                     }
                 }
             }
         }
-        for (Slot slot1 : this.sortedShiftClickSlots) {
-            if (!(slot1 instanceof BaseSlot)) {
-                continue;
-            }
-            BaseSlot slot = (BaseSlot) slot1;
-            ItemStack itemstack = slot.getStack();
-            if (fromSlot.getItemHandler() != slot.getItemHandler()
-                    && slot.canInsert
-                    && itemstack == null
-                    && slot.isItemValid(stack)) {
-                if (stack.stackSize > slot1.getSlotStackLimit()) {
-                    slot.putStack(stack.splitStack(slot.getSlotStackLimit()));
-                } else {
-                    slot.putStack(stack.splitStack(stack.stackSize));
-                }
-                break;
-            }
-        }
-        return stack;
+        return fromStack;
     }
 }
