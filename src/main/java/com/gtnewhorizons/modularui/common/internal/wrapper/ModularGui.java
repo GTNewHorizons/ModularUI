@@ -25,6 +25,7 @@ import com.gtnewhorizons.modularui.api.widget.IVanillaSlot;
 import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
+import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.config.Config;
 import com.gtnewhorizons.modularui.mixins.GuiContainerMixin;
 import cpw.mods.fml.common.Optional;
@@ -349,6 +350,13 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                     false);
             lineY -= 11;
             drawText("Class: " + hovered, 5, lineY, 1, color, false);
+            lineY -= 11;
+            if (hovered instanceof SlotWidget) {
+                BaseSlot slot = ((SlotWidget) hovered).getMcSlot();
+                drawText("Slot Index: " + slot.getSlotIndex(), 5, lineY, 1, color, false);
+                lineY -= 11;
+                drawText("Shift-Click Priority: " + slot.getShiftClickPriority(), 5, lineY, 1, color, false);
+            }
         }
         color = Color.withAlpha(color, 25);
         for (int i = 5; i < screenSize.width; i += 5) {
