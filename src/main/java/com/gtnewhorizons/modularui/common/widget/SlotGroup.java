@@ -105,6 +105,7 @@ public class SlotGroup extends MultiChildWidget {
         private Boolean canInsert;
         private Boolean canTake;
         private Boolean phantom;
+        private IDrawable[] background;
 
         private ItemGroupBuilder(IItemHandlerModifiable itemHandler, int slotsPerRow) {
             this.itemHandler = itemHandler;
@@ -138,7 +139,8 @@ public class SlotGroup extends MultiChildWidget {
                 if (shiftClickPriority != null) {
                     baseSlot.setShiftClickPriority(shiftClickPriority);
                 }
-                slotGroup.addSlot(new SlotWidget(baseSlot).setPos(new Pos2d(x * 18, y * 18)));
+                slotGroup.addSlot((SlotWidget)
+                        new SlotWidget(baseSlot).setPos(x * 18, y * 18).setBackground(background));
                 if (++x == slotsPerRow) {
                     x = 0;
                     y++;
@@ -174,6 +176,11 @@ public class SlotGroup extends MultiChildWidget {
 
         public ItemGroupBuilder phantom(boolean phantom) {
             this.phantom = phantom;
+            return this;
+        }
+
+        public ItemGroupBuilder background(IDrawable... background) {
+            this.background = background;
             return this;
         }
     }
