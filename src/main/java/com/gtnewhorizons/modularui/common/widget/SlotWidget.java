@@ -50,6 +50,8 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     private final BaseSlot slot;
     private ItemStack lastStoredPhantomItem = null;
 
+    private boolean controlsAmount = false;
+
     private Consumer<Widget> onDragAndDropComplete;
 
     @Nullable
@@ -139,7 +141,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     @Override
     public void buildTooltip(List<Text> tooltip) {
         if (isPhantom()) {
-            if (slot.getSlotStackLimit() > 1) {
+            if (canControlAmount()) {
                 tooltip.add(Text.localised("modularui.item.phantom.control"));
             }
         }
@@ -152,7 +154,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
             extraLines.add(I18n.format("modularui.amount", slot.getStack().stackSize));
         }
         if (isPhantom()) {
-            if (slot.getSlotStackLimit() > 1) {
+            if (canControlAmount()) {
                 String[] lines = I18n.format("modularui.item.phantom.control").split("\\\\n");
                 extraLines.addAll(Arrays.asList(lines));
             } else {
@@ -229,9 +231,18 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         return this;
     }
 
+    public SlotWidget setControlsAmount(boolean controlsAmount) {
+        this.controlsAmount = controlsAmount;
+        return this;
+    }
+
     public SlotWidget setOnDragAndDropComplete(Consumer<Widget> onDragAndDropComplete) {
         this.onDragAndDropComplete = onDragAndDropComplete;
         return this;
+    }
+
+    public boolean canControlAmount() {
+        return controlsAmount && slot.getSlotStackLimit() > 1;
     }
 
     @Override
@@ -311,7 +322,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
             } else {
                 stackToPut = cursorStack.copy();
             }
-            if (clickData.mouseButton == 1) {
+            if (clickData.mouseButton == 1 || !canControlAmount()) {
                 stackToPut.stackSize = 1;
             }
             stackToPut.stackSize = Math.min(stackToPut.stackSize, slot.getItemStackLimit(stackToPut));

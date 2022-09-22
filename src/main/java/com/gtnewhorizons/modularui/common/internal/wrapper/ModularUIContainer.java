@@ -3,6 +3,7 @@ package com.gtnewhorizons.modularui.common.internal.wrapper;
 import com.gtnewhorizons.modularui.api.forge.ItemHandlerHelper;
 import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
+import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import java.util.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -156,7 +157,11 @@ public class ModularUIContainer extends Container {
                 if (toSlot.isPhantom()) {
                     if (ItemHandlerHelper.canItemStacksStackRelaxed(fromStack, toStack)) {
                         ItemStack toPush = fromStack.copy();
-                        toPush.stackSize = Math.min(fromStack.stackSize, toSlot.getItemStackLimit(fromStack));
+                        if (!((SlotWidget) toSlot.getParentWidget()).canControlAmount()) {
+                            toPush.stackSize = 1;
+                        } else {
+                            toPush.stackSize = Math.min(fromStack.stackSize, toSlot.getItemStackLimit(fromStack));
+                        }
                         toSlot.putStack(toPush);
                         return fromStack;
                     }
@@ -180,7 +185,11 @@ public class ModularUIContainer extends Container {
                 if (toStack != null) continue;
                 if (toSlot.isPhantom()) {
                     ItemStack toPush = fromStack.copy();
-                    toPush.stackSize = Math.min(fromStack.stackSize, toSlot.getItemStackLimit(fromStack));
+                    if (!((SlotWidget) toSlot.getParentWidget()).canControlAmount()) {
+                        toPush.stackSize = 1;
+                    } else {
+                        toPush.stackSize = Math.min(fromStack.stackSize, toSlot.getItemStackLimit(fromStack));
+                    }
                     toSlot.putStack(toPush);
                     return fromStack;
                 } else {

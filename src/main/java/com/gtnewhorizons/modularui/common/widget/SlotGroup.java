@@ -102,9 +102,10 @@ public class SlotGroup extends MultiChildWidget {
         private Integer startFromSlot;
         private Integer endAtSlot;
         private Integer shiftClickPriority;
-        private Boolean canInsert;
-        private Boolean canTake;
-        private Boolean phantom;
+        private boolean canInsert = true;
+        private boolean canTake = true;
+        private boolean phantom = false;
+        private boolean controlsAmount = false;
         private IDrawable[] background;
 
         private ItemGroupBuilder(IItemHandlerModifiable itemHandler, int slotsPerRow) {
@@ -119,15 +120,6 @@ public class SlotGroup extends MultiChildWidget {
             if (endAtSlot == null) {
                 endAtSlot = itemHandler.getSlots() - 1;
             }
-            if (canInsert == null) {
-                canInsert = true;
-            }
-            if (canTake == null) {
-                canTake = true;
-            }
-            if (phantom == null) {
-                phantom = false;
-            }
 
             SlotGroup slotGroup = new SlotGroup();
             if (startFromSlot > endAtSlot) {
@@ -139,8 +131,10 @@ public class SlotGroup extends MultiChildWidget {
                 if (shiftClickPriority != null) {
                     baseSlot.setShiftClickPriority(shiftClickPriority);
                 }
-                slotGroup.addSlot((SlotWidget)
-                        new SlotWidget(baseSlot).setPos(x * 18, y * 18).setBackground(background));
+                slotGroup.addSlot((SlotWidget) new SlotWidget(baseSlot)
+                        .setControlsAmount(controlsAmount)
+                        .setPos(x * 18, y * 18)
+                        .setBackground(background));
                 if (++x == slotsPerRow) {
                     x = 0;
                     y++;
@@ -176,6 +170,11 @@ public class SlotGroup extends MultiChildWidget {
 
         public ItemGroupBuilder phantom(boolean phantom) {
             this.phantom = phantom;
+            return this;
+        }
+
+        public ItemGroupBuilder setControlsAmount(boolean controlsAmount) {
+            this.controlsAmount = controlsAmount;
             return this;
         }
 

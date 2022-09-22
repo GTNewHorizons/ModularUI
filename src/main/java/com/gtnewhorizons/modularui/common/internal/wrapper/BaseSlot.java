@@ -4,6 +4,7 @@ import com.gtnewhorizons.modularui.api.forge.IItemHandlerModifiable;
 import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
 import com.gtnewhorizons.modularui.api.forge.SlotItemHandler;
 import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
+import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import java.util.function.Predicate;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -79,6 +80,10 @@ public class BaseSlot extends SlotItemHandler {
     public BaseSlot setParentWidget(ISyncedWidget parentWidget) {
         this.parentWidget = parentWidget;
         return this;
+    }
+
+    public ISyncedWidget getParentWidget() {
+        return parentWidget;
     }
 
     @Override
@@ -183,14 +188,18 @@ public class BaseSlot extends SlotItemHandler {
         if (amount < 0) {
             amount = Math.max(0, oldAmount + amount);
         } else {
-            if (Integer.MAX_VALUE - amount < oldAmount) {
-                amount = Integer.MAX_VALUE;
+            if (parentWidget instanceof SlotWidget && !((SlotWidget) parentWidget).canControlAmount()) {
+                amount = 1;
             } else {
-                int maxSize = getItemHandler().getSlotLimit(getSlotIndex());
-                if (!isIgnoreStackSizeLimit() && stack.getMaxStackSize() < maxSize) {
-                    maxSize = stack.getMaxStackSize();
+                if (Integer.MAX_VALUE - amount < oldAmount) {
+                    amount = Integer.MAX_VALUE;
+                } else {
+                    int maxSize = getItemHandler().getSlotLimit(getSlotIndex());
+                    if (!isIgnoreStackSizeLimit() && stack.getMaxStackSize() < maxSize) {
+                        maxSize = stack.getMaxStackSize();
+                    }
+                    amount = Math.min(oldAmount + amount, maxSize);
                 }
-                amount = Math.min(oldAmount + amount, maxSize);
             }
         }
         if (oldAmount != amount) {

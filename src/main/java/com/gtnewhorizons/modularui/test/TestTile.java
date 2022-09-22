@@ -132,6 +132,7 @@ public class TestTile extends SyncedTileEntityBase implements ITileWithModularUI
                                 .addChild(SlotWidget.phantom(phantomInventory, 1)
                                         .setShiftClickPriority(1)
                                         .setIgnoreStackSizeLimit(true)
+                                        .setControlsAmount(true)
                                         .setPos(28, 30))
                                 .addChild(changeableWidget.setPos(12, 55))
                                 .addChild(SlotGroup.ofItemHandler(items, 3)
