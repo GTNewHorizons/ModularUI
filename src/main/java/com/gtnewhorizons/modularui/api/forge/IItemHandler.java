@@ -4,6 +4,7 @@ package com.gtnewhorizons.modularui.api.forge;
 // (powered by FernFlower decompiler)
 //
 
+import javax.annotation.Nullable;
 import net.minecraft.item.ItemStack;
 
 public interface IItemHandler {
@@ -11,8 +12,10 @@ public interface IItemHandler {
 
     ItemStack getStackInSlot(int var1);
 
+    @Nullable
     ItemStack insertItem(int var1, ItemStack var2, boolean var3);
 
+    @Nullable
     ItemStack extractItem(int var1, int var2, boolean var3);
 
     int getSlotLimit(int var1);

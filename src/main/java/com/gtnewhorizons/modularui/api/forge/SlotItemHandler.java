@@ -4,7 +4,7 @@ package com.gtnewhorizons.modularui.api.forge;
 // (powered by FernFlower decompiler)
 //
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
@@ -36,7 +36,7 @@ public class SlotItemHandler extends Slot {
                 remainder = handler.insertItem(this.index, stack, true);
             }
 
-            return remainder.stackSize < stack.stackSize;
+            return remainder != null ? remainder.stackSize < stack.stackSize : stack.stackSize > 0;
         } else {
             return false;
         }
@@ -68,11 +68,11 @@ public class SlotItemHandler extends Slot {
             handlerModifiable.setStackInSlot(this.index, null);
             ItemStack remainder = handlerModifiable.insertItem(this.index, maxAdd, true);
             handlerModifiable.setStackInSlot(this.index, currentStack);
-            return maxInput - remainder.stackSize;
+            return remainder != null ? maxInput - remainder.stackSize : maxInput;
         } else {
             ItemStack remainder = handler.insertItem(this.index, maxAdd, true);
             int current = currentStack.stackSize;
-            int added = maxInput - remainder.stackSize;
+            int added = remainder != null ? maxInput - remainder.stackSize : maxInput;
             return current + added;
         }
     }
@@ -81,7 +81,7 @@ public class SlotItemHandler extends Slot {
         return this.getItemHandler().extractItem(this.index, 1, true) != null;
     }
 
-    @Nonnull
+    @Nullable
     public ItemStack decrStackSize(int amount) {
         return this.getItemHandler().extractItem(this.index, amount, false);
     }
