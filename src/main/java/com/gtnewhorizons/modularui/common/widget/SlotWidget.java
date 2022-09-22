@@ -50,7 +50,6 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     private final BaseSlot slot;
     private ItemStack lastStoredPhantomItem = null;
 
-    private boolean isShiftClickTarget = true;
     private boolean controlsAmount = false;
 
     private Consumer<Widget> onDragAndDropComplete;
@@ -179,6 +178,14 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         return (SlotWidget) super.setSize(size);
     }
 
+    /**
+     * Apply arbitrary lambda for slot.
+     */
+    public SlotWidget applyForSlot(Consumer<BaseSlot> consumer) {
+        consumer.accept(this.slot);
+        return this;
+    }
+
     public SlotWidget setShiftClickPriority(int priority) {
         this.slot.setShiftClickPriority(priority);
         return this;
@@ -230,15 +237,6 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
             }
         }
         return this;
-    }
-
-    public SlotWidget setIsShiftClickTarget(boolean shiftClickTarget) {
-        this.isShiftClickTarget = shiftClickTarget;
-        return this;
-    }
-
-    public boolean isShiftClickTarget() {
-        return isShiftClickTarget;
     }
 
     public SlotWidget setControlsAmount(boolean controlsAmount) {

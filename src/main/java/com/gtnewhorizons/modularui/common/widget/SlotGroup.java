@@ -105,9 +105,7 @@ public class SlotGroup extends MultiChildWidget {
         private boolean canInsert = true;
         private boolean canTake = true;
         private boolean phantom = false;
-        private boolean isShiftClickTarget = true;
-        private boolean controlsAmount = false;
-        private IDrawable[] background;
+        private Consumer<SlotWidget> applyForWidget;
 
         private ItemGroupBuilder(IItemHandlerModifiable itemHandler, int slotsPerRow) {
             this.itemHandler = itemHandler;
@@ -132,11 +130,11 @@ public class SlotGroup extends MultiChildWidget {
                 if (shiftClickPriority != null) {
                     baseSlot.setShiftClickPriority(shiftClickPriority);
                 }
-                slotGroup.addSlot((SlotWidget) new SlotWidget(baseSlot)
-                        .setControlsAmount(controlsAmount)
-                        .setIsShiftClickTarget(isShiftClickTarget)
-                        .setPos(x * 18, y * 18)
-                        .setBackground(background));
+                SlotWidget toAdd = (SlotWidget) new SlotWidget(baseSlot).setPos(x * 18, y * 18);
+                if (applyForWidget != null) {
+                    applyForWidget.accept(toAdd);
+                }
+                slotGroup.addSlot(toAdd);
                 if (++x == slotsPerRow) {
                     x = 0;
                     y++;
@@ -175,18 +173,11 @@ public class SlotGroup extends MultiChildWidget {
             return this;
         }
 
-        public ItemGroupBuilder setIsShiftClickTarget(boolean shiftClickTarget) {
-            this.isShiftClickTarget = shiftClickTarget;
-            return this;
-        }
-
-        public ItemGroupBuilder setControlsAmount(boolean controlsAmount) {
-            this.controlsAmount = controlsAmount;
-            return this;
-        }
-
-        public ItemGroupBuilder background(IDrawable... background) {
-            this.background = background;
+        /**
+         * Apply arbitrary lambda for widget.
+         */
+        public ItemGroupBuilder applyForWidget(Consumer<SlotWidget> consumer) {
+            this.applyForWidget = consumer;
             return this;
         }
     }
