@@ -8,6 +8,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
 
 @SuppressWarnings("unused")
@@ -23,11 +24,14 @@ public class ClientProxy extends CommonProxy {
     public void postInit() {
         super.postInit();
         ((SimpleReloadableResourceManager) Minecraft.getMinecraft().getResourceManager())
-                .registerReloadListener(this::onReload);
+                .registerReloadListener(new ResourceManagerReloadListener());
     }
 
-    public void onReload(IResourceManager manager) {
-        ModularUI.logger.info("Reloading GUIs");
-        JsonLoader.loadJson();
+    private static class ResourceManagerReloadListener implements IResourceManagerReloadListener {
+        @Override
+        public void onResourceManagerReload(IResourceManager p_110549_1_) {
+            ModularUI.logger.info("Reloading GUIs");
+            JsonLoader.loadJson();
+        }
     }
 }
