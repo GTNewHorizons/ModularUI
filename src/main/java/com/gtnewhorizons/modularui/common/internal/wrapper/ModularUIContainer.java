@@ -138,7 +138,9 @@ public class ModularUIContainer extends Container {
         for (BaseSlot slot : this.sortedShiftClickSlots) {
             if (fromSlot.getShiftClickPriority() == slot.getShiftClickPriority()
                     && fromSlot.getItemHandler() == slot.getItemHandler()) continue;
-            if (!slot.canInsert || !slot.isItemValidPhantom(fromStack)) continue;
+            if (!slot.canInsert
+                    || !slot.isItemValidPhantom(fromStack)
+                    || !((SlotWidget) slot.getParentWidget()).isShiftClickTarget()) continue;
             if (lastPriority != slot.getShiftClickPriority() && !tmpSlots.isEmpty()) {
                 priorityList.add(tmpSlots);
                 tmpSlots = new ArrayList<>();

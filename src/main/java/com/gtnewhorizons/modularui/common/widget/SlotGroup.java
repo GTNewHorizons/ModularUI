@@ -105,6 +105,7 @@ public class SlotGroup extends MultiChildWidget {
         private boolean canInsert = true;
         private boolean canTake = true;
         private boolean phantom = false;
+        private boolean isShiftClickTarget = true;
         private boolean controlsAmount = false;
         private IDrawable[] background;
 
@@ -133,6 +134,7 @@ public class SlotGroup extends MultiChildWidget {
                 }
                 slotGroup.addSlot((SlotWidget) new SlotWidget(baseSlot)
                         .setControlsAmount(controlsAmount)
+                        .setIsShiftClickTarget(isShiftClickTarget)
                         .setPos(x * 18, y * 18)
                         .setBackground(background));
                 if (++x == slotsPerRow) {
@@ -170,6 +172,11 @@ public class SlotGroup extends MultiChildWidget {
 
         public ItemGroupBuilder phantom(boolean phantom) {
             this.phantom = phantom;
+            return this;
+        }
+
+        public ItemGroupBuilder setIsShiftClickTarget(boolean shiftClickTarget) {
+            this.isShiftClickTarget = shiftClickTarget;
             return this;
         }
 
