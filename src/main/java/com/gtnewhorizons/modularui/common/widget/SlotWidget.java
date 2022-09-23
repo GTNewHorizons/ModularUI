@@ -70,6 +70,10 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         return new SlotWidget(BaseSlot.phantom(handler, index));
     }
 
+    public static SlotWidget empty() {
+        return new SlotWidget(BaseSlot.empty());
+    }
+
     @Override
     public void onInit() {
         getContext().getContainer().addSlotToContainer(this.slot);
