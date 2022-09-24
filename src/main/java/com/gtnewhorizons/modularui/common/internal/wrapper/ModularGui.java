@@ -597,6 +597,10 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         return itemRender;
     }
 
+    public static void setItemRenderer(RenderItem renderer) {
+        itemRender = renderer;
+    }
+
     public float getZ() {
         return zLevel;
     }
