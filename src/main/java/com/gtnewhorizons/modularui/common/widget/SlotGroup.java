@@ -107,6 +107,7 @@ public class SlotGroup extends MultiChildWidget {
         private boolean phantom = false;
         private IDrawable[] background;
         private Consumer<SlotWidget> applyForWidget;
+        private Function<BaseSlot, SlotWidget> widgetCreator;
 
         private ItemGroupBuilder(IItemHandlerModifiable itemHandler, int slotsPerRow) {
             this.itemHandler = itemHandler;
@@ -131,8 +132,13 @@ public class SlotGroup extends MultiChildWidget {
                 if (shiftClickPriority != null) {
                     baseSlot.setShiftClickPriority(shiftClickPriority);
                 }
-                SlotWidget toAdd = (SlotWidget)
-                        new SlotWidget(baseSlot).setBackground(background).setPos(x * 18, y * 18);
+                SlotWidget toAdd;
+                if (widgetCreator != null) {
+                    toAdd = widgetCreator.apply(baseSlot);
+                } else {
+                    toAdd = new SlotWidget(baseSlot);
+                }
+                toAdd.setBackground(background).setPos(x * 18, y * 18);
                 if (applyForWidget != null) {
                     applyForWidget.accept(toAdd);
                 }
@@ -185,6 +191,14 @@ public class SlotGroup extends MultiChildWidget {
          */
         public ItemGroupBuilder applyForWidget(Consumer<SlotWidget> consumer) {
             this.applyForWidget = consumer;
+            return this;
+        }
+
+        /**
+         * You can create custom SlotWidget with anonymous class etc.
+         */
+        public ItemGroupBuilder widgetCreator(Function<BaseSlot, SlotWidget> widgetCreator) {
+            this.widgetCreator = widgetCreator;
             return this;
         }
     }
