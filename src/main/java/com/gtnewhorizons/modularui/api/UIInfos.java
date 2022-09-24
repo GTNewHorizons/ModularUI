@@ -42,7 +42,7 @@ public class UIInfos {
 
     @SideOnly(Side.CLIENT)
     public static void openClientUI(EntityPlayer player, Function<UIBuildContext, ModularWindow> uiCreator) {
-        if (!NetworkUtils.isClient(player)) {
+        if (!NetworkUtils.isClient()) {
             ModularUI.logger.info("Tried opening client ui on server!");
             return;
         }

@@ -73,7 +73,7 @@ public class ModularUIContext {
     }
 
     public boolean isClient() {
-        return NetworkUtils.isClient(this.player);
+        return NetworkUtils.isClient();
     }
 
     public void initialize(ModularUIContainer container, ModularWindow mainWindow) {

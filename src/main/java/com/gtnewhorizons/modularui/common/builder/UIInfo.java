@@ -37,7 +37,7 @@ public class UIInfo<CC extends IContainerCreator, GC extends IGuiCreator> {
      * For client-only GUI, use {@link UIInfos#openClientUI(EntityPlayer, Function)}
      */
     public void open(EntityPlayer player, World world, int x, int y, int z) {
-        if (NetworkUtils.isClient(player)) {
+        if (NetworkUtils.isClient()) {
             ModularUI.logger.warn("Please use UIInfos.openClientUI to open a client only ui!");
         }
         FMLNetworkHandler.openGui(player, ModularUI.INSTANCE, id, world, x, y, z);

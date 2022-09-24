@@ -2,13 +2,12 @@ package com.gtnewhorizons.modularui.common.internal.network;
 
 import com.gtnewhorizons.modularui.ModularUI;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.FluidStack;
@@ -18,13 +17,18 @@ public class NetworkUtils {
 
     public static final Consumer<PacketBuffer> EMPTY_PACKET = buffer -> {};
 
+    /**
+     * @return If this is physical client. Does not return false in SP on logical server.
+     */
     public static boolean isDedicatedClient() {
         return FMLCommonHandler.instance().getSide().isClient();
     }
 
-    public static boolean isClient(EntityPlayer player) {
-        if (player == null) throw new NullPointerException("Can't get side of null player!");
-        return player.getEntityWorld() == null ? player instanceof EntityPlayerSP : player.getEntityWorld().isRemote;
+    /**
+     * @return If this is logical client. Returns false in SP on logical server.
+     */
+    public static boolean isClient() {
+        return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
     }
 
     public static void writePacketBuffer(PacketBuffer writeTo, PacketBuffer writeFrom) {
