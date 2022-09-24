@@ -391,7 +391,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
      * Copied from {@link net.minecraft.client.gui.inventory.GuiContainer} and removed the bad parts
      */
     @SideOnly(Side.CLIENT)
-    private void drawSlot(Slot slotIn) {
+    protected void drawSlot(Slot slotIn) {
         int x = slotIn.xDisplayPosition;
         int y = slotIn.yDisplayPosition;
         ItemStack itemstack = slotIn.getStack();
