@@ -439,7 +439,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         }
 
         getScreen().setZ(100f);
-        getScreen().getItemRenderer().zLevel = 100.0F;
+        ModularGui.getItemRenderer().zLevel = 100.0F;
 
         if (!flag1) {
             if (flag) {
@@ -452,8 +452,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
                 RenderHelper.enableGUIStandardItemLighting();
                 GlStateManager.enableDepth();
                 // render the item itself
-                getScreen()
-                        .getItemRenderer()
+                ModularGui.getItemRenderer()
                         .renderItemAndEffectIntoGUI(
                                 getScreen().getFontRenderer(),
                                 Minecraft.getMinecraft().getTextureManager(),
@@ -494,8 +493,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
                 int cachedCount = itemstack.stackSize;
                 itemstack.stackSize = 1; // required to not render the amount overlay
                 // render other overlays like durability bar
-                getScreen()
-                        .getItemRenderer()
+                ModularGui.getItemRenderer()
                         .renderItemOverlayIntoGUI(
                                 getScreen().getFontRenderer(),
                                 Minecraft.getMinecraft().getTextureManager(),
@@ -508,7 +506,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
             }
         }
 
-        getScreen().getItemRenderer().zLevel = 0.0F;
+        ModularGui.getItemRenderer().zLevel = 0.0F;
         getScreen().setZ(0f);
     }
 }

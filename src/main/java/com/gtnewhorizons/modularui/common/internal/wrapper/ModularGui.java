@@ -593,7 +593,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         return getAccessor().getDragSplittingSlots();
     }
 
-    public RenderItem getItemRenderer() {
+    public static RenderItem getItemRenderer() {
         return itemRender;
     }
 
