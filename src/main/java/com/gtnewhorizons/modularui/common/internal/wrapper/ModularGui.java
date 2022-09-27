@@ -178,8 +178,8 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                 itemstack = itemstack.copy();
                 itemstack.stackSize = getAccessor().getDragSplittingRemnant();
 
-                if (itemstack == null) {
-                    s = "" + "§e" + "0";
+                if (itemstack.stackSize < 1) {
+                    s = EnumChatFormatting.YELLOW + "0";
                 }
             }
 
