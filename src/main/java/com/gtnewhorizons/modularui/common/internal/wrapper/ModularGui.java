@@ -53,6 +53,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 @Optional.Interface(modid = "NotEnoughItems", iface = "codechicken.nei.api.INEIGuiHandler")
@@ -133,8 +134,6 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
         GlStateManager.enableRescaleNormal();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderHelper.disableStandardItemLighting();
-        this.drawGuiContainerForegroundLayer(mouseX, mouseY);
         RenderHelper.enableGUIStandardItemLighting();
         if (shouldShowNEI()) {
             // Copied from GuiContainerManager#renderObjects but without translation
@@ -149,6 +148,11 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                 GuiContainerManager.getManager().renderToolTips(mouseX, mouseY);
             }
         }
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderHelper.disableStandardItemLighting();
+        this.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        RenderHelper.enableGUIStandardItemLighting();
 
         getAccessor().setHoveredSlot(null);
         Widget hovered = getCursor().getHovered();
@@ -159,7 +163,6 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.pushMatrix();
         GlStateManager.translate(i, j, 0);
-        //        MinecraftForge.EVENT_BUS.post(new GuiContainerEvent.DrawForeground(this, mouseX, mouseY));
         GlStateManager.popMatrix();
 
         InventoryPlayer inventoryplayer = this.mc.thePlayer.inventory;
