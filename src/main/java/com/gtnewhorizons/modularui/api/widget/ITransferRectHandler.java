@@ -38,6 +38,7 @@ public interface ITransferRectHandler extends Interactable {
     default boolean handleTransferRectMouseClick(boolean usage) {
         String id = getNEITransferRectID();
         Object[] args = getNEITransferRectArgs();
+        Interactable.playButtonClickSound();
         return usage ? GuiUsageRecipe.openRecipeGui(id) : GuiCraftingRecipe.openRecipeGui(id, args);
     }
 }
