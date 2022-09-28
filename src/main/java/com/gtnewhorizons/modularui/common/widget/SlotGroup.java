@@ -106,6 +106,7 @@ public class SlotGroup extends MultiChildWidget {
         private boolean canTake = true;
         private boolean phantom = false;
         private IDrawable[] background;
+        private Function<Integer, BaseSlot> slotCreator;
         private Consumer<SlotWidget> applyForWidget;
         private Function<BaseSlot, SlotWidget> widgetCreator;
 
@@ -128,10 +129,17 @@ public class SlotGroup extends MultiChildWidget {
             }
             int x = 0, y = 0;
             for (int i = startFromSlot; i < endAtSlot + 1; i++) {
-                BaseSlot baseSlot = new BaseSlot(itemHandler, i, phantom).setAccess(canInsert, canTake);
+                BaseSlot baseSlot;
+                if (slotCreator != null) {
+                    baseSlot = slotCreator.apply(i);
+                } else {
+                    baseSlot = new BaseSlot(itemHandler, i, phantom);
+                }
+                baseSlot.setAccess(canInsert, canTake);
                 if (shiftClickPriority != null) {
                     baseSlot.setShiftClickPriority(shiftClickPriority);
                 }
+
                 SlotWidget toAdd;
                 if (widgetCreator != null) {
                     toAdd = widgetCreator.apply(baseSlot);
@@ -142,6 +150,7 @@ public class SlotGroup extends MultiChildWidget {
                 if (applyForWidget != null) {
                     applyForWidget.accept(toAdd);
                 }
+
                 slotGroup.addSlot(toAdd);
                 if (++x == slotsPerRow) {
                     x = 0;
@@ -183,6 +192,11 @@ public class SlotGroup extends MultiChildWidget {
 
         public ItemGroupBuilder background(IDrawable... background) {
             this.background = background;
+            return this;
+        }
+
+        public ItemGroupBuilder slotCreator(Function<Integer, BaseSlot> slotCreator) {
+            this.slotCreator = slotCreator;
             return this;
         }
 
