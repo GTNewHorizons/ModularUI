@@ -706,6 +706,13 @@ public abstract class Widget {
         return addTooltip(new Text(tooltip));
     }
 
+    public Widget addTooltips(List<String> tooltips) {
+        for (String tooltip : tooltips) {
+            addTooltip(tooltip);
+        }
+        return this;
+    }
+
     public Widget setTooltipShowUpDelay(int tooltipShowUpDelay) {
         this.tooltipShowUpDelay = tooltipShowUpDelay;
         return this;
