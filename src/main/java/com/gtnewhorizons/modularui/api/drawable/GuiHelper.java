@@ -70,16 +70,18 @@ public class GuiHelper {
             int maxWidth,
             float scale,
             boolean forceShadow,
-            Alignment alignment) {
+            Alignment alignment,
+            boolean tooltipHasSpaceAfterFirstLine) {
         if (textLines.isEmpty()) {
             return;
         }
         List<String> lines = textLines.stream().map(line -> line.getFormatted()).collect(Collectors.toList());
-        drawHoveringTextFormatted(lines, mousePos, screenSize, maxWidth, scale, forceShadow, alignment);
+        drawHoveringTextFormatted(
+                lines, mousePos, screenSize, maxWidth, scale, forceShadow, alignment, tooltipHasSpaceAfterFirstLine);
     }
 
     public static void drawHoveringTextFormatted(List<String> lines, Pos2d mousePos, Size screenSize, int maxWidth) {
-        drawHoveringTextFormatted(lines, mousePos, screenSize, maxWidth, 1f, false, Alignment.TopLeft);
+        drawHoveringTextFormatted(lines, mousePos, screenSize, maxWidth, 1f, false, Alignment.TopLeft, true);
     }
 
     public static void drawHoveringTextFormatted(
@@ -89,7 +91,8 @@ public class GuiHelper {
             int maxWidth,
             float scale,
             boolean forceShadow,
-            Alignment alignment) {
+            Alignment alignment,
+            boolean hasSpaceAfterFirstLine) {
         if (lines.isEmpty()) {
             return;
         }
@@ -133,7 +136,7 @@ public class GuiHelper {
 
         renderer.setAlignment(Alignment.TopLeft, maxTextWidth);
         measuredLines = renderer.measureLines(lines);
-        renderer.drawMeasuredLines(measuredLines);
+        renderer.drawMeasuredLines(measuredLines, hasSpaceAfterFirstLine);
         int tooltipTextWidth = (int) renderer.lastWidth;
         int tooltipHeight = (int) renderer.lastHeight;
 
@@ -238,7 +241,7 @@ public class GuiHelper {
         renderer.setPos(tooltipX, tooltipY);
         renderer.setAlignment(alignment, maxTextWidth);
         renderer.setColor(color);
-        renderer.drawMeasuredLines(measuredLines);
+        renderer.drawMeasuredLines(measuredLines, hasSpaceAfterFirstLine);
 
         //        MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostText(ItemStack.EMPTY, lines, tooltipX,
         // tooltipY, TextRenderer.getFontRenderer(), tooltipTextWidth, tooltipHeight));

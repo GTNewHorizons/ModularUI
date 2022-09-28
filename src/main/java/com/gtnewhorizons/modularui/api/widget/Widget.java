@@ -62,6 +62,7 @@ public abstract class Widget {
     private final List<Text> additionalTooltip = new ArrayList<>();
     private final List<Text> mainTooltip = new ArrayList<>();
     private int tooltipShowUpDelay = 0;
+    private boolean tooltipHasSpaceAfterFirstLine = true;
 
     @Nullable
     private String debugLabel;
@@ -716,6 +717,15 @@ public abstract class Widget {
     public Widget setTooltipShowUpDelay(int tooltipShowUpDelay) {
         this.tooltipShowUpDelay = tooltipShowUpDelay;
         return this;
+    }
+
+    public Widget setTooltipHasSpaceAfterFirstLine(boolean tooltipHasSpaceAfterFirstLine) {
+        this.tooltipHasSpaceAfterFirstLine = tooltipHasSpaceAfterFirstLine;
+        return this;
+    }
+
+    public boolean isTooltipHasSpaceAfterFirstLine() {
+        return tooltipHasSpaceAfterFirstLine;
     }
 
     public Widget setDebugLabel(String debugLabel) {

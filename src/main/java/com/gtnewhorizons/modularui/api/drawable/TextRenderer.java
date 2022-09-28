@@ -70,15 +70,25 @@ public class TextRenderer {
     }
 
     protected void drawMeasuredLines(List<Pair<String, Float>> measuredLines) {
+        drawMeasuredLines(measuredLines, false);
+    }
+
+    protected void drawMeasuredLines(List<Pair<String, Float>> measuredLines, boolean hasSpaceAfterFirstLine) {
         float maxW = 0;
         int y0 = getStartY(measuredLines.size());
+        boolean addedExtraSpace = false;
+        final int EXTRA_SPACE = 2;
         for (Pair<String, Float> measuredLine : measuredLines) {
             int x0 = getStartX(measuredLine.getRight());
             maxW = Math.max(draw(measuredLine.getLeft(), x0, y0), maxW);
             y0 += getFontRenderer().FONT_HEIGHT * scale;
+            if (hasSpaceAfterFirstLine && !addedExtraSpace && measuredLines.size() > 1) {
+                y0 += EXTRA_SPACE;
+                addedExtraSpace = true;
+            }
         }
         this.lastWidth = maxWidth > 0 ? Math.min(maxW, maxWidth) : maxW;
-        this.lastHeight = measuredLines.size() * getFontHeight();
+        this.lastHeight = measuredLines.size() * getFontHeight() + (addedExtraSpace ? EXTRA_SPACE : 0);
         this.lastWidth = Math.max(0, this.lastWidth - scale);
         this.lastHeight = Math.max(0, this.lastHeight - scale);
     }

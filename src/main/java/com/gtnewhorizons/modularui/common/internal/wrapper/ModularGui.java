@@ -302,7 +302,8 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                             400,
                             1,
                             false,
-                            Alignment.CenterLeft);
+                            Alignment.CenterLeft,
+                            hovered.isTooltipHasSpaceAfterFirstLine());
                 }
             }
         }
