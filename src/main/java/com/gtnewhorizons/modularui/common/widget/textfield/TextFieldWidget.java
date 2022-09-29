@@ -146,7 +146,7 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
     }
 
     /**
-     * @return if this widget should operate on the sever side.
+     * @return if this widget should operate on the server side.
      * For example detecting and sending changes to client.
      */
     public boolean syncsToClient() {

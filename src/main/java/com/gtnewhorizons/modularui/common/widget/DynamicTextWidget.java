@@ -15,6 +15,7 @@ public class DynamicTextWidget extends TextWidget implements ISyncedWidget {
 
     private final Supplier<Text> textSupplier;
 
+    private boolean syncsToClient = true;
     private Text lastText;
 
     private Integer defaultColor;
@@ -32,11 +33,13 @@ public class DynamicTextWidget extends TextWidget implements ISyncedWidget {
     }
 
     @Override
-    public void onScreenUpdate() {}
+    public void onScreenUpdate() {
+        if (!syncsToClient()) super.onScreenUpdate();
+    }
 
     @Override
     public Text getText() {
-        return lastText;
+        return syncsToClient() ? lastText : updateText();
     }
 
     /**
@@ -65,6 +68,19 @@ public class DynamicTextWidget extends TextWidget implements ISyncedWidget {
         return this;
     }
 
+    public DynamicTextWidget setSynced(boolean synced) {
+        this.syncsToClient = synced;
+        return this;
+    }
+
+    /**
+     * @return if this widget should operate on the server side.
+     * For example detecting and sending changes to client.
+     */
+    protected boolean syncsToClient() {
+        return syncsToClient;
+    }
+
     @Override
     public void readOnClient(int id, PacketBuffer buf) throws IOException {
         if (id == 0) {
@@ -81,6 +97,7 @@ public class DynamicTextWidget extends TextWidget implements ISyncedWidget {
 
     @Override
     public void detectAndSendChanges(boolean init) {
+        if (!syncsToClient()) return;
         Text newText = updateText();
         if (init || needsSync(newText)) {
             this.lastText = newText;
