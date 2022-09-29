@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import net.minecraft.network.PacketBuffer;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +52,8 @@ public abstract class Widget {
     private boolean autoPositioned = true;
 
     // flags and stuff
-    protected boolean enabled = true;
+    private boolean enabled = true;
+    private Function<Widget, Boolean> enabledDynamic;
     private int layer = -1;
     private boolean respectNEIArea = true;
     private boolean tooltipDirty = true;
@@ -493,6 +497,9 @@ public abstract class Widget {
     }
 
     public boolean isEnabled() {
+        if (enabledDynamic != null) {
+            return enabledDynamic.apply(this);
+        }
         return enabled;
     }
 
@@ -589,6 +596,15 @@ public abstract class Widget {
      */
     public Widget setEnabled(boolean enabled) {
         this.enabled = enabled;
+        return this;
+    }
+
+    /**
+     * Changes enabled state dynamically.
+     * Note that function is called on every render tick.
+     */
+    public Widget setEnabledDynamic(Function<Widget, Boolean> enabledDynamic) {
+        this.enabledDynamic = enabledDynamic;
         return this;
     }
 
