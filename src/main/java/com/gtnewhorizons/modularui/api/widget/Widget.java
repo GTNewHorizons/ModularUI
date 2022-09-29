@@ -10,12 +10,14 @@ import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.internal.JsonHelper;
 import com.gtnewhorizons.modularui.common.internal.Theme;
+import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -781,6 +783,23 @@ public abstract class Widget {
     public Widget consume(Consumer<Widget> widgetConsumer) {
         widgetConsumer.accept(this);
         return this;
+    }
+
+    /**
+     * Effect is the same as when you store this widget in a variable,
+     * set {@link FakeSyncWidget#onClientUpdate(Consumer)}, and add syncer to builder.
+     * @param syncer To attach to this widget
+     * @param builder To add syncer for window
+     * @param onSync Called when syncer receives packet from server
+     */
+    public <T> Widget attachSyncer(
+            FakeSyncWidget<T> syncer, ModularWindow.Builder builder, BiConsumer<Widget, T> onSync) {
+        builder.widget(syncer.onClientUpdate(val -> onSync.accept(this, val)));
+        return this;
+    }
+
+    public <T> Widget attachSyncer(FakeSyncWidget<T> syncer, ModularWindow.Builder builder) {
+        return attachSyncer(syncer, builder, (widget, val) -> {});
     }
 
     /**
