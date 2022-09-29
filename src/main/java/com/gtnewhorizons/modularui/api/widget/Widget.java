@@ -65,6 +65,7 @@ public abstract class Widget {
 
     private final List<Text> additionalTooltip = new ArrayList<>();
     private final List<Text> mainTooltip = new ArrayList<>();
+    private Supplier<List<String>> dynamicTooltip;
     private int tooltipShowUpDelay = 0;
     private boolean tooltipHasSpaceAfterFirstLine = true;
 
@@ -345,7 +346,11 @@ public abstract class Widget {
      */
     @ApiStatus.OverrideOnly
     @SideOnly(Side.CLIENT)
-    public void buildTooltip(List<Text> tooltip) {}
+    public void buildTooltip(List<Text> tooltip) {
+        if (dynamicTooltip != null) {
+            tooltip.addAll(dynamicTooltip.get().stream().map(Text::new).collect(Collectors.toList()));
+        }
+    }
 
     /**
      * @return the color key for the background
@@ -727,6 +732,15 @@ public abstract class Widget {
         for (String tooltip : tooltips) {
             addTooltip(tooltip);
         }
+        return this;
+    }
+
+    /**
+     * Sets getter for dynamic tooltip that will be called on {@link #buildTooltip}.
+     * Result is cached, so you also need to call {@link #notifyTooltipChange} for update.
+     */
+    public Widget dynamicTooltip(Supplier<List<String>> dynamicTooltip) {
+        this.dynamicTooltip = dynamicTooltip;
         return this;
     }
 
