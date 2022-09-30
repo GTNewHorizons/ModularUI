@@ -25,9 +25,6 @@ public class ProgressBar extends SyncedWidget implements ITransferRectHandler {
     private String transferRectTooltip;
     private Object[] transferRectArgs;
 
-    // vanilla furnace sends packet every tick during 200 ticks in the process
-    private float packetThreshold = 0.005f;
-
     private float lastProgress;
 
     @Override
@@ -185,7 +182,7 @@ public class ProgressBar extends SyncedWidget implements ITransferRectHandler {
     public void detectAndSendChanges(boolean init) {
         if (!syncsToClient()) return;
         float newProgress = progress.get();
-        if (init || Math.abs(newProgress - lastProgress) > packetThreshold) {
+        if (init || newProgress != lastProgress) {
             lastProgress = newProgress;
             syncToClient(0, buffer -> buffer.writeFloat(lastProgress));
         }
@@ -253,14 +250,6 @@ public class ProgressBar extends SyncedWidget implements ITransferRectHandler {
 
     public ProgressBar setNEITransferRect(String transferRectID) {
         return setNEITransferRect(transferRectID, StatCollector.translateToLocal("nei.recipe.tooltip"));
-    }
-
-    /**
-     * @param threshold Minimum diff required for triggering packet transfer
-     */
-    public ProgressBar setPacketThreshold(float threshold) {
-        this.packetThreshold = threshold;
-        return this;
     }
 
     public enum Direction {
