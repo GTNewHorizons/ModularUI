@@ -81,14 +81,16 @@ public class TextRenderer {
         for (Pair<String, Float> measuredLine : measuredLines) {
             int x0 = getStartX(measuredLine.getRight());
             maxW = Math.max(draw(measuredLine.getLeft(), x0, y0), maxW);
-            y0 += getFontRenderer().FONT_HEIGHT * scale;
+            y0 += getRenderHeight();
             if (hasSpaceAfterFirstLine && !addedExtraSpace && measuredLines.size() > 1) {
                 y0 += EXTRA_SPACE;
                 addedExtraSpace = true;
             }
         }
         this.lastWidth = maxWidth > 0 ? Math.min(maxW, maxWidth) : maxW;
-        this.lastHeight = measuredLines.size() * getFontHeight() + (addedExtraSpace ? EXTRA_SPACE : 0);
+        this.lastHeight = measuredLines.size() * getRenderHeight()
+                + (addedExtraSpace ? EXTRA_SPACE : 0)
+                - getRenderYToSubtractAfterLastLineDraw();
         this.lastWidth = Math.max(0, this.lastWidth - scale);
         this.lastHeight = Math.max(0, this.lastHeight - scale);
     }
@@ -176,6 +178,15 @@ public class TextRenderer {
 
     public float getFontHeight() {
         return getFontRenderer().FONT_HEIGHT * scale;
+    }
+
+    public float getRenderHeight() {
+        // GuiScreen#drawHoveringText uses 10px space and FONT_HEIGHT is usually 9px
+        return (getFontRenderer().FONT_HEIGHT + 1) * scale;
+    }
+
+    public float getRenderYToSubtractAfterLastLineDraw() {
+        return getRenderHeight() - getFontHeight();
     }
 
     public float getLastHeight() {
