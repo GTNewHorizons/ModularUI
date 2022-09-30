@@ -9,6 +9,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import org.jetbrains.annotations.NotNull;
 
@@ -149,6 +150,29 @@ public class FakeSyncWidget<T> extends SyncedWidget {
                         } catch (IOException e) {
                             e.printStackTrace();
                             return "";
+                        }
+                    });
+        }
+    }
+
+    public static class ItemStackSyncer extends FakeSyncWidget<ItemStack> {
+        public ItemStackSyncer(Supplier<ItemStack> getter, Consumer<ItemStack> setter) {
+            super(
+                    getter,
+                    setter,
+                    (buffer, stack) -> {
+                        try {
+                            buffer.writeItemStackToBuffer(stack);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    },
+                    buffer -> {
+                        try {
+                            return buffer.readItemStackFromBuffer();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            return null;
                         }
                     });
         }

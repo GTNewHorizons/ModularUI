@@ -91,6 +91,9 @@ public class BaseSlot extends SlotItemHandler {
         return !this.phantom && isItemValidPhantom(stack);
     }
 
+    /**
+     * Override this instead of {@link #isItemValid} if you want to restrict shift insert.
+     */
     public boolean isItemValidPhantom(ItemStack stack) {
         return this.canInsert
                 && (filter == null || filter.test(stack))
