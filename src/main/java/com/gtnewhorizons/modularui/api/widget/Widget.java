@@ -564,6 +564,7 @@ public abstract class Widget {
     private void checkTooltip() {
         if (this.tooltipDirty) {
             this.mainTooltip.clear();
+            this.mainTooltipShift.clear();
             buildTooltip(this.mainTooltip);
             buildTooltipShift(this.mainTooltipShift);
             this.tooltipDirty = false;
