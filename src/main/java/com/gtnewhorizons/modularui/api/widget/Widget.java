@@ -68,6 +68,9 @@ public abstract class Widget {
     private final List<Text> additionalTooltip = new ArrayList<>();
     private final List<Text> mainTooltip = new ArrayList<>();
     private Supplier<List<String>> dynamicTooltip;
+    private final List<Text> additionalTooltipShift = new ArrayList<>();
+    private final List<Text> mainTooltipShift = new ArrayList<>();
+    private Supplier<List<String>> dynamicTooltipShift;
     private int tooltipShowUpDelay = 0;
     private boolean tooltipHasSpaceAfterFirstLine = true;
 
@@ -355,6 +358,20 @@ public abstract class Widget {
     }
 
     /**
+     * Called after {@link #notifyTooltipChange()} is called. Result list is cached
+     *
+     * @param tooltipShift tooltip shown while holding shift key
+     */
+    @ApiStatus.OverrideOnly
+    @SideOnly(Side.CLIENT)
+    public void buildTooltipShift(List<Text> tooltipShift) {
+        if (dynamicTooltipShift != null) {
+            tooltipShift.addAll(
+                    dynamicTooltipShift.get().stream().map(Text::new).collect(Collectors.toList()));
+        }
+    }
+
+    /**
      * @return the color key for the background
      * @see Theme
      */
@@ -548,6 +565,7 @@ public abstract class Widget {
         if (this.tooltipDirty) {
             this.mainTooltip.clear();
             buildTooltip(this.mainTooltip);
+            buildTooltipShift(this.mainTooltipShift);
             this.tooltipDirty = false;
         }
     }
@@ -558,15 +576,32 @@ public abstract class Widget {
 
     public boolean hasTooltip() {
         checkTooltip();
-        return !this.mainTooltip.isEmpty() || !this.additionalTooltip.isEmpty();
+        return !this.mainTooltip.isEmpty()
+                || !this.additionalTooltip.isEmpty()
+                || !this.mainTooltipShift.isEmpty()
+                || !this.additionalTooltipShift.isEmpty();
     }
 
     public List<Text> getTooltip() {
         if (!hasTooltip()) {
             return Collections.emptyList();
         }
-        List<Text> tooltip = new ArrayList<>(this.mainTooltip);
-        tooltip.addAll(this.additionalTooltip);
+        List<Text> tooltip;
+        if (Interactable.hasShiftDown()) {
+            if (this.mainTooltipShift.isEmpty()) {
+                tooltip = new ArrayList<>(this.mainTooltip);
+            } else {
+                tooltip = new ArrayList<>(this.mainTooltipShift);
+            }
+            if (this.additionalTooltipShift.isEmpty()) {
+                tooltip.addAll(this.additionalTooltip);
+            } else {
+                tooltip.addAll(this.additionalTooltipShift);
+            }
+        } else {
+            tooltip = new ArrayList<>(this.mainTooltip);
+            tooltip.addAll(this.additionalTooltip);
+        }
         return tooltip;
     }
 
@@ -743,6 +778,38 @@ public abstract class Widget {
      */
     public Widget dynamicTooltip(Supplier<List<String>> dynamicTooltip) {
         this.dynamicTooltip = dynamicTooltip;
+        return this;
+    }
+
+    /**
+     * Adds a line to the tooltip shown while holding shift key
+     */
+    public Widget addTooltipShift(Text tooltipShift) {
+        this.additionalTooltipShift.add(tooltipShift);
+        return this;
+    }
+
+    /**
+     * Adds a line to the tooltip shown while holding shift key
+     */
+    public Widget addTooltipShift(String tooltipShift) {
+        return addTooltipShift(new Text(tooltipShift));
+    }
+
+    public Widget addTooltipsShift(List<String> tooltipsShift) {
+        for (String tooltip : tooltipsShift) {
+            addTooltipShift(tooltip);
+        }
+        return this;
+    }
+
+    /**
+     * Sets getter for dynamic tooltip that will be shown while holding shift key
+     * and called on {@link #buildTooltip}.
+     * Result is cached, so you also need to call {@link #notifyTooltipChange} for update.
+     */
+    public Widget dynamicTooltipShift(Supplier<List<String>> dynamicTooltipShift) {
+        this.dynamicTooltipShift = dynamicTooltipShift;
         return this;
     }
 
