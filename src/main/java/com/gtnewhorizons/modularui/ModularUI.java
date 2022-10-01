@@ -33,7 +33,8 @@ import org.apache.logging.log4j.Logger;
 public class ModularUI {
 
     public static final String MODID = "modularui";
-    public static final String DEPENDENCIES = "required-after:CodeChickenLib; after:NotEnoughItems;";
+    public static final String DEPENDENCIES =
+            "required-after:CodeChickenLib;" + "after:NotEnoughItems;" + "before:gregtech";
     public static final String GUI_FACTORY = Tags.GROUPNAME + ".config.GuiFactory";
 
     public static final Logger logger = LogManager.getLogger(Tags.MODID);

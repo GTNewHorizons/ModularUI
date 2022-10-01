@@ -108,6 +108,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
 
     @Override
     public void buildTooltip(List<Text> tooltip) {
+        super.buildTooltip(tooltip);
         FluidStack fluid = cachedFluid;
         if (phantom) {
             if (fluid != null) {

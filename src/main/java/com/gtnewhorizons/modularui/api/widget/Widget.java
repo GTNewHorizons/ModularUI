@@ -13,8 +13,10 @@ import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.internal.JsonHelper;
 import com.gtnewhorizons.modularui.common.internal.Theme;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.util.GT_TooltipDataCache;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -846,6 +848,13 @@ public abstract class Widget {
      */
     public Widget dynamicTooltipShift(Supplier<List<String>> dynamicTooltipShift) {
         this.dynamicTooltipShift = dynamicTooltipShift;
+        return this;
+    }
+
+    @Optional.Method(modid = "gregtech")
+    public Widget setGTTooltip(Supplier<GT_TooltipDataCache.TooltipData> tooltipDataGetter) {
+        dynamicTooltip(() -> tooltipDataGetter.get().text);
+        dynamicTooltipShift(() -> tooltipDataGetter.get().shiftText);
         return this;
     }
 

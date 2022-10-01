@@ -146,6 +146,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
 
     @Override
     public void buildTooltip(List<Text> tooltip) {
+        super.buildTooltip(tooltip);
         if (isPhantom()) {
             if (canControlAmount()) {
                 tooltip.add(Text.localised("modularui.item.phantom.control"));
