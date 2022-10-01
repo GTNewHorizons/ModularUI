@@ -50,6 +50,8 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     private final BaseSlot slot;
     private ItemStack lastStoredPhantomItem = null;
 
+    private boolean interactionDisabled = false;
+
     private boolean controlsAmount = false;
 
     private Consumer<Widget> onDragAndDropComplete;
@@ -200,6 +202,16 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         return this;
     }
 
+    /**
+     * Disables slot click, shift insert, and mouse scroll.
+     * Does not prevent NEI interaction.
+     */
+    public SlotWidget disableInteraction() {
+        this.interactionDisabled = true;
+        disableShiftInsert();
+        return this;
+    }
+
     public SlotWidget setChangeListener(Runnable runnable) {
         this.slot.setChangeListener(runnable);
         return this;
@@ -297,6 +309,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
 
     @Override
     public ClickResult onClick(int buttonId, boolean doubleClick) {
+        if (interactionDisabled) return ClickResult.REJECT;
         if (isPhantom()) {
             syncToServer(2, buffer -> ClickData.create(buttonId, doubleClick).writeToPacket(buffer));
             return ClickResult.ACCEPT;
@@ -306,6 +319,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
 
     @Override
     public boolean onMouseScroll(int direction) {
+        if (interactionDisabled) return false;
         if (isPhantom()) {
             if (Interactable.hasShiftDown()) {
                 direction *= 8;
@@ -366,6 +380,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
 
     @Override
     public boolean handleDragAndDrop(ItemStack draggedStack, int button) {
+        if (interactionDisabled) return false;
         if (!isPhantom()) return false;
         syncToServer(5, buffer -> {
             try {
