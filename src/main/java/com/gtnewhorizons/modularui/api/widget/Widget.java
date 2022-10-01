@@ -57,8 +57,7 @@ public abstract class Widget {
     private boolean autoPositioned = true;
 
     // flags and stuff
-    private boolean enabled = true;
-    private Function<Widget, Boolean> enabledDynamic;
+    private Function<Widget, Boolean> enabled = widget -> true;
     private int layer = -1;
     private boolean tooltipDirty = true;
     private boolean firstRebuild = true;
@@ -126,7 +125,7 @@ public abstract class Widget {
         this.fixedPos = JsonHelper.getElement(json, null, Pos2d::ofJson, "fixedPos");
         this.size = JsonHelper.getElement(json, size, Size::ofJson, "size");
         this.fillParent = JsonHelper.getBoolean(json, false, "fillParent");
-        this.enabled = JsonHelper.getBoolean(json, true, "enabled");
+        setEnabled(JsonHelper.getBoolean(json, true, "enabled"));
         this.autoSized = JsonHelper.getBoolean(json, !json.has("size"), "autoSized");
         IDrawable drawable = JsonHelper.getObject(json, null, IDrawable::ofJson, "drawable", "background");
         if (drawable != null) {
@@ -530,10 +529,7 @@ public abstract class Widget {
     }
 
     public boolean isEnabled() {
-        if (enabledDynamic != null) {
-            return enabledDynamic.apply(this);
-        }
-        return enabled;
+        return enabled.apply(this);
     }
 
     public int getLayer() {
@@ -678,16 +674,15 @@ public abstract class Widget {
      * @param enabled if this widget should be enabled
      */
     public Widget setEnabled(boolean enabled) {
-        this.enabled = enabled;
-        return this;
+        return setEnabled(widget -> enabled);
     }
 
     /**
      * Changes enabled state dynamically.
      * Note that function is called on every render tick.
      */
-    public Widget setEnabledDynamic(Function<Widget, Boolean> enabledDynamic) {
-        this.enabledDynamic = enabledDynamic;
+    public Widget setEnabled(Function<Widget, Boolean> enabled) {
+        this.enabled = enabled;
         return this;
     }
 
