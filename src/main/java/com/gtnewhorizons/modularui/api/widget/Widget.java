@@ -1,5 +1,7 @@
 package com.gtnewhorizons.modularui.api.widget;
 
+import codechicken.nei.recipe.GuiCraftingRecipe;
+import codechicken.nei.recipe.GuiUsageRecipe;
 import com.google.gson.JsonObject;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
@@ -23,6 +25,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.StatCollector;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,7 +60,6 @@ public abstract class Widget {
     private boolean enabled = true;
     private Function<Widget, Boolean> enabledDynamic;
     private int layer = -1;
-    private boolean respectNEIArea = true;
     private boolean tooltipDirty = true;
     private boolean firstRebuild = true;
 
@@ -79,6 +81,13 @@ public abstract class Widget {
 
     @Nullable
     private Consumer<Widget> ticker;
+
+    // NEI
+    private boolean respectNEIArea = true;
+    private boolean hasTransferRect;
+    private String transferRectID;
+    private String transferRectTooltip;
+    private Object[] transferRectArgs;
 
     public Widget() {}
 
@@ -561,6 +570,36 @@ public abstract class Widget {
         return background;
     }
 
+    public boolean hasNEITransferRect() {
+        return hasTransferRect;
+    }
+
+    @Nullable
+    public String getNEITransferRectID() {
+        return transferRectID;
+    }
+
+    @Nullable
+    public String getNEITransferRectTooltip() {
+        return transferRectTooltip;
+    }
+
+    @Nullable
+    public Object[] getNEITransferRectArgs() {
+        return transferRectArgs;
+    }
+
+    public void handleTransferRectMouseClick(boolean usage) {
+        String id = getNEITransferRectID();
+        Object[] args = getNEITransferRectArgs();
+        Interactable.playButtonClickSound();
+        if (usage) {
+            GuiUsageRecipe.openRecipeGui(id);
+        } else {
+            GuiCraftingRecipe.openRecipeGui(id, args);
+        }
+    }
+
     private void checkTooltip() {
         if (this.tooltipDirty) {
             this.mainTooltip.clear();
@@ -580,7 +619,8 @@ public abstract class Widget {
         return !this.mainTooltip.isEmpty()
                 || !this.additionalTooltip.isEmpty()
                 || !this.mainTooltipShift.isEmpty()
-                || !this.additionalTooltipShift.isEmpty();
+                || !this.additionalTooltipShift.isEmpty()
+                || hasNEITransferRect();
     }
 
     public List<Text> getTooltip() {
@@ -878,6 +918,22 @@ public abstract class Widget {
     public Widget setRespectNEIArea(boolean doRespect) {
         this.respectNEIArea = doRespect;
         return this;
+    }
+
+    public Widget setNEITransferRect(String transferRectID, String transferRectTooltip, Object[] transferRectArgs) {
+        this.transferRectID = transferRectID;
+        this.transferRectTooltip = transferRectTooltip;
+        this.transferRectArgs = transferRectArgs;
+        this.hasTransferRect = true;
+        return this;
+    }
+
+    public Widget setNEITransferRect(String transferRectID, String transferRectTooltip) {
+        return setNEITransferRect(transferRectID, transferRectTooltip, new Object[0]);
+    }
+
+    public Widget setNEITransferRect(String transferRectID) {
+        return setNEITransferRect(transferRectID, StatCollector.translateToLocal("nei.recipe.tooltip"));
     }
 
     // ==== Utility ====

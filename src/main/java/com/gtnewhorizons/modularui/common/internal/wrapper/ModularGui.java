@@ -22,7 +22,6 @@ import com.gtnewhorizons.modularui.api.screen.Cursor;
 import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.widget.IDragAndDropHandler;
-import com.gtnewhorizons.modularui.api.widget.ITransferRectHandler;
 import com.gtnewhorizons.modularui.api.widget.IVanillaSlot;
 import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
@@ -288,10 +287,10 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                         ((IVanillaSlot) hovered).getExtraTooltip());
             } else if (hovered.getTooltipShowUpDelay() <= context.getCursor().getTimeHovered()) {
                 List<Text> tooltip = new ArrayList<>(hovered.getTooltip()); // avoid UOE
-                if (hovered instanceof ITransferRectHandler) {
-                    ITransferRectHandler transferRectHandler = (ITransferRectHandler) hovered;
-                    if (transferRectHandler.getNEITransferRectTooltip() != null) {
-                        tooltip.add(new Text(transferRectHandler.getNEITransferRectTooltip()));
+                if (ModularUI.isNEILoaded && hovered.hasNEITransferRect()) {
+                    String transferRectTooltip = hovered.getNEITransferRectTooltip();
+                    if (transferRectTooltip != null) {
+                        tooltip.add(new Text(transferRectTooltip));
                     }
                 }
                 if (!tooltip.isEmpty()) {
@@ -477,6 +476,18 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
             if (isNEIWantToHandleDragAndDrop && hovered instanceof IDragAndDropHandler) continue;
             if (context.getCursor().onHoveredClick(mouseButton, hovered)) {
                 break;
+            }
+            if (hovered instanceof Widget) {
+                Widget widget = (Widget) hovered;
+                if (ModularUI.isNEILoaded && widget.hasNEITransferRect()) {
+                    if (mouseButton == 0) {
+                        widget.handleTransferRectMouseClick(false);
+                        break;
+                    } else if (mouseButton == 1) {
+                        widget.handleTransferRectMouseClick(true);
+                        break;
+                    }
+                }
             }
             if (hovered instanceof Interactable) {
                 Interactable interactable = (Interactable) hovered;
