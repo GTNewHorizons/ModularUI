@@ -2,8 +2,8 @@ package com.gtnewhorizons.modularui.common.internal.wrapper;
 
 import static codechicken.lib.render.FontUtils.fontRenderer;
 
-import codechicken.nei.ItemPanels;
 import codechicken.nei.NEIClientUtils;
+import codechicken.nei.PanelWidget;
 import codechicken.nei.VisiblityData;
 import codechicken.nei.api.INEIGuiHandler;
 import codechicken.nei.api.TaggedInventoryArea;
@@ -454,9 +454,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         // which is fired before GuiScreen#handleMouseInput call and able to dismiss it.
         // In contrast, NEI injects GuiContainerManager#mouseClicked at the start of GuiContainer#mouseClicked,
         // so at this point NEI has not handled drag-and-drop yet.
-        // See also: PanelWidget#handleClickExt
-        boolean isNEIWantToHandleDragAndDrop = shouldShowNEI()
-                && (ItemPanels.itemPanel.draggedStack != null || ItemPanels.bookmarkPanel.draggedStack != null);
+        boolean isNEIWantToHandleDragAndDrop = shouldShowNEI() && PanelWidget.draggedStack != null;
 
         for (Interactable interactable : context.getCurrentWindow().getInteractionListeners()) {
             if (isNEIWantToHandleDragAndDrop && interactable instanceof IDragAndDropHandler) continue;
