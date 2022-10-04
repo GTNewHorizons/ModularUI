@@ -2,6 +2,7 @@ package com.gtnewhorizons.modularui.common.widget;
 
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
+import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import java.io.IOException;
 import java.util.function.Supplier;
 import net.minecraft.network.PacketBuffer;
@@ -102,13 +103,9 @@ public class DynamicTextWidget extends TextWidget implements ISyncedWidget {
         if (init || needsSync(newText)) {
             this.lastText = newText;
             syncToClient(0, buffer -> {
-                try {
-                    buffer.writeStringToBuffer(newText.getRawText());
-                    buffer.writeVarIntToBuffer(newText.getColor());
-                    buffer.writeStringToBuffer(newText.getFormatting());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                NetworkUtils.writeStringSafe(buffer, newText.getRawText());
+                buffer.writeVarIntToBuffer(newText.getColor());
+                NetworkUtils.writeStringSafe(buffer, newText.getFormatting());
             });
         }
     }

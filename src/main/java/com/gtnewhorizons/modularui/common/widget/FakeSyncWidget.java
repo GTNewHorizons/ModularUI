@@ -1,6 +1,7 @@
 package com.gtnewhorizons.modularui.common.widget;
 
 import com.gtnewhorizons.modularui.api.math.Size;
+import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +72,7 @@ public class FakeSyncWidget<T> extends SyncedWidget {
 
     @Override
     protected @NotNull Size determineSize(int maxWidth, int maxHeight) {
-        return new Size(0, 0);
+        return Size.ZERO;
     }
 
     public static <E> void writeListToBuffer(
@@ -134,24 +135,14 @@ public class FakeSyncWidget<T> extends SyncedWidget {
 
     public static class StringSyncer extends FakeSyncWidget<String> {
         public StringSyncer(Supplier<String> getter, Consumer<String> setter) {
-            super(
-                    getter,
-                    setter,
-                    (buffer, val) -> {
-                        try {
-                            buffer.writeStringToBuffer(val);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    },
-                    buffer -> {
-                        try {
-                            return buffer.readStringFromBuffer(MAX_PACKET_LENGTH);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            return "";
-                        }
-                    });
+            super(getter, setter, NetworkUtils::writeStringSafe, buffer -> {
+                try {
+                    return buffer.readStringFromBuffer(MAX_PACKET_LENGTH);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return "";
+                }
+            });
         }
     }
 
