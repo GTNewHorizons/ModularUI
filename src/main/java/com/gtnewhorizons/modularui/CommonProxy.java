@@ -18,8 +18,9 @@ public class CommonProxy {
     public static Block testBlock;
 
     public void preInit(FMLPreInitializationEvent event) {
+        Config.init(event.getSuggestedConfigurationFile());
 
-        if (ModularUI.isDevEnv) {
+        if (ModularUI.isDevEnv || Config.forceEnableDebugBlock) {
             testBlock = new TestBlock(Material.rock)
                     .setBlockName("testBlock")
                     .setCreativeTab(CreativeTabs.tabBlock)
@@ -28,25 +29,11 @@ public class CommonProxy {
             GameRegistry.registerTileEntity(TestTile.class, "TestTileEntity");
         }
 
-        Config.init(event.getSuggestedConfigurationFile());
-
         FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     public void postInit() {}
-
-    //    @SubscribeEvent
-    //    public static void registerBlocks(RegistryEvent.Register<Block> event) {
-    //        IForgeRegistry<Block> registry = event.getRegistry();
-    //        registry.register(testBlock);
-    //    }
-    //
-    //    @SubscribeEvent
-    //    public static void registerItems(RegistryEvent.Register<Item> event) {
-    //        IForgeRegistry<Item> registry = event.getRegistry();
-    //        registry.register(testItemBlock);
-    //    }
 
     @SubscribeEvent
     public void onConfigChange(ConfigChangedEvent.OnConfigChangedEvent event) {

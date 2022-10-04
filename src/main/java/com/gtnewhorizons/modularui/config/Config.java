@@ -15,6 +15,7 @@ public class Config {
     public static boolean smoothProgressbar = true;
 
     public static boolean debug = false;
+    public static boolean forceEnableDebugBlock = false;
 
     public static final String CATEGORY_ANIMATIONS = "animations";
     public static final String CATEGORY_DEBUG = "debug";
@@ -69,6 +70,13 @@ public class Config {
                 .getBoolean();
 
         debug = config.get(CATEGORY_DEBUG, "debug", false, "Enable Debug information")
+                .getBoolean();
+
+        forceEnableDebugBlock = config.get(
+                        CATEGORY_DEBUG,
+                        "forceEnableDebugBlock",
+                        false,
+                        "Add debug block even in non-dev env. Used only for testing.")
                 .getBoolean();
 
         if (config.hasChanged()) {
