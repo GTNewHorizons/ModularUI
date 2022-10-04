@@ -18,7 +18,9 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
-        GuiContainerManager.addInputHandler(new PeripheralInputHandler());
+        if (ModularUI.isNEILoaded) {
+            GuiContainerManager.addInputHandler(new PeripheralInputHandler());
+        }
     }
 
     public void postInit() {
