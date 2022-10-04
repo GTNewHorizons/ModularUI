@@ -7,10 +7,10 @@ public class Config {
 
     public static Configuration config;
 
-    public static int openCloseDurationMs = 250;
+    public static int openCloseDurationMs = 200;
     public static boolean openCloseFade = false;
-    public static boolean openCloseScale = false;
-    public static boolean openCloseTranslateFromBottom = false;
+    public static boolean openCloseScale = true;
+    public static boolean openCloseTranslateFromBottom = true;
     public static boolean openCloseRotateFast = false;
     public static boolean smoothProgressbar = true;
 
@@ -31,7 +31,7 @@ public class Config {
         openCloseDurationMs = config.get(
                         CATEGORY_ANIMATIONS,
                         "openCloseDurationMs",
-                        250,
+                        200,
                         "How many milliseconds will it take to draw open/close animation",
                         0,
                         3000)
@@ -47,14 +47,14 @@ public class Config {
         openCloseScale = config.get(
                         CATEGORY_ANIMATIONS,
                         "openCloseScale",
-                        false,
+                        true,
                         "Whether to draw scale in/out animation on GUI open/close")
                 .getBoolean();
 
         openCloseTranslateFromBottom = config.get(
                         CATEGORY_ANIMATIONS,
                         "openCloseTranslateFromBottom",
-                        false,
+                        true,
                         "Whether to draw GUI coming out of / going out to the bottom of the screen on GUI open/close")
                 .getBoolean();
 
