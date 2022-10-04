@@ -19,12 +19,14 @@ public class CommonProxy {
 
     public void preInit(FMLPreInitializationEvent event) {
 
-        testBlock = new TestBlock(Material.rock)
-                .setBlockName("testBlock")
-                .setCreativeTab(CreativeTabs.tabBlock)
-                .setBlockTextureName("stone");
-        GameRegistry.registerBlock(testBlock, "testBlock");
-        GameRegistry.registerTileEntity(TestTile.class, "TestTileEntity");
+        if (ModularUI.isDevEnv) {
+            testBlock = new TestBlock(Material.rock)
+                    .setBlockName("testBlock")
+                    .setCreativeTab(CreativeTabs.tabBlock)
+                    .setBlockTextureName("stone");
+            GameRegistry.registerBlock(testBlock, "testBlock");
+            GameRegistry.registerTileEntity(TestTile.class, "TestTileEntity");
+        }
 
         Config.init(event.getSuggestedConfigurationFile());
 

@@ -20,6 +20,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import java.util.function.Function;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.launchwrapper.Launch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,6 +42,8 @@ public class ModularUI {
 
     public static final String MODID_NEI = "NotEnoughItems";
     public static final boolean isNEILoaded = Loader.isModLoaded(MODID_NEI);
+
+    public static final boolean isDevEnv = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 
     @Mod.Instance(ModularUI.MODID)
     public static ModularUI INSTANCE;
