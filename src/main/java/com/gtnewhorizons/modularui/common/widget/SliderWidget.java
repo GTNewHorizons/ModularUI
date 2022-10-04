@@ -19,7 +19,7 @@ public class SliderWidget extends SyncedWidget implements Interactable {
     private float min = 0, max = 1;
 
     @SideOnly(Side.CLIENT)
-    private float sliderPos = 0;
+    private float sliderPos;
 
     private float value = 0;
     private Supplier<Float> getter;

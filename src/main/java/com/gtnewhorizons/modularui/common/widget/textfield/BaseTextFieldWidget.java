@@ -9,6 +9,7 @@ import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.api.widget.scroll.IHorizontalScrollable;
 import com.gtnewhorizons.modularui.api.widget.scroll.ScrollType;
+import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.common.widget.ScrollBar;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -275,7 +276,15 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
 
     // === from GuiScreen 1.12 ===
 
-    public static final boolean IS_RUNNING_ON_MAC = Util.getOSType() == Util.EnumOS.OSX;
+    public static final boolean IS_RUNNING_ON_MAC;
+
+    static {
+        if (NetworkUtils.isClient()) {
+            IS_RUNNING_ON_MAC = Util.getOSType() == Util.EnumOS.OSX;
+        } else {
+            IS_RUNNING_ON_MAC = false;
+        }
+    }
 
     /**
      * Returns true if either windows ctrl key is down or if either mac meta key is down
