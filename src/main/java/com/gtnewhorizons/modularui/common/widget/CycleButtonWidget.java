@@ -23,13 +23,13 @@ import org.jetbrains.annotations.Nullable;
 
 public class CycleButtonWidget extends SyncedWidget implements Interactable {
 
-    private int state = 0;
-    private int length = 1;
-    private IntConsumer setter;
-    private IntSupplier getter;
-    private Function<Integer, IDrawable> textureGetter;
-    private Function<Integer, IDrawable[]> backgroundGetter;
-    private IDrawable texture = IDrawable.EMPTY;
+    protected int state = 0;
+    protected int length = 1;
+    protected IntConsumer setter;
+    protected IntSupplier getter;
+    protected Function<Integer, IDrawable> textureGetter;
+    protected Function<Integer, IDrawable[]> backgroundGetter;
+    protected IDrawable texture = IDrawable.EMPTY;
     private final List<List<Text>> stateTooltip = new ArrayList<>();
 
     public CycleButtonWidget() {}
@@ -122,6 +122,9 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
         }
         if (isClient()) {
             this.texture = textureGetter.apply(this.state);
+            if (backgroundGetter != null) {
+                setBackground(backgroundGetter.apply(this.state));
+            }
         }
     }
 
@@ -158,15 +161,6 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
     }
 
     @Override
-    public @Nullable IDrawable[] getBackground() {
-        if (backgroundGetter != null) {
-            return backgroundGetter.apply(state);
-        } else {
-            return super.getBackground();
-        }
-    }
-
-    @Override
     public void readOnClient(int id, PacketBuffer buf) {
         if (id == 1) {
             setState(buf.readVarIntFromBuffer(), false, true);
@@ -196,6 +190,10 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
         }
         texts.addAll(this.stateTooltip.get(this.state));
         return texts;
+    }
+
+    public int getState() {
+        return state;
     }
 
     public CycleButtonWidget setSetter(IntConsumer setter) {
@@ -281,12 +279,16 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
 
     public CycleButtonWidget setLength(int length) {
         this.length = length;
+        setupTooltip();
+        return this;
+    }
+
+    protected void setupTooltip() {
         while (this.stateTooltip.size() < this.length) {
             this.stateTooltip.add(new ArrayList<>());
         }
         while (this.stateTooltip.size() > this.length) {
             this.stateTooltip.remove(this.stateTooltip.size() - 1);
         }
-        return this;
     }
 }

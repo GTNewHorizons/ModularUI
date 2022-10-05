@@ -205,7 +205,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
 
     /**
      * Disables slot click, shift insert, and mouse scroll.
-     * Does not prevent NEI interaction.
+     * Does not prevent NEI recipe view or bookmark, but does block drag-and-drop.
      */
     public SlotWidget disableInteraction() {
         this.interactionDisabled = true;
