@@ -25,8 +25,8 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
 
     protected int state = 0;
     protected int length = 1;
-    protected IntConsumer setter;
-    protected IntSupplier getter;
+    protected Consumer<Integer> setter;
+    protected Supplier<Integer> getter;
     protected Function<Integer, IDrawable> textureGetter;
     protected Function<Integer, IDrawable[]> backgroundGetter;
     protected IDrawable texture = IDrawable.EMPTY;
@@ -76,7 +76,7 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
             ModularUI.logger.warn("Texture Getter of {} was not set!", this);
             textureGetter = val -> IDrawable.EMPTY;
         }
-        setState(getter.getAsInt(), false, false);
+        setState(getter.get(), false, false);
     }
 
     @Override
@@ -146,7 +146,7 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
     @Override
     public void detectAndSendChanges(boolean init) {
         if (syncsToClient()) {
-            int actualValue = getter.getAsInt();
+            int actualValue = getter.get();
             if (init || actualValue != state) {
                 setState(actualValue, true, false);
                 markForUpdate();
@@ -196,12 +196,12 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
         return state;
     }
 
-    public CycleButtonWidget setSetter(IntConsumer setter) {
+    public CycleButtonWidget setSetter(Consumer<Integer> setter) {
         this.setter = setter;
         return this;
     }
 
-    public CycleButtonWidget setGetter(IntSupplier getter) {
+    public CycleButtonWidget setGetter(Supplier<Integer> getter) {
         this.getter = getter;
         return this;
     }
