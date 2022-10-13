@@ -47,6 +47,10 @@ public class ItemDrawable implements IDrawable {
         return (DrawableWidget) IDrawable.super.asWidget().setSize(16, 16);
     }
 
+    public ItemStack getItem() {
+        return item;
+    }
+
     public ItemDrawable setItem(@NotNull ItemStack item) {
         this.item = item;
         return this;
