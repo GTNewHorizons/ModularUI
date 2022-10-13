@@ -6,16 +6,15 @@ import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Draws item. Can also be used for {@link com.gtnewhorizons.modularui.api.widget.Widget}
  */
 public class ItemDrawable implements IDrawable {
 
-    private ItemStack item = null;
+    private ItemStack item;
 
-    public ItemDrawable(@NotNull ItemStack item) {
+    public ItemDrawable(ItemStack item) {
         this.item = item;
     }
 
@@ -24,7 +23,7 @@ public class ItemDrawable implements IDrawable {
 
     @Override
     public void draw(float x, float y, float width, float height, float partialTicks) {
-        if (item.getItem() == null) return;
+        if (item == null || item.getItem() == null) return;
         GlStateManager.pushMatrix();
         RenderHelper.enableGUIStandardItemLighting();
         GlStateManager.enableDepth();
@@ -51,7 +50,7 @@ public class ItemDrawable implements IDrawable {
         return item;
     }
 
-    public ItemDrawable setItem(@NotNull ItemStack item) {
+    public ItemDrawable setItem(ItemStack item) {
         this.item = item;
         return this;
     }
