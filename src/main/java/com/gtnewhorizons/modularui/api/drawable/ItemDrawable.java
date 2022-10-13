@@ -3,19 +3,30 @@ package com.gtnewhorizons.modularui.api.drawable;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
+import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Draws item. Can also be used for {@link com.gtnewhorizons.modularui.api.widget.Widget}
  */
 public class ItemDrawable implements IDrawable {
 
-    private ItemStack item;
+    @NotNull
+    private Supplier<ItemStack> item;
+
+    public ItemDrawable() {
+        this((ItemStack) null);
+    }
 
     public ItemDrawable(ItemStack item) {
-        this.item = item;
+        this.item = () -> item;
+    }
+
+    public ItemDrawable(@NotNull Supplier<ItemStack> itemGetter) {
+        this.item = itemGetter;
     }
 
     @Override
@@ -23,6 +34,7 @@ public class ItemDrawable implements IDrawable {
 
     @Override
     public void draw(float x, float y, float width, float height, float partialTicks) {
+        final ItemStack item = this.item.get();
         if (item == null || item.getItem() == null) return;
         GlStateManager.pushMatrix();
         RenderHelper.enableGUIStandardItemLighting();
@@ -47,11 +59,16 @@ public class ItemDrawable implements IDrawable {
     }
 
     public ItemStack getItem() {
-        return item;
+        return item.get();
     }
 
     public ItemDrawable setItem(ItemStack item) {
-        this.item = item;
+        this.item = () -> item;
+        return this;
+    }
+
+    public ItemDrawable setItem(@NotNull Supplier<ItemStack> itemGetter) {
+        this.item = itemGetter;
         return this;
     }
 }
