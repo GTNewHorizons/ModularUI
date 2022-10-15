@@ -200,6 +200,10 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
             handler.markAll();
             return true;
         } else if (BASE_PATTERN.matcher(String.valueOf(character)).matches()) {
+            // delete selected chars
+            if (handler.hasTextMarked()) {
+                handler.delete();
+            }
             // insert typed char
             handler.insert(String.valueOf(character));
             return true;
