@@ -210,7 +210,16 @@ public class TextFieldHandler {
 
     public void markAll() {
         setOffsetCursor(0, 0);
-        setMainCursor(this.text.size() - 1, this.text.get(this.text.size() - 1).length());
+        setMainCursorLast();
+    }
+
+    public void setMainCursorLast() {
+        if (this.text.size() == 0) {
+            setMainCursor(0, 0);
+        } else {
+            setMainCursor(
+                    this.text.size() - 1, this.text.get(this.text.size() - 1).length());
+        }
     }
 
     public String getTextAsString() {

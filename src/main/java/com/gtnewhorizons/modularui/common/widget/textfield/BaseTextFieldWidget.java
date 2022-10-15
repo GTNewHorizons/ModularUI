@@ -56,6 +56,7 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
     protected int scrollOffset = 0;
     protected float scale = 1f;
     private int cursorTimer;
+    protected boolean focusOnGuiOpen;
 
     protected ScrollBar scrollBar;
 
@@ -66,6 +67,19 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
     @Override
     public List<Widget> getChildren() {
         return scrollBar == null ? Collections.emptyList() : Collections.singletonList(scrollBar);
+    }
+
+    @Override
+    public void onPostInit() {
+        super.onPostInit();
+        if (focusOnGuiOpen) {
+            forceFocus();
+        }
+    }
+
+    protected void forceFocus() {
+        getContext().getCursor().updateFocused(this);
+        handler.markAll();
     }
 
     @Override
@@ -263,6 +277,11 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
 
     public BaseTextFieldWidget setTextColor(int color) {
         this.renderer.setColor(color);
+        return this;
+    }
+
+    public BaseTextFieldWidget setFocusOnGuiOpen(boolean focused) {
+        focusOnGuiOpen = focused;
         return this;
     }
 
