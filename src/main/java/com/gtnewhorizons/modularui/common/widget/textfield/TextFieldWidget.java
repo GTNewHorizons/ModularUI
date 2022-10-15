@@ -7,6 +7,7 @@ import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -24,6 +25,8 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
     private Supplier<String> getter;
     private Consumer<String> setter;
     private Function<String, String> validator = val -> val;
+    private BiFunction<String, Integer, String> onScroll;
+
     private boolean syncsToServer = true;
     private boolean syncsToClient = true;
 
@@ -74,17 +77,27 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
     @Override
     public void onRemoveFocus() {
         super.onRemoveFocus();
-        if (handler.getText().isEmpty()) {
-            handler.getText().add(validator.apply(""));
-        } else if (handler.getText().size() == 1) {
-            handler.getText().set(0, validator.apply(handler.getText().get(0)));
-        } else {
+        if (handler.getText().size() > 1) {
             throw new IllegalStateException("TextFieldWidget can only have one line!");
         }
-        this.setter.accept(getText());
+        setText(validator.apply(getText()));
+        setter.accept(getText());
         if (syncsToServer()) {
             syncToServer(1, buffer -> NetworkUtils.writeStringSafe(buffer, getText()));
         }
+    }
+
+    @Override
+    public boolean onMouseScroll(int direction) {
+        if (onScroll != null) {
+            setText(validator.apply(onScroll.apply(getText(), direction)));
+            setter.accept(getText());
+            if (syncsToServer()) {
+                syncToServer(1, buffer -> NetworkUtils.writeStringSafe(buffer, getText()));
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -286,5 +299,37 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
 
     public TextFieldWidget setNumbers(int min, int max) {
         return setNumbers(val -> Math.min(max, Math.max(min, val)));
+    }
+
+    /**
+     * (current text, direction) -> new text
+     */
+    public TextFieldWidget setOnScroll(BiFunction<String, Integer, String> onScroll) {
+        this.onScroll = onScroll;
+        return this;
+    }
+
+    /**
+     * (current number, direction) -> new number
+     */
+    public TextFieldWidget setOnScrollNumbers(BiFunction<Integer, Integer, Integer> onScroll) {
+        return setOnScroll((text, direction) ->
+                format.format(onScroll.apply((int) MathExpression.parseMathExpression(text), direction)));
+    }
+
+    /**
+     * (current number, direction) -> new number
+     */
+    public TextFieldWidget setOnScrollNumbersDouble(BiFunction<Double, Integer, Double> onScroll) {
+        return setOnScroll((text, direction) ->
+                format.format(onScroll.apply(MathExpression.parseMathExpression(text), direction)));
+    }
+
+    /**
+     * (current number, direction) -> new number
+     */
+    public TextFieldWidget setOnScrollNumbersLong(BiFunction<Long, Integer, Long> onScroll) {
+        return setOnScroll((text, direction) ->
+                format.format(onScroll.apply((long) MathExpression.parseMathExpression(text), direction)));
     }
 }
