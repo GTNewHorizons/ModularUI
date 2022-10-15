@@ -128,6 +128,7 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
 
     @Override
     public boolean onKeyPressed(char character, int keyCode) {
+        if (!isFocused()) return false;
         switch (keyCode) {
             case Keyboard.KEY_RETURN:
                 if (getMaxLines() > 1) {

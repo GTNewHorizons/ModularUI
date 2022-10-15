@@ -89,6 +89,7 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
 
     @Override
     public boolean onMouseScroll(int direction) {
+        if (!isFocused()) return false;
         if (onScroll != null) {
             setText(validator.apply(onScroll.apply(getText(), direction)));
             setter.accept(getText());
