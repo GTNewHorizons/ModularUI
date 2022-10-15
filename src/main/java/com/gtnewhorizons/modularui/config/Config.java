@@ -13,6 +13,7 @@ public class Config {
     public static boolean openCloseTranslateFromBottom = true;
     public static boolean openCloseRotateFast = false;
     public static boolean smoothProgressbar = true;
+    public static String textCursor = "underscore";
 
     public static boolean debug = false;
     public static boolean forceEnableDebugBlock = false;
@@ -68,6 +69,12 @@ public class Config {
 
         smoothProgressbar = config.get(CATEGORY_ANIMATIONS, "smoothProgressbar", true, "Draw progress bar smoothly")
                 .getBoolean();
+
+        textCursor = config.get(
+                        CATEGORY_ANIMATIONS, "textCursor", "underscore", "Select: underscore, vertical.", new String[] {
+                            "underscore", "vertical"
+                        })
+                .getString();
 
         debug = config.get(CATEGORY_DEBUG, "debug", false, "Enable Debug information")
                 .getBoolean();

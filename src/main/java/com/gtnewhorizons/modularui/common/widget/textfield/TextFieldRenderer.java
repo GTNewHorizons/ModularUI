@@ -3,6 +3,7 @@ package com.gtnewhorizons.modularui.common.widget.textfield;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.drawable.TextRenderer;
 import com.gtnewhorizons.modularui.api.math.Color;
+import com.gtnewhorizons.modularui.config.Config;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import java.awt.*;
@@ -145,10 +146,22 @@ public class TextFieldRenderer extends TextRenderer {
 
     @SideOnly(Side.CLIENT)
     private void drawCursor(float x0, float y0) {
-        x0 = (x0 - 0.8f) / scale;
-        y0 = (y0 - 1) / scale;
-        float x1 = x0 + 0.6f;
-        float y1 = y0 + 9;
+        float x1, y1;
+        //noinspection SwitchStatementWithTooFewBranches
+        switch (Config.textCursor) {
+            case "vertical":
+                x0 = (x0 - 0.8f) / scale;
+                y0 = (y0 - 1) / scale;
+                x1 = x0 + 0.6f;
+                y1 = y0 + 9;
+                break;
+            default:
+                x0 = x0 / scale;
+                y0 = (y0 + 7.5f) / scale;
+                x1 = x0 + 7;
+                y1 = y0 + 1;
+                break;
+        }
         float red = Color.getRedF(color);
         float green = Color.getGreenF(color);
         float blue = Color.getBlueF(color);
