@@ -16,6 +16,7 @@ import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -207,7 +208,11 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
                 }
                 // insert typed char
                 handler.insert(String.valueOf(character));
+                return true;
             }
+        }
+        if (Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode() == keyCode) {
+            removeFocus();
             return true;
         }
         return false;
