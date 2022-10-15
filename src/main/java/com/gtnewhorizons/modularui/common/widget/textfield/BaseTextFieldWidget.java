@@ -1,6 +1,7 @@
 package com.gtnewhorizons.modularui.common.widget.textfield;
 
 import com.gtnewhorizons.modularui.api.GlStateManager;
+import com.gtnewhorizons.modularui.api.KeyboardUtil;
 import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Size;
@@ -9,7 +10,6 @@ import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.api.widget.scroll.IHorizontalScrollable;
 import com.gtnewhorizons.modularui.api.widget.scroll.ScrollType;
-import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.common.widget.ScrollBar;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.input.Keyboard;
@@ -168,20 +167,20 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
             return false;
         }
 
-        if (isKeyComboCtrlC(keyCode)) {
+        if (KeyboardUtil.isKeyComboCtrlC(keyCode)) {
             // copy marked text
             GuiScreen.setClipboardString(handler.getSelectedText());
             return true;
-        } else if (isKeyComboCtrlV(keyCode)) {
+        } else if (KeyboardUtil.isKeyComboCtrlV(keyCode)) {
             // paste copied text in marked text
             handler.insert(GuiScreen.getClipboardString());
             return true;
-        } else if (isKeyComboCtrlX(keyCode) && handler.hasTextMarked()) {
+        } else if (KeyboardUtil.isKeyComboCtrlX(keyCode) && handler.hasTextMarked()) {
             // copy and delete copied text
             GuiScreen.setClipboardString(handler.getSelectedText());
             handler.delete();
             return true;
-        } else if (isKeyComboCtrlA(keyCode)) {
+        } else if (KeyboardUtil.isKeyComboCtrlA(keyCode)) {
             // mark whole text
             handler.markAll();
             return true;
@@ -272,59 +271,5 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
 
     public static char getGroupSeparator() {
         return format.getDecimalFormatSymbols().getGroupingSeparator();
-    }
-
-    // === from GuiScreen 1.12 ===
-
-    public static final boolean IS_RUNNING_ON_MAC;
-
-    static {
-        if (NetworkUtils.isClient()) {
-            IS_RUNNING_ON_MAC = Util.getOSType() == Util.EnumOS.OSX;
-        } else {
-            IS_RUNNING_ON_MAC = false;
-        }
-    }
-
-    /**
-     * Returns true if either windows ctrl key is down or if either mac meta key is down
-     */
-    public static boolean isCtrlKeyDown() {
-
-        if (IS_RUNNING_ON_MAC) {
-            return Keyboard.isKeyDown(219) || Keyboard.isKeyDown(220);
-        } else {
-            return Keyboard.isKeyDown(29) || Keyboard.isKeyDown(157);
-        }
-    }
-
-    /**
-     * Returns true if either shift key is down
-     */
-    public static boolean isShiftKeyDown() {
-        return Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54);
-    }
-
-    /**
-     * Returns true if either alt key is down
-     */
-    public static boolean isAltKeyDown() {
-        return Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184);
-    }
-
-    public static boolean isKeyComboCtrlX(int keyID) {
-        return keyID == 45 && isCtrlKeyDown() && !isShiftKeyDown() && !isAltKeyDown();
-    }
-
-    public static boolean isKeyComboCtrlV(int keyID) {
-        return keyID == 47 && isCtrlKeyDown() && !isShiftKeyDown() && !isAltKeyDown();
-    }
-
-    public static boolean isKeyComboCtrlC(int keyID) {
-        return keyID == 46 && isCtrlKeyDown() && !isShiftKeyDown() && !isAltKeyDown();
-    }
-
-    public static boolean isKeyComboCtrlA(int keyID) {
-        return keyID == 30 && isCtrlKeyDown() && !isShiftKeyDown() && !isAltKeyDown();
     }
 }

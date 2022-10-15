@@ -1,10 +1,10 @@
 package com.gtnewhorizons.modularui.api.widget;
 
+import com.gtnewhorizons.modularui.api.KeyboardUtil;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
 import org.lwjgl.input.Keyboard;
@@ -75,7 +75,7 @@ public interface Interactable {
      */
     @SideOnly(Side.CLIENT)
     static boolean hasControlDown() {
-        return GuiScreen.isCtrlKeyDown();
+        return KeyboardUtil.isCtrlKeyDown();
     }
 
     /**
@@ -83,17 +83,16 @@ public interface Interactable {
      */
     @SideOnly(Side.CLIENT)
     static boolean hasShiftDown() {
-        return GuiScreen.isShiftKeyDown();
+        return KeyboardUtil.isShiftKeyDown();
     }
 
-    // todo resurrect this
-    //    /**
-    //     * @return if alt or alt gr is pressed
-    //     */
-    //    @SideOnly(Side.CLIENT)
-    //    static boolean hasAltDown() {
-    //        return GuiScreen.isAltKeyDown();
-    //    }
+    /**
+     * @return if alt or alt gr is pressed
+     */
+    @SideOnly(Side.CLIENT)
+    static boolean hasAltDown() {
+        return KeyboardUtil.isAltKeyDown();
+    }
 
     /**
      * @param key key id, see {@link Keyboard}
