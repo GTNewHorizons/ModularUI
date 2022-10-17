@@ -13,3 +13,26 @@ modularui.phantom.single.clear=§8left click to remove
 modularui.fluid.click_to_fill=§bLeft §7Click with a Fluid Container to §bfill §7the tank (Shift-click for a full stack).
 modularui.fluid.click_combined=§cRight §7or §bLeft §7Click with a Fluid Container to §cempty §7or §bfill §7the tank (Shift-click for a full stack).
 modularui.fluid.click_to_empty=§cRight §7Click with a Fluid Container to §cempty §7the tank (Shift-click for a full stack).
+
+modularui.config.animations=Animations
+modularui.config.rendering=Rendering
+modularui.config.debug=Debug
+
+modularui.config.animations.openCloseDurationMs=Duration of animations
+modularui.config.animations.openCloseDurationMs.tooltip=How many milliseconds will it take to draw open/close animation
+modularui.config.animations.openCloseFade=Enable GUI fade in/out
+modularui.config.animations.openCloseFade.tooltip=Whether to draw fade in/out animation on GUI open/close
+modularui.config.animations.openCloseScale=Enable GUI scale in/out
+modularui.config.animations.openCloseScale.tooltip=Whether to draw scale in/out animation on GUI open/close
+modularui.config.animations.openCloseTranslateFromBottom=Enable GUI slide
+modularui.config.animations.openCloseTranslateFromBottom.tooltip=Whether to draw GUI coming out of / going out to the bottom of the screen on GUI open/close
+modularui.config.animations.openCloseRotateFast=Enable GUI rotation
+modularui.config.animations.openCloseRotateFast.tooltip=Whether to draw GUI rotating fast on GUI open/close
+modularui.config.rendering.smoothProgressbar=Enable smooth progress bar
+modularui.config.rendering.smoothProgressbar.tooltip=Draw progress bar smoothly
+modularui.config.rendering.textCursor=Cursor style
+modularui.config.rendering.textCursor.tooltip=Select: underscore, vertical
+modularui.config.debug.debug=Enable debug
+modularui.config.debug.debug.tooltip=Enable Debug information display
+modularui.config.debug.forceEnableDebugBlock=Enable debug block
+modularui.config.debug.forceEnableDebugBlock.tooltip=Add debug block even in non-dev env

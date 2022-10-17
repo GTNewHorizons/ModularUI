@@ -24,9 +24,8 @@ public class ModularUIGuiConfig extends GuiConfig {
 
     private static List<IConfigElement> getConfigElements() {
         List<IConfigElement> list = new ArrayList<>();
-        String[] categories = new String[] {Config.CATEGORY_ANIMATIONS, Config.CATEGORY_DEBUG};
 
-        for (String category : categories) {
+        for (String category : Config.CATEGORIES) {
             list.add(new ConfigElement(Config.config.getCategory(category.toLowerCase(Locale.US))));
         }
 
