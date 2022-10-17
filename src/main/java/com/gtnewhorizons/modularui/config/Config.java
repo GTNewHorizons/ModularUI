@@ -1,5 +1,6 @@
 package com.gtnewhorizons.modularui.config;
 
+import com.gtnewhorizons.modularui.ModularUI;
 import java.io.File;
 import net.minecraftforge.common.config.Configuration;
 
@@ -22,7 +23,7 @@ public class Config {
     public static final String CATEGORY_RENDERING = "rendering";
     public static final String CATEGORY_DEBUG = "debug";
 
-    private static final String LANG_PREFIX = "modularui.config.";
+    private static final String LANG_PREFIX = ModularUI.MODID + ".config.";
 
     public static final String[] CATEGORIES = new String[] {
         CATEGORY_ANIMATIONS, CATEGORY_RENDERING, CATEGORY_DEBUG,
