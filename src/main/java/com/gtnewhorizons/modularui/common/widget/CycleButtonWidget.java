@@ -272,9 +272,22 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
 
     /**
      * Adds a line to the tooltip that can be changed depending on the value stored.
+     * Should be called after {@link #setLength}.
      */
     public CycleButtonWidget addTooltip(int state, String tooltip) {
         return addTooltip(state, new Text(tooltip));
+    }
+
+    /**
+     * Adds tooltips with given function.
+     * Should be called after {@link #setLength}.
+     * @param tooltipFunc state -> tooltip
+     */
+    public CycleButtonWidget addTooltip(Function<Integer, String> tooltipFunc) {
+        for (int i = 0; i < length; i++) {
+            addTooltip(i, tooltipFunc.apply(i));
+        }
+        return this;
     }
 
     public CycleButtonWidget setLength(int length) {
