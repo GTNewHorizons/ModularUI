@@ -45,12 +45,12 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fluids.FluidTank;
 import org.jetbrains.annotations.NotNull;
 
-public class TestTile extends SyncedTileEntityBase implements ITileWithModularUI {
+public class TestTile extends TileEntity implements ITileWithModularUI {
 
     private int serverValue = 0;
     private final FluidTank fluidTank1 = new FluidTank(10000);
@@ -381,19 +381,6 @@ public class TestTile extends SyncedTileEntityBase implements ITileWithModularUI
 
         return widget;
     }
-
-    @Override
-    public void writeInitialSyncData(PacketBuffer buf) {
-        buf.writeVarIntToBuffer(serverValue);
-    }
-
-    @Override
-    public void receiveInitialSyncData(PacketBuffer buf) {
-        serverValue = buf.readVarIntFromBuffer();
-    }
-
-    @Override
-    public void receiveCustomData(int discriminator, PacketBuffer buf) {}
 
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
