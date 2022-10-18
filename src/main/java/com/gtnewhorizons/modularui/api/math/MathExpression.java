@@ -11,13 +11,17 @@ public class MathExpression {
     private static final List<Object> DEFAULT = Collections.singletonList(0);
 
     public static double parseMathExpression(String expr) {
-        List<Object> parsed = buildParsedList(expr);
+        return parseMathExpression(expr, 0);
+    }
+
+    public static double parseMathExpression(String expr, double onFailReturn) {
+        List<Object> parsed = buildParsedList(expr, onFailReturn);
         if (parsed == DEFAULT || parsed.size() == 0) {
-            return 0;
+            return onFailReturn;
         }
         if (parsed.size() == 1) {
             Object value = parsed.get(0);
-            return value instanceof Double ? (double) value : 0;
+            return value instanceof Double ? (double) value : onFailReturn;
         }
         Double lastNum = null;
         for (int i = 0; i < parsed.size(); i++) {
@@ -120,7 +124,7 @@ public class MathExpression {
         return (Double) parsed.get(0);
     }
 
-    public static List<Object> buildParsedList(String expr) {
+    public static List<Object> buildParsedList(String expr, double onFailReturn) {
         List<Object> parsed = new ArrayList<>();
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < expr.length(); i++) {
@@ -128,7 +132,7 @@ public class MathExpression {
             switch (c) {
                 case '+': {
                     if (builder.length() > 0) {
-                        parsed.add(parse(builder.toString()));
+                        parsed.add(parse(builder.toString(), onFailReturn));
                         builder.delete(0, builder.length());
                     }
                     parsed.add(Operator.PLUS);
@@ -136,7 +140,7 @@ public class MathExpression {
                 }
                 case '-': {
                     if (builder.length() > 0) {
-                        parsed.add(parse(builder.toString()));
+                        parsed.add(parse(builder.toString(), onFailReturn));
                         builder.delete(0, builder.length());
                     }
                     parsed.add(Operator.MINUS);
@@ -144,7 +148,7 @@ public class MathExpression {
                 }
                 case '*': {
                     if (builder.length() > 0) {
-                        parsed.add(parse(builder.toString()));
+                        parsed.add(parse(builder.toString(), onFailReturn));
                         builder.delete(0, builder.length());
                     }
                     parsed.add(Operator.MULTIPLY);
@@ -152,7 +156,7 @@ public class MathExpression {
                 }
                 case '/': {
                     if (builder.length() > 0) {
-                        parsed.add(parse(builder.toString()));
+                        parsed.add(parse(builder.toString(), onFailReturn));
                         builder.delete(0, builder.length());
                     }
                     parsed.add(Operator.DIVIDE);
@@ -160,7 +164,7 @@ public class MathExpression {
                 }
                 case '%': {
                     if (builder.length() > 0) {
-                        parsed.add(parse(builder.toString()));
+                        parsed.add(parse(builder.toString(), onFailReturn));
                         builder.delete(0, builder.length());
                     }
                     parsed.add(Operator.MOD);
@@ -168,7 +172,7 @@ public class MathExpression {
                 }
                 case '^': {
                     if (builder.length() > 0) {
-                        parsed.add(parse(builder.toString()));
+                        parsed.add(parse(builder.toString(), onFailReturn));
                         builder.delete(0, builder.length());
                     }
                     parsed.add(Operator.POWER);
@@ -179,7 +183,7 @@ public class MathExpression {
             }
         }
         if (builder.length() > 0) {
-            parsed.add(parse(builder.toString()));
+            parsed.add(parse(builder.toString(), onFailReturn));
         }
         if (parsed.size() >= 2 && parsed.get(0) == Operator.MINUS && parsed.get(1) instanceof Double) {
             parsed.add(0, 0.0);
@@ -204,13 +208,13 @@ public class MathExpression {
         return parsed;
     }
 
-    public static double parse(String num) {
+    public static double parse(String num, double onFailReturn) {
         try {
             return TextFieldWidget.format.parse(num).doubleValue();
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return 0;
+        return onFailReturn;
     }
 
     public enum Operator {
