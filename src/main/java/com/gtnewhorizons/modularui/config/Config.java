@@ -13,20 +13,24 @@ public class Config {
     public static boolean openCloseScale = true;
     public static boolean openCloseTranslateFromBottom = true;
     public static boolean openCloseRotateFast = false;
+
     public static boolean smoothProgressbar = true;
     public static String textCursor = "underscore";
+
+    public static boolean escRestoreLastText = false;
 
     public static boolean debug = false;
     public static boolean forceEnableDebugBlock = false;
 
     public static final String CATEGORY_ANIMATIONS = "animations";
     public static final String CATEGORY_RENDERING = "rendering";
+    public static final String CATEGORY_KEYBOARD = "keyboard";
     public static final String CATEGORY_DEBUG = "debug";
 
     private static final String LANG_PREFIX = ModularUI.MODID + ".config.";
 
     public static final String[] CATEGORIES = new String[] {
-        CATEGORY_ANIMATIONS, CATEGORY_RENDERING, CATEGORY_DEBUG,
+        CATEGORY_ANIMATIONS, CATEGORY_RENDERING, CATEGORY_KEYBOARD, CATEGORY_DEBUG,
     };
 
     public static void init(File configFile) {
@@ -39,6 +43,8 @@ public class Config {
         config.setCategoryLanguageKey(CATEGORY_ANIMATIONS, LANG_PREFIX + CATEGORY_ANIMATIONS);
         config.setCategoryComment(CATEGORY_RENDERING, "Rendering");
         config.setCategoryLanguageKey(CATEGORY_RENDERING, LANG_PREFIX + CATEGORY_RENDERING);
+        config.setCategoryComment(CATEGORY_KEYBOARD, "Keyboard");
+        config.setCategoryLanguageKey(CATEGORY_KEYBOARD, LANG_PREFIX + CATEGORY_KEYBOARD);
         config.setCategoryComment(CATEGORY_DEBUG, "Debug");
         config.setCategoryLanguageKey(CATEGORY_DEBUG, LANG_PREFIX + CATEGORY_DEBUG);
 
@@ -98,6 +104,16 @@ public class Config {
                         })
                 .setLanguageKey(LANG_PREFIX + CATEGORY_RENDERING + ".textCursor")
                 .getString();
+
+        // === Keyboard ===
+
+        escRestoreLastText = config.get(
+                        CATEGORY_KEYBOARD,
+                        "escRestoreLastText",
+                        false,
+                        "Whether to restore last text if esc key is pressed in the text field")
+                .setLanguageKey(LANG_PREFIX + CATEGORY_KEYBOARD + ".escRestoreLastText")
+                .getBoolean();
 
         // === Debug ===
 

@@ -11,8 +11,10 @@ import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.api.widget.scroll.IHorizontalScrollable;
 import com.gtnewhorizons.modularui.api.widget.scroll.ScrollType;
 import com.gtnewhorizons.modularui.common.widget.ScrollBar;
+import com.gtnewhorizons.modularui.config.Config;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -52,6 +54,7 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
     private static final Pattern BASE_PATTERN = Pattern.compile("[A-Za-z0-9\\s_+\\-.,!@#$%^&*();\\\\/|<>\"'\\[\\]?=]");
 
     protected TextFieldHandler handler = new TextFieldHandler();
+    private List<String> lastText;
     protected TextFieldRenderer renderer = new TextFieldRenderer(handler);
     protected Alignment textAlignment = Alignment.TopLeft;
     protected int scrollOffset = 0;
@@ -108,6 +111,7 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
     public boolean shouldGetFocus() {
         this.cursorTimer = 0;
         this.renderer.setCursor(true);
+        this.lastText = new ArrayList<>(handler.getText());
         return true;
     }
 
@@ -153,6 +157,10 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
                 }
                 return true;
             case Keyboard.KEY_ESCAPE:
+                if (Config.escRestoreLastText) {
+                    handler.getText().clear();
+                    handler.getText().addAll(lastText);
+                }
                 removeFocus();
                 return true;
             case Keyboard.KEY_LEFT: {

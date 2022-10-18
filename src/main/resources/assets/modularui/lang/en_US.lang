@@ -16,6 +16,7 @@ modularui.fluid.click_to_empty=§cRight §7Click with a Fluid Container to §cem
 
 modularui.config.animations=Animations
 modularui.config.rendering=Rendering
+modularui.config.keyboard=Keyboard
 modularui.config.debug=Debug
 
 modularui.config.animations.openCloseDurationMs=Duration of animations
@@ -32,6 +33,8 @@ modularui.config.rendering.smoothProgressbar=Enable smooth progress bar
 modularui.config.rendering.smoothProgressbar.tooltip=Draw progress bar smoothly
 modularui.config.rendering.textCursor=Cursor style
 modularui.config.rendering.textCursor.tooltip=Select: underscore, vertical
+modularui.config.keyboard.escRestoreLastText=Restore last text with esc key
+modularui.config.keyboard.escRestoreLastText.tooltip=Whether to restore last text if esc key is pressed in the text field
 modularui.config.debug.debug=Enable debug
 modularui.config.debug.debug.tooltip=Enable Debug information display
 modularui.config.debug.forceEnableDebugBlock=Enable debug block
