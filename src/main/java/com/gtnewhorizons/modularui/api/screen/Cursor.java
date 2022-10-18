@@ -4,6 +4,8 @@ import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.widget.IDraggable;
 import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
 import com.gtnewhorizons.modularui.api.widget.Widget;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -79,6 +81,7 @@ public class Cursor {
     }
 
     @ApiStatus.Internal
+    @SideOnly(Side.CLIENT)
     public void updateFocused(Widget widget) {
         if (widget != null) {
             if (focused == null || focused != widget) {

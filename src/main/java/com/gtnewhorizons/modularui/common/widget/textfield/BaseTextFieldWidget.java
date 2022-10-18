@@ -10,6 +10,7 @@ import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.api.widget.scroll.IHorizontalScrollable;
 import com.gtnewhorizons.modularui.api.widget.scroll.ScrollType;
+import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.common.widget.ScrollBar;
 import com.gtnewhorizons.modularui.config.Config;
 import java.text.DecimalFormat;
@@ -82,7 +83,9 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
     }
 
     protected void forceFocus() {
-        getContext().getCursor().updateFocused(this);
+        if (NetworkUtils.isClient()) {
+            getContext().getCursor().updateFocused(this);
+        }
         handler.markAll();
     }
 
