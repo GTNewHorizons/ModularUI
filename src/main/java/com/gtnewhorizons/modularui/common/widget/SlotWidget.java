@@ -164,7 +164,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
             if (canControlAmount()) {
                 String[] lines = I18n.format("modularui.item.phantom.control").split("\\\\n");
                 extraLines.addAll(Arrays.asList(lines));
-            } else {
+            } else if (!interactionDisabled) {
                 extraLines.add(I18n.format("modularui.phantom.single.clear"));
             }
         }
