@@ -50,7 +50,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     private final BaseSlot slot;
     private ItemStack lastStoredPhantomItem = null;
 
-    private boolean interactionDisabled = false;
+    protected boolean interactionDisabled = false;
 
     private boolean controlsAmount = false;
 
