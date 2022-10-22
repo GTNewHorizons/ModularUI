@@ -13,6 +13,7 @@ import com.gtnewhorizons.modularui.api.widget.scroll.ScrollType;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.common.widget.ScrollBar;
 import com.gtnewhorizons.modularui.config.Config;
+import java.awt.*;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -99,15 +100,27 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
 
     @Override
     public void draw(float partialTicks) {
-        GuiHelper.useScissor(pos.x, pos.y, size.width, size.height, () -> {
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(1 - scrollOffset, 1, 0);
-            renderer.setSimulate(false);
-            renderer.setScale(scale);
-            renderer.setAlignment(textAlignment, -2, size.height);
-            renderer.draw(handler.getText());
-            GlStateManager.popMatrix();
-        });
+        Point draggableTranslate = getDraggableTranslate();
+        GuiHelper.useScissor(
+                pos.x + draggableTranslate.x, pos.y + draggableTranslate.y, size.width, size.height, () -> {
+                    GlStateManager.pushMatrix();
+                    GlStateManager.translate(1 - scrollOffset, 1, 0);
+                    renderer.setSimulate(false);
+                    renderer.setScale(scale);
+                    renderer.setAlignment(textAlignment, -2, size.height);
+                    renderer.draw(handler.getText());
+                    GlStateManager.popMatrix();
+                });
+    }
+
+    protected Point getDraggableTranslate() {
+        Point ret = new Point();
+        Rectangle draggableArea = getWindow().getContext().getCursor().getDraggableArea();
+        if (draggableArea == null) return ret;
+
+        ret.translate(-getWindow().getPos().x, -getWindow().getPos().y);
+        ret.translate(draggableArea.x, draggableArea.y);
+        return ret;
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
 import com.gtnewhorizons.modularui.api.math.MathExpression;
 import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
+import java.awt.*;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.function.BiFunction;
@@ -44,15 +45,17 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
 
     @Override
     public void draw(float partialTicks) {
-        GuiHelper.useScissor(pos.x, pos.y, size.width, size.height, () -> {
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(1 - scrollOffset, 1, 0);
-            renderer.setSimulate(false);
-            renderer.setScale(scale);
-            renderer.setAlignment(textAlignment, scrollBar == null ? size.width - 2 : -1, size.height);
-            renderer.draw(handler.getText());
-            GlStateManager.popMatrix();
-        });
+        Point draggableTranslate = getDraggableTranslate();
+        GuiHelper.useScissor(
+                pos.x + draggableTranslate.x, pos.y + draggableTranslate.y, size.width, size.height, () -> {
+                    GlStateManager.pushMatrix();
+                    GlStateManager.translate(1 - scrollOffset, 1, 0);
+                    renderer.setSimulate(false);
+                    renderer.setScale(scale);
+                    renderer.setAlignment(textAlignment, scrollBar == null ? size.width - 2 : -1, size.height);
+                    renderer.draw(handler.getText());
+                    GlStateManager.popMatrix();
+                });
     }
 
     @NotNull
