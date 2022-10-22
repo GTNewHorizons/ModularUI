@@ -13,6 +13,7 @@ public class Column extends MultiChildWidget implements IWidgetBuilder<Column> {
     private MainAxisAlignment maa = MainAxisAlignment.START;
     private CrossAxisAlignment caa = CrossAxisAlignment.START;
     private int maxHeight = -1, maxWidth = 0;
+    private int space;
 
     @Override
     public void addWidgetInternal(Widget widget) {
@@ -62,7 +63,11 @@ public class Column extends MultiChildWidget implements IWidgetBuilder<Column> {
             widget.setPosSilent(new Pos2d(x, lastY));
             lastY += widget.getSize().height;
             if (maa == MainAxisAlignment.SPACE_BETWEEN) {
-                lastY += (maxHeight - totalHeight) / (getChildren().size() - 1);
+                if (space != 0) {
+                    lastY += space;
+                } else {
+                    lastY += (maxHeight - totalHeight) / (getChildren().size() - 1);
+                }
             }
         }
     }
@@ -83,6 +88,15 @@ public class Column extends MultiChildWidget implements IWidgetBuilder<Column> {
 
     public Column setMaxHeight(int maxHeight) {
         this.maxHeight = maxHeight;
+        return this;
+    }
+
+    /**
+     * Specifies space between children. Use together with {@link MainAxisAlignment#SPACE_BETWEEN}.
+     * If you don't call this, this widget will automatically calculate space based on {@link #maxHeight}.
+     */
+    public Column setSpace(int space) {
+        this.space = space;
         return this;
     }
 }
