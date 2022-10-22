@@ -239,10 +239,7 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
             }
             drawCalls++;
         }
-        context.getMainWindow().frameUpdate(partialTicks);
-        if (context.getMainWindow() != context.getCurrentWindow()) {
-            context.getCurrentWindow().frameUpdate(partialTicks);
-        }
+        context.forEachWindowBottomToTop(window -> window.frameUpdate(partialTicks));
         drawDefaultBackground();
 
         GlStateManager.disableRescaleNormal();

@@ -72,6 +72,44 @@ public class ModularUIContext {
         this.showNEI = context.showNEI;
     }
 
+    /**
+     * Iterates over {@link #windows} from bottom (main window) to top.
+     * If some windows get flag to be removed from the list,
+     * this executes removals after iteration is done.
+     * @see ModularWindow#tryClose(boolean)
+     */
+    public void forEachWindowBottomToTop(Consumer<ModularWindow> forEach) {
+        List<ModularWindow> toRemove = new ArrayList<>();
+        for (ModularWindow window : getOpenWindowsReversed()) {
+            forEach.accept(window);
+            if (window.isRemovalScheduled()) {
+                toRemove.add(window);
+            }
+        }
+        for (ModularWindow window : toRemove) {
+            windows.removeFirstOccurrence(window);
+        }
+    }
+
+    /**
+     * Iterates over {@link #windows} from top to bottom (main window).
+     * If some windows get flag to be removed from the list,
+     * this executes removals after iteration is done.
+     * @see ModularWindow#tryClose(boolean)
+     */
+    public void forEachWindowTopToBottom(Consumer<ModularWindow> forEach) {
+        List<ModularWindow> toRemove = new ArrayList<>();
+        for (ModularWindow window : getOpenWindows()) {
+            forEach.accept(window);
+            if (window.isRemovalScheduled()) {
+                toRemove.add(window);
+            }
+        }
+        for (ModularWindow window : toRemove) {
+            windows.removeLastOccurrence(window);
+        }
+    }
+
     public boolean isClient() {
         return NetworkUtils.isClient();
     }
@@ -171,12 +209,16 @@ public class ModularUIContext {
     /**
      * @param window Window to close
      * @param doRemoveWindow If actually remove window from {@link #windows}
+     * @see ModularWindow#tryClose(boolean)
      */
     public void closeWindow(ModularWindow window, boolean doRemoveWindow) {
         if (window == null) {
             return;
         }
-        if (!doRemoveWindow || windows.removeLastOccurrence(window)) {
+        if (!doRemoveWindow) {
+            window.removeFromContext();
+            window.destroyWindow();
+        } else if (windows.removeLastOccurrence(window)) {
             window.destroyWindow();
         }
         if (isClient()) {
@@ -208,7 +250,7 @@ public class ModularUIContext {
     }
 
     /**
-     * Close all windows displayed.
+     * Closes all windows.
      */
     public void tryClose() {
         if (this.isClosing) {
@@ -217,11 +259,11 @@ public class ModularUIContext {
             }
             return;
         }
-        for (ModularWindow window : getOpenWindows()) {
+        forEachWindowTopToBottom(window -> {
             if (window.tryClose(false) && window == mainWindow) {
                 this.isClosing = true;
             }
-        }
+        });
     }
 
     public void close() {
@@ -281,10 +323,16 @@ public class ModularUIContext {
         return cursor;
     }
 
+    /**
+     * @return {@link ModularWindow}s from top to bottom (main window)
+     */
     public Iterable<ModularWindow> getOpenWindows() {
         return windows::descendingIterator;
     }
 
+    /**
+     * @return {@link ModularWindow}s from bottom (main window) to top
+     */
     public Iterable<ModularWindow> getOpenWindowsReversed() {
         return windows;
     }
@@ -317,6 +365,9 @@ public class ModularUIContext {
     //        getContainer().sendHeldItemUpdate();
     //    }
 
+    /**
+     * Client -> Server
+     */
     public void readClientPacket(PacketBuffer buf, int widgetId) throws IOException {
         int id = buf.readVarIntFromBuffer();
         ModularWindow window = syncedWindows.get(buf.readVarIntFromBuffer());
@@ -338,6 +389,9 @@ public class ModularUIContext {
         }
     }
 
+    /**
+     * Server -> Client
+     */
     @SideOnly(Side.CLIENT)
     public void readServerPacket(PacketBuffer buf, int widgetId) throws IOException {
         int id = buf.readVarIntFromBuffer();
