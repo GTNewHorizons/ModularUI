@@ -92,6 +92,10 @@ public class UITexture implements IDrawable {
         return new UITexture(location, calcU(uStart), calcV(vStart), calcU(uEnd), calcV(vEnd));
     }
 
+    public UITexture getFlipped(boolean horizontal, boolean vertical) {
+        return getSubArea(horizontal ? 1 : 0, vertical ? 1 : 0, horizontal ? 0 : 1, vertical ? 0 : 1);
+    }
+
     public UITexture exposeToJson() {
         if (JSON_TEXTURES.containsKey(location)) {
             UITexture texture = JSON_TEXTURES.get(location);
