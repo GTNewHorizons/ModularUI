@@ -18,6 +18,7 @@ public class Config {
     public static String textCursor = "underscore";
 
     public static boolean escRestoreLastText = false;
+    public static boolean closeWindowsAtOnce = false;
 
     public static boolean debug = false;
     public static boolean forceEnableDebugBlock = false;
@@ -113,6 +114,14 @@ public class Config {
                         false,
                         "Whether to restore last text if esc key is pressed in the text field")
                 .setLanguageKey(LANG_PREFIX + CATEGORY_KEYBOARD + ".escRestoreLastText")
+                .getBoolean();
+
+        closeWindowsAtOnce = config.get(
+                        CATEGORY_KEYBOARD,
+                        "closeWindowsAtOnce",
+                        false,
+                        "Whether to close all the opened windows at once")
+                .setLanguageKey(LANG_PREFIX + CATEGORY_KEYBOARD + ".closeWindowsAtOnce")
                 .getBoolean();
 
         // === Debug ===

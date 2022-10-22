@@ -570,7 +570,14 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
         }
 
         if (keyCode == Keyboard.KEY_ESCAPE || this.mc.gameSettings.keyBindInventory.getKeyCode() == keyCode) {
-            this.context.tryClose();
+            if (Config.closeWindowsAtOnce) {
+                this.context.tryClose();
+            } else {
+                for (ModularWindow window : this.context.getOpenWindows()) {
+                    window.tryClose();
+                    break;
+                }
+            }
         } else {
             super.keyTyped(typedChar, keyCode);
         }

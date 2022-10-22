@@ -176,7 +176,7 @@ public class ModularWindow implements IWidgetParent {
     }
 
     /**
-     * Called when the player tries to close the ui. Starts animation or closes directly.
+     * Called when the player tries to close the ui. Starts animation or closes directly depending on config.
      */
     public boolean tryClose() {
         return tryClose(true);
