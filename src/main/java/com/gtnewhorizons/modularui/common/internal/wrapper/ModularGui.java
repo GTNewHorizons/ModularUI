@@ -463,13 +463,14 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
             return;
         }
 
-        Interactable probablyClicked = null;
+        Object probablyClicked = null;
         boolean wasSuccess = false;
         doubleClick = isDoubleClick(lastFocusedClick, time);
         loop:
         for (Object hovered : getCursor().getAllHovered()) {
             if (isNEIWantToHandleDragAndDrop && hovered instanceof IDragAndDropHandler) continue;
             if (context.getCursor().onHoveredClick(mouseButton, hovered)) {
+                probablyClicked = hovered;
                 break;
             }
             if (hovered instanceof Widget) {
@@ -477,11 +478,11 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
                 if (ModularUI.isNEILoaded && widget.hasNEITransferRect()) {
                     if (mouseButton == 0) {
                         widget.handleTransferRectMouseClick(false);
-                        break;
                     } else if (mouseButton == 1) {
                         widget.handleTransferRectMouseClick(true);
-                        break;
                     }
+                    probablyClicked = hovered;
+                    break;
                 }
             }
             if (hovered instanceof Interactable) {
@@ -510,7 +511,9 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
                 }
             }
         }
-        this.lastClicked = probablyClicked;
+        if (probablyClicked instanceof Interactable) {
+            this.lastClicked = (Interactable) probablyClicked;
+        }
         if (!wasSuccess) {
             getCursor().updateFocused(null);
         }
