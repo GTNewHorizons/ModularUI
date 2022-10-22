@@ -2,6 +2,7 @@ package com.gtnewhorizons.modularui.common.widget;
 
 import com.google.gson.JsonObject;
 import com.gtnewhorizons.modularui.ModularUI;
+import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
@@ -35,7 +36,11 @@ public class DrawableWidget extends Widget {
     @Override
     public void draw(float partialTicks) {
         if (drawable != null) {
+            GlStateManager.pushMatrix();
+            // so that item z level is properly ordered
+            GlStateManager.translate(0, 0, 500 * getWindowLayer());
             drawable.draw(Pos2d.ZERO, getSize(), partialTicks);
+            GlStateManager.popMatrix();
         }
     }
 

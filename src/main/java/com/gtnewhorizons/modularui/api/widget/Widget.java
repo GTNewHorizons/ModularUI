@@ -509,6 +509,19 @@ public abstract class Widget {
         return window;
     }
 
+    /**
+     * Which window does this widget belong to.
+     * 0 == main window.
+     */
+    public int getWindowLayer() {
+        int i = 0;
+        for (ModularWindow window : getContext().getOpenWindowsReversed()) {
+            if (window == getWindow()) return i;
+            i++;
+        }
+        return 0;
+    }
+
     public IWidgetParent getParent() {
         return parent;
     }
