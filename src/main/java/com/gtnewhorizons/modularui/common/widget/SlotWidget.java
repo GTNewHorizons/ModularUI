@@ -475,6 +475,9 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
                 GlStateManager.enableLighting();
                 RenderHelper.enableGUIStandardItemLighting();
                 GlStateManager.enableDepth();
+                GlStateManager.pushMatrix();
+                // so that item z levels are properly ordered
+                GlStateManager.translate(0, 0, 150 * getWindowLayer());
                 // render the item itself
                 ModularGui.getItemRenderer()
                         .renderItemAndEffectIntoGUI(
@@ -483,6 +486,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
                                 itemstack,
                                 1,
                                 1);
+                GlStateManager.popMatrix();
                 if (amount < 0) {
                     amount = itemstack.stackSize;
                 }
