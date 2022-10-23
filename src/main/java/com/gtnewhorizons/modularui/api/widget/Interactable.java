@@ -36,7 +36,9 @@ public interface Interactable {
      */
     @ApiStatus.OverrideOnly
     default boolean onClickReleased(int buttonId) {
-        return false;
+        // This prevents mouse release on widgets behind if this widget was clicked;
+        // Mouse click and release should be handled as one action in most of the cases.
+        return true;
     }
 
     /**
