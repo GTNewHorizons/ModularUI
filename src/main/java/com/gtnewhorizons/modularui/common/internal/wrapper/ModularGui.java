@@ -508,6 +508,8 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
         }
         if (probablyClicked instanceof Interactable) {
             this.lastClicked = (Interactable) probablyClicked;
+        } else {
+            this.lastClicked = null;
         }
         if (!wasSuccess) {
             getCursor().updateFocused(null);
