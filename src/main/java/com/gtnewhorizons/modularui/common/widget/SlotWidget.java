@@ -349,23 +349,31 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
             } else {
                 stackToPut = cursorStack.copy();
             }
-            if (clickData.mouseButton == 1 || !canControlAmount()) {
-                stackToPut.stackSize = 1;
-            }
-            stackToPut.stackSize = Math.min(stackToPut.stackSize, slot.getItemStackLimit(stackToPut));
-            slot.putStack(stackToPut);
-            this.lastStoredPhantomItem = stackToPut.copy();
+            putClickedStack(stackToPut, clickData.mouseButton);
         } else {
-            if (clickData.mouseButton == 0) {
-                if (clickData.shift) {
-                    this.slot.putStack(null);
-                } else {
-                    this.slot.incrementStackCount(-1);
+            if (cursorStack == null) {
+                if (clickData.mouseButton == 0) {
+                    if (clickData.shift) {
+                        this.slot.putStack(null);
+                    } else {
+                        this.slot.incrementStackCount(-1);
+                    }
+                } else if (clickData.mouseButton == 1) {
+                    this.slot.incrementStackCount(1);
                 }
-            } else if (clickData.mouseButton == 1) {
-                this.slot.incrementStackCount(1);
+            } else {
+                putClickedStack(cursorStack.copy(), clickData.mouseButton);
             }
         }
+    }
+
+    private void putClickedStack(ItemStack stack, int mouseButton) {
+        if (mouseButton == 1 || !canControlAmount()) {
+            stack.stackSize = 1;
+        }
+        stack.stackSize = Math.min(stack.stackSize, slot.getItemStackLimit(stack));
+        slot.putStack(stack);
+        this.lastStoredPhantomItem = stack.copy();
     }
 
     protected void phantomScroll(int direction) {
