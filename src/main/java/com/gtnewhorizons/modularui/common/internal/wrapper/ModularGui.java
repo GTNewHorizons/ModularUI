@@ -447,11 +447,9 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
         // In contrast, NEI injects GuiContainerManager#mouseClicked at the start of GuiContainer#mouseClicked,
         // so at this point NEI has not handled drag-and-drop yet.
         // See also: PanelWidget#handleClickExt
-        boolean isNEIWantToHandleDragAndDrop = shouldShowNEI()
-                && (ItemPanels.itemPanel.draggedStack != null || ItemPanels.bookmarkPanel.draggedStack != null);
 
         for (Interactable interactable : context.getCurrentWindow().getInteractionListeners()) {
-            if (isNEIWantToHandleDragAndDrop && interactable instanceof IDragAndDropHandler) continue;
+            if (shouldSkipClick(interactable)) continue;
             interactable.onClick(mouseButton, doubleClick);
         }
 
@@ -465,7 +463,7 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
         doubleClick = isDoubleClick(lastFocusedClick, time);
         loop:
         for (Object hovered : getCursor().getAllHovered()) {
-            if (isNEIWantToHandleDragAndDrop && hovered instanceof IDragAndDropHandler) continue;
+            if (shouldSkipClick(hovered)) break;
             if (context.getCursor().onHoveredClick(mouseButton, hovered)) {
                 probablyClicked = hovered;
                 break;
@@ -520,6 +518,15 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
         }
 
         lastFocusedClick = time;
+    }
+
+    private boolean isNEIWantToHandleDragAndDrop() {
+        return shouldShowNEI()
+                && (ItemPanels.itemPanel.draggedStack != null || ItemPanels.bookmarkPanel.draggedStack != null);
+    }
+
+    private boolean shouldSkipClick(Object object) {
+        return isNEIWantToHandleDragAndDrop() && object instanceof IDragAndDropHandler;
     }
 
     @Override
