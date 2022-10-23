@@ -147,6 +147,10 @@ public class Cursor {
         return hasDraggable() || getItemStack() != null;
     }
 
+    public @Nullable IDraggable getDraggable() {
+        return cursorDraggable;
+    }
+
     @Nullable
     public Rectangle getDraggableArea() {
         return this.cursorDraggable == null ? null : this.cursorDraggable.getArea();

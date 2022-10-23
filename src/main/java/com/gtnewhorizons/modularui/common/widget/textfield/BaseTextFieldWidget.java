@@ -5,6 +5,8 @@ import com.gtnewhorizons.modularui.api.KeyboardUtil;
 import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Size;
+import com.gtnewhorizons.modularui.api.screen.DraggableWindowWrapper;
+import com.gtnewhorizons.modularui.api.widget.IDraggable;
 import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
@@ -19,6 +21,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -115,12 +118,35 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
 
     protected Point getDraggableTranslate() {
         Point ret = new Point();
-        Rectangle draggableArea = getWindow().getContext().getCursor().getDraggableArea();
-        if (draggableArea == null) return ret;
+        IDraggable draggable = getWindow().getContext().getCursor().getDraggable();
+        if (!isBeingDragged(draggable)) return ret;
+        Rectangle draggableArea = draggable.getArea();
 
         ret.translate(-getWindow().getPos().x, -getWindow().getPos().y);
+        //noinspection ConstantConditions
         ret.translate(draggableArea.x, draggableArea.y);
         return ret;
+    }
+
+    private boolean isBeingDragged(IDraggable draggable) {
+        if (draggable == null) return false;
+        AtomicBoolean found = new AtomicBoolean(false);
+        IWidgetParent parent;
+        if (draggable instanceof IWidgetParent) {
+            parent = (IWidgetParent) draggable;
+        } else if (draggable instanceof DraggableWindowWrapper) {
+            parent = ((DraggableWindowWrapper) draggable).getWindow();
+        } else {
+            return false;
+        }
+        IWidgetParent.forEachByLayer(parent, widget -> {
+            if (widget == this) {
+                found.set(true);
+                return true;
+            }
+            return false;
+        });
+        return found.get();
     }
 
     @Override

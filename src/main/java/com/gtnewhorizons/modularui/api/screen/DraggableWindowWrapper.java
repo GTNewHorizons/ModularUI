@@ -68,4 +68,8 @@ public class DraggableWindowWrapper implements IDraggable {
         this.moving = moving;
         this.window.setEnabled(!moving);
     }
+
+    public ModularWindow getWindow() {
+        return window;
+    }
 }
