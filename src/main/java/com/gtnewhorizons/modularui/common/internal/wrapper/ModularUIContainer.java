@@ -89,12 +89,14 @@ public class ModularUIContainer extends Container {
     @Override
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
-        for (ModularWindow window : this.context.getOpenWindows()) {
+        // ModularWindow#serverUpdate calls ISyncedWidget#detectAndSendChanges,
+        // and GT DataControllerWidget might close window.
+        this.context.forEachWindowTopToBottom(window -> {
             if (window.isInitialized()) {
                 // do not allow syncing before the client is initialized
                 window.serverUpdate();
             }
-        }
+        });
     }
 
     public void sendSlotChange(ItemStack stack, int index) {
