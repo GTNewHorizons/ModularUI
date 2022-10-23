@@ -38,7 +38,8 @@ public class DrawableWidget extends Widget {
         if (drawable != null) {
             GlStateManager.pushMatrix();
             // so that item z levels are properly ordered
-            GlStateManager.translate(0, 0, 200 * getWindowLayer());
+            // todo: probably need better solution so that more windows can work
+            GlStateManager.translate(0, 0, 150 * getWindowLayer());
             drawable.draw(Pos2d.ZERO, getSize(), partialTicks);
             GlStateManager.popMatrix();
         }
