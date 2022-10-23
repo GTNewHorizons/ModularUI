@@ -105,14 +105,19 @@ public class ModularUIContainer extends Container {
         }
     }
 
-    //    public void sendHeldItemUpdate() {
-    //        for (Object listener : this.crafters) {
-    //            if (listener instanceof EntityPlayerMP) {
-    //                EntityPlayerMP player = (EntityPlayerMP) listener;
-    //                player.connection.sendPacket(new SPacketSetSlot(-1, -1, player.inventory.getItemStack()));
-    //            }
-    //        }
-    //    }
+    @Override
+    public void putStackInSlot(int p_75141_1_, ItemStack p_75141_2_) {
+        try {
+            super.putStackInSlot(p_75141_1_, p_75141_2_);
+        } catch (IndexOutOfBoundsException e) {
+            // This can legitimately happen (though not easy to reproduce):
+            // 1. player opens container
+            // 2. soon after that player clicks button that shows another window which contains slot
+            // 3. server sends S2FPacketSetSlot for the said slot, requested by #detectAndSendChanges
+            // 4. but client hasn't finished init and blow up
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
