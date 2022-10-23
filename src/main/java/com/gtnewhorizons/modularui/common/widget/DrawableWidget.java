@@ -37,8 +37,8 @@ public class DrawableWidget extends Widget {
     public void draw(float partialTicks) {
         if (drawable != null) {
             GlStateManager.pushMatrix();
-            // so that item z level is properly ordered
-            GlStateManager.translate(0, 0, 500 * getWindowLayer());
+            // so that item z levels are properly ordered
+            GlStateManager.translate(0, 0, 200 * getWindowLayer());
             drawable.draw(Pos2d.ZERO, getSize(), partialTicks);
             GlStateManager.popMatrix();
         }
