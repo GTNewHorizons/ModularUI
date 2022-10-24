@@ -11,7 +11,7 @@ public class Config {
     public static int openCloseDurationMs = 200;
     public static boolean openCloseFade = false;
     public static boolean openCloseScale = true;
-    public static boolean openCloseTranslateFromBottom = true;
+    public static boolean openCloseTranslateFromBottom = false;
     public static boolean openCloseRotateFast = false;
 
     public static boolean smoothProgressbar = true;
@@ -80,7 +80,7 @@ public class Config {
         openCloseTranslateFromBottom = config.get(
                         CATEGORY_ANIMATIONS,
                         "openCloseTranslateFromBottom",
-                        true,
+                        false,
                         "Whether to draw GUI coming out of / going out to the bottom of the screen on GUI open/close")
                 .setLanguageKey(LANG_PREFIX + CATEGORY_ANIMATIONS + ".openCloseTranslateFromBottom")
                 .getBoolean();
