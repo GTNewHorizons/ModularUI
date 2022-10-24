@@ -218,6 +218,7 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
 
     private void drawItemStack(ItemStack stack, int x, int y, String altText) {
         GlStateManager.translate(0.0F, 0.0F, 32.0F);
+        GlStateManager.enableDepth();
         this.zLevel = 200.0F;
         itemRender.zLevel = 200.0F;
         FontRenderer font = stack.getItem().getFontRenderer(stack);
@@ -227,6 +228,7 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
                 font, mc.getTextureManager(), stack, x, y - (getDragSlots() != null ? 0 : 8), altText);
         this.zLevel = 0.0F;
         itemRender.zLevel = 0.0F;
+        GlStateManager.disableDepth();
     }
 
     @Override
@@ -386,9 +388,10 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
 
     protected void renderToolTip(ItemStack stack, int x, int y, List<String> extraLines) {
         FontRenderer font = null;
-        List lines = new ArrayList();
+        List<String> lines = new ArrayList<>();
         if (stack != null) {
             font = stack.getItem().getFontRenderer(stack);
+            //noinspection unchecked
             List<String> itemStackTooltips =
                     stack.getTooltip(context.getPlayer(), this.mc.gameSettings.advancedItemTooltips);
             for (int i = 0; i < itemStackTooltips.size(); i++) {
@@ -427,16 +430,6 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
     private boolean isDoubleClick(long lastClick, long currentClick) {
         return currentClick - lastClick < 500;
     }
-
-    //    @Override
-    //    protected boolean hasClickedOutside(int p_193983_1_, int p_193983_2_, int p_193983_3_, int p_193983_4_) {
-    //        for (ModularWindow window : context.getOpenWindows()) {
-    //            if (Pos2d.isInside(p_193983_1_, p_193983_2_, window.getAbsolutePos(), window.getSize())) {
-    //                return false;
-    //            }
-    //        }
-    //        return super.hasClickedOutside(p_193983_1_, p_193983_2_, p_193983_3_, p_193983_4_);
-    //    }
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
