@@ -61,7 +61,6 @@ public class ModularWindow implements IWidgetParent {
     private final List<Interactable> interactionListeners = new ArrayList<>();
     protected boolean initialized = false;
     protected boolean clientOnly = true;
-    private boolean toRemove;
 
     private final boolean fullScreen;
     private Size size;
@@ -168,7 +167,7 @@ public class ModularWindow implements IWidgetParent {
             closeAnimation = openAnimation.getReversed(Config.openCloseDurationMs, Eases.EaseQuadIn);
             openAnimation.forward();
             closeAnimation.setCallback(val -> {
-                closeWindow(false);
+                closeWindow();
                 openAnimation = null;
                 closeAnimation = null;
             });
@@ -177,24 +176,11 @@ public class ModularWindow implements IWidgetParent {
     }
 
     /**
-     * @see #tryClose(boolean)
+     * Closes this window. Starts animation or closes directly depending on {@link #anyAnimation}.
      */
     public boolean tryClose() {
-        return tryClose(true);
-    }
-
-    /**
-     * Closes this window. Starts animation or closes directly depending on {@link #anyAnimation}.
-     * <br> This method removes itself from {@link ModularUIContext#windows}
-     * if {@code doRemoveWindow} is set to true.
-     * So if you're going to iterate over windows using either {@link ModularUIContext#getOpenWindows}
-     * or {@link ModularUIContext#getOpenWindowsReversed}, you need to use
-     * either {@link ModularUIContext#forEachWindowTopToBottom} or {@link ModularUIContext#forEachWindowBottomToTop}
-     * instead of loop, and set {@code doRemoveWindow} to false, in order to prevent ConcurrentModificationException.
-     */
-    public boolean tryClose(boolean doRemoveWindow) {
         if (closeAnimation == null) {
-            closeWindow(doRemoveWindow);
+            closeWindow();
         } else if (!closeAnimation.isRunning()) {
             closeAnimation.forward();
             return true;
@@ -268,29 +254,10 @@ public class ModularWindow implements IWidgetParent {
     }
 
     /**
-     * @see #tryClose(boolean)
+     * Closes window instantly. For animated closing, use {@link #tryClose}
      */
     public void closeWindow() {
-        closeWindow(true);
-    }
-
-    /**
-     * @see #tryClose(boolean)
-     */
-    public void closeWindow(boolean doRemoveWindow) {
-        context.closeWindow(this, doRemoveWindow);
-    }
-
-    /**
-     * Remove window from {@link ModularUIContext#windows}.
-     * Actual removal is deferred to prevent ConcurrentModificationException.
-     */
-    public void removeFromContext() {
-        toRemove = true;
-    }
-
-    public boolean isRemovalScheduled() {
-        return toRemove;
+        context.closeWindow(this);
     }
 
     protected void destroyWindow() {

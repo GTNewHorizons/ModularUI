@@ -3,6 +3,7 @@ package com.gtnewhorizons.modularui.api.screen;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
@@ -74,39 +75,23 @@ public class ModularUIContext {
 
     /**
      * Iterates over {@link #windows} from bottom (main window) to top.
-     * If some windows get flag to be removed from the list,
-     * this executes removals after iteration is done.
-     * @see ModularWindow#tryClose(boolean)
+     * This method is protected against ConcurrentModificationException caused by forEach method
+     * triggering window closing.
      */
     public void forEachWindowBottomToTop(Consumer<ModularWindow> forEach) {
-        List<ModularWindow> toRemove = new ArrayList<>();
-        for (ModularWindow window : getOpenWindowsReversed()) {
+        for (ModularWindow window : Lists.newArrayList(getOpenWindowsReversed())) {
             forEach.accept(window);
-            if (window.isRemovalScheduled()) {
-                toRemove.add(window);
-            }
-        }
-        for (ModularWindow window : toRemove) {
-            windows.removeFirstOccurrence(window);
         }
     }
 
     /**
      * Iterates over {@link #windows} from top to bottom (main window).
-     * If some windows get flag to be removed from the list,
-     * this executes removals after iteration is done.
-     * @see ModularWindow#tryClose(boolean)
+     * This method is protected against ConcurrentModificationException caused by forEach method
+     * triggering window closing.
      */
     public void forEachWindowTopToBottom(Consumer<ModularWindow> forEach) {
-        List<ModularWindow> toRemove = new ArrayList<>();
-        for (ModularWindow window : getOpenWindows()) {
+        for (ModularWindow window : Lists.newArrayList(getOpenWindows())) {
             forEach.accept(window);
-            if (window.isRemovalScheduled()) {
-                toRemove.add(window);
-            }
-        }
-        for (ModularWindow window : toRemove) {
-            windows.removeLastOccurrence(window);
         }
     }
 
@@ -203,22 +188,10 @@ public class ModularUIContext {
     }
 
     public void closeWindow(ModularWindow window) {
-        closeWindow(window, true);
-    }
-
-    /**
-     * @param window Window to close
-     * @param doRemoveWindow If actually remove window from {@link #windows}
-     * @see ModularWindow#tryClose(boolean)
-     */
-    public void closeWindow(ModularWindow window, boolean doRemoveWindow) {
         if (window == null) {
             return;
         }
-        if (!doRemoveWindow) {
-            window.removeFromContext();
-            window.destroyWindow();
-        } else if (windows.removeLastOccurrence(window)) {
+        if (windows.removeLastOccurrence(window)) {
             window.destroyWindow();
         }
         if (isClient()) {
@@ -254,13 +227,11 @@ public class ModularUIContext {
      */
     public void tryClose() {
         if (this.isClosing) {
-            for (ModularWindow window : getOpenWindows()) {
-                closeWindow(window);
-            }
+            forEachWindowTopToBottom(this::closeWindow);
             return;
         }
         forEachWindowTopToBottom(window -> {
-            if (window.tryClose(false) && window == mainWindow) {
+            if (window.tryClose() && window == mainWindow) {
                 this.isClosing = true;
             }
         });
@@ -271,11 +242,11 @@ public class ModularUIContext {
     }
 
     public void closeAllButMain() {
-        for (ModularWindow window : getOpenWindows()) {
+        forEachWindowTopToBottom(window -> {
             if (window != mainWindow) {
                 window.tryClose();
             }
-        }
+        });
     }
 
     public void storeWindowPos(ModularWindow window, Pos2d pos) {
@@ -360,10 +331,6 @@ public class ModularUIContext {
         }
         getContainer().sendSlotChange(slot.getStack(), slot.slotNumber);
     }
-
-    //    public void syncHeldItem() {
-    //        getContainer().sendHeldItemUpdate();
-    //    }
 
     /**
      * Client -> Server
