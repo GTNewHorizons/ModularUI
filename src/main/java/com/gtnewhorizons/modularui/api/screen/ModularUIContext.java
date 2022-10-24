@@ -424,12 +424,12 @@ public class ModularUIContext {
         }
     }
 
-    protected static class DataCodes {
-        static final int INTERNAL_SYNC = -1;
-        static final int SYNC_CURSOR_STACK = 1;
-        static final int SYNC_INIT = 2;
-        static final int OPEN_WINDOW = 3;
-        static final int INIT_WINDOW = 4;
-        static final int CLOSE_WINDOW = 5;
+    public static class DataCodes {
+        public static final int INTERNAL_SYNC = -1;
+        public static final int SYNC_CURSOR_STACK = 1;
+        public static final int SYNC_INIT = 2;
+        public static final int OPEN_WINDOW = 3;
+        public static final int INIT_WINDOW = 4;
+        public static final int CLOSE_WINDOW = 5;
     }
 }

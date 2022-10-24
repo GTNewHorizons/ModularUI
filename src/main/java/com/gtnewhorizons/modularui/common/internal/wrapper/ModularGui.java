@@ -26,6 +26,7 @@ import com.gtnewhorizons.modularui.api.widget.IVanillaSlot;
 import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
+import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.config.Config;
 import cpw.mods.fml.common.Optional;
@@ -581,6 +582,8 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
             } else {
                 for (ModularWindow window : this.context.getOpenWindows()) {
                     window.tryClose();
+                    this.context.sendClientPacket(
+                            ModularUIContext.DataCodes.CLOSE_WINDOW, null, window, NetworkUtils.EMPTY_PACKET);
                     break;
                 }
             }
