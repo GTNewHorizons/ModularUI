@@ -5,6 +5,7 @@ import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -14,6 +15,7 @@ public class UIBuildContext {
     private final Map<String, Widget> jsonWidgets = new HashMap<>();
     protected final ImmutableMap.Builder<Integer, IWindowCreator> syncedWindows = new ImmutableMap.Builder<>();
     protected final List<Runnable> closeListeners = new ArrayList<>();
+    protected Supplier<Boolean> validator;
     protected boolean showNEI = true;
 
     public UIBuildContext(EntityPlayer player) {
@@ -22,6 +24,15 @@ public class UIBuildContext {
 
     public EntityPlayer getPlayer() {
         return player;
+    }
+
+    /**
+     * Sets validator that will be called on every tick on server.
+     * If validator returns false, it means GUI is in invalid state,
+     * and GUI will be closed.
+     */
+    public void setValidator(Supplier<Boolean> validator) {
+        this.validator = validator;
     }
 
     public void addJsonWidgets(String name, Widget widget) {
@@ -59,6 +70,10 @@ public class UIBuildContext {
         }
     }
 
+    /**
+     * Registers synced window that can be displayed on top of main window.
+     * Call {@link ModularUIContext#openSyncedWindow} to actually open the window.
+     */
     public void addSyncedWindow(int id, IWindowCreator windowCreator) {
         if (id <= 0) {
             ModularUI.logger.error("Window id must be > 0");

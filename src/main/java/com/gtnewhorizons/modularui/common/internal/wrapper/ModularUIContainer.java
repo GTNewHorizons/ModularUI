@@ -89,6 +89,9 @@ public class ModularUIContainer extends Container {
     @Override
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
+        if (context.getValidator() != null && !context.getValidator().get()) {
+            context.tryClose();
+        }
         // ModularWindow#serverUpdate calls ISyncedWidget#detectAndSendChanges,
         // and GT DataControllerWidget might close window.
         this.context.forEachWindowTopToBottom(window -> {

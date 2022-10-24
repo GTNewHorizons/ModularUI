@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -48,6 +49,7 @@ public class ModularUIContext {
     private boolean isClosing = false;
     private final List<Runnable> closeListeners;
     private final Runnable onWidgetUpdate;
+    private final Supplier<Boolean> validator;
     private final boolean showNEI;
 
     private Size screenSize = NetworkUtils.isDedicatedClient()
@@ -70,6 +72,7 @@ public class ModularUIContext {
         this.cursor = new com.gtnewhorizons.modularui.api.screen.Cursor(this);
         this.closeListeners = context.closeListeners;
         this.onWidgetUpdate = onWidgetUpdate;
+        this.validator = context.validator;
         this.showNEI = context.showNEI;
     }
 
@@ -313,6 +316,16 @@ public class ModularUIContext {
         return screenSize;
     }
 
+    public void onWidgetUpdate() {
+        if (onWidgetUpdate != null) {
+            onWidgetUpdate.run();
+        }
+    }
+
+    public Supplier<Boolean> getValidator() {
+        return validator;
+    }
+
     public boolean doShowNEI() {
         return showNEI;
     }
@@ -415,12 +428,6 @@ public class ModularUIContext {
             bufferConsumer.accept(buffer);
             SWidgetUpdate packet = new SWidgetUpdate(buffer, syncId);
             NetworkHandler.sendToPlayer(packet, (EntityPlayerMP) player);
-        }
-    }
-
-    public void onWidgetUpdate() {
-        if (onWidgetUpdate != null) {
-            onWidgetUpdate.run();
         }
     }
 
