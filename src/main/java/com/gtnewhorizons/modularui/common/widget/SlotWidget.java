@@ -368,6 +368,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     }
 
     private void putClickedStack(ItemStack stack, int mouseButton) {
+        if (!slot.isItemValidPhantom(stack)) return;
         if (mouseButton == 1 || !canControlAmount()) {
             stack.stackSize = 1;
         }
