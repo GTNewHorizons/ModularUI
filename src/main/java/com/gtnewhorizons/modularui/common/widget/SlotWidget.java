@@ -52,9 +52,9 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
 
     protected boolean interactionDisabled = false;
 
-    private boolean controlsAmount = false;
+    protected boolean controlsAmount = false;
 
-    private Consumer<Widget> onDragAndDropComplete;
+    protected Consumer<Widget> onDragAndDropComplete;
 
     @Nullable
     private String sortAreaName = null;
@@ -285,7 +285,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         } else if (id == 4) {
             setEnabled(buf.readBoolean());
         } else if (id == 5) {
-            phantomClick(ClickData.readPacket(buf), buf.readItemStackFromBuffer());
+            handleDragAndDropServer(ClickData.readPacket(buf), buf.readItemStackFromBuffer());
             if (onDragAndDropComplete != null) {
                 onDragAndDropComplete.accept(this);
             }
@@ -401,6 +401,10 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         });
         draggedStack.stackSize = 0;
         return true;
+    }
+
+    protected void handleDragAndDropServer(ClickData clickData, ItemStack cursorStack) {
+        phantomClick(clickData, cursorStack);
     }
 
     private GuiContainerAccessor getGuiAccessor() {
