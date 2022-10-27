@@ -12,6 +12,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -166,6 +167,19 @@ public class FakeSyncWidget<T> extends SyncedWidget {
                             return null;
                         }
                     });
+        }
+    }
+
+    public static class FluidStackSyncer extends FakeSyncWidget<FluidStack> {
+        public FluidStackSyncer(Supplier<FluidStack> getter, Consumer<FluidStack> setter) {
+            super(getter, setter, NetworkUtils::writeFluidStack, buffer -> {
+                try {
+                    return NetworkUtils.readFluidStack(buffer);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            });
         }
     }
 
