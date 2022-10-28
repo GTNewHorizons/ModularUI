@@ -6,7 +6,6 @@ import com.gtnewhorizons.modularui.api.math.MathExpression;
 import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import java.awt.*;
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -120,11 +119,7 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
     public void readOnClient(int id, PacketBuffer buf) {
         if (id == 1) {
             if (!isFocused()) {
-                try {
-                    setText(buf.readStringFromBuffer(Short.MAX_VALUE));
-                } catch (IOException e) {
-
-                }
+                setText(NetworkUtils.readStringSafe(buf));
                 if (this.setter != null && (this.getter == null || !getText().equals(this.getter.get()))) {
                     this.setter.accept(getText());
                 }
@@ -135,11 +130,7 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
     @Override
     public void readOnServer(int id, PacketBuffer buf) {
         if (id == 1) {
-            try {
-                setText(buf.readStringFromBuffer(Short.MAX_VALUE));
-            } catch (IOException e) {
-
-            }
+            setText(NetworkUtils.readStringSafe(buf));
             if (this.setter != null) {
                 this.setter.accept(getText());
             }

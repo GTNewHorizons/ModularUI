@@ -85,9 +85,9 @@ public class DynamicTextWidget extends TextWidget implements ISyncedWidget {
     @Override
     public void readOnClient(int id, PacketBuffer buf) throws IOException {
         if (id == 0) {
-            Text newText = new Text(buf.readStringFromBuffer(MAX_PACKET_LENGTH));
+            Text newText = new Text(NetworkUtils.readStringSafe(buf));
             newText.color(buf.readVarIntFromBuffer());
-            newText.setFormatting(buf.readStringFromBuffer(MAX_PACKET_LENGTH));
+            newText.setFormatting(NetworkUtils.readStringSafe(buf));
             lastText = newText;
             checkNeedsRebuild();
         }

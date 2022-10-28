@@ -1,5 +1,6 @@
 package com.gtnewhorizons.modularui.common.internal.network;
 
+import com.google.common.base.Charsets;
 import com.gtnewhorizons.modularui.ModularUI;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -79,7 +80,16 @@ public class NetworkUtils {
         return FluidStack.loadFluidStackFromNBT(buffer.readNBTTagCompoundFromBuffer());
     }
 
+    /**
+     * No-exception and null-safe version of {@link PacketBuffer#writeStringToBuffer}.
+     * You must also use {@link #readStringSafe} to read packet if string can be null.
+     */
     public static void writeStringSafe(PacketBuffer buffer, String string) {
+        if (string == null) {
+            buffer.writeVarIntToBuffer(-1);
+            return;
+        }
+
         byte[] bytesTest = string.getBytes(StandardCharsets.UTF_8);
         byte[] bytes;
 
@@ -92,6 +102,26 @@ public class NetworkUtils {
         }
         buffer.writeVarIntToBuffer(bytes.length);
         buffer.writeBytes(bytes);
+    }
+
+    public static String readStringSafe(PacketBuffer buffer, int maxLength) {
+        int length = buffer.readVarIntFromBuffer();
+        if (length == -1) return null;
+
+        if (length > maxLength * 4) {
+            ModularUI.logger.warn("Warning! Received string exceeds max length!");
+        }
+        String string =
+                new String(buffer.readBytes(Math.min(length, maxLength * 4)).array(), Charsets.UTF_8);
+        if (string.length() > maxLength) {
+            return string.substring(0, maxLength);
+        } else {
+            return string;
+        }
+    }
+
+    public static String readStringSafe(PacketBuffer buffer) {
+        return readStringSafe(buffer, Short.MAX_VALUE);
     }
 
     // modified version of PacketBuffer#writeNBTTagCompoundToBuffer

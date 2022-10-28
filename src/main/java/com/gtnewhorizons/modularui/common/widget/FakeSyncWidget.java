@@ -136,14 +136,7 @@ public class FakeSyncWidget<T> extends SyncedWidget {
 
     public static class StringSyncer extends FakeSyncWidget<String> {
         public StringSyncer(Supplier<String> getter, Consumer<String> setter) {
-            super(getter, setter, NetworkUtils::writeStringSafe, buffer -> {
-                try {
-                    return buffer.readStringFromBuffer(MAX_PACKET_LENGTH);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return "";
-                }
-            });
+            super(getter, setter, NetworkUtils::writeStringSafe, NetworkUtils::readStringSafe);
         }
     }
 
