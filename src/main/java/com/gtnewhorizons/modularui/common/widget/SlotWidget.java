@@ -404,8 +404,8 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         return true;
     }
 
-    protected void handleDragAndDropServer(ClickData clickData, ItemStack cursorStack) {
-        phantomClick(clickData, cursorStack);
+    protected void handleDragAndDropServer(ClickData clickData, ItemStack draggedStack) {
+        phantomClick(clickData, draggedStack);
     }
 
     private GuiContainerAccessor getGuiAccessor() {

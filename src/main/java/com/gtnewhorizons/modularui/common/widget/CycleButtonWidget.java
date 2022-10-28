@@ -213,13 +213,17 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
         return this;
     }
 
-    public CycleButtonWidget setToggle(BooleanSupplier getter, Consumer<Boolean> setter) {
+    public CycleButtonWidget setToggle(Supplier<Boolean> getter, Consumer<Boolean> setter) {
         setSetter(val -> setter.accept(val == 1));
-        setGetter(() -> getter.getAsBoolean() ? 1 : 0);
+        setGetter(() -> getter.get() ? 1 : 0);
         setLength(2);
         return this;
     }
 
+    /**
+     * Sets texture that will be changed depending on the value stored and drawn on top of background.
+     * @param textureGetter state of button -> texture
+     */
     public CycleButtonWidget setTextureGetter(Function<Integer, IDrawable> textureGetter) {
         this.textureGetter = textureGetter;
         return this;
@@ -227,6 +231,7 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
 
     /**
      * Sets texture that will be changed depending on the value stored and drawn on top of background.
+     * Argument is automatically split by the number of state length.
      */
     public CycleButtonWidget setTexture(UITexture texture) {
         return setTextureGetter(val -> {
@@ -243,14 +248,18 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
         return setTextureGetter(val -> texture);
     }
 
+    /**
+     * Sets background that will be changed depending on the value stored.
+     * @param backgroundGetter state of button -> background
+     */
     public CycleButtonWidget setVariableBackgroundGetter(Function<Integer, IDrawable[]> backgroundGetter) {
         this.backgroundGetter = backgroundGetter;
         return this;
     }
 
     /**
-     * {@link #setTexture} is used for texture drawn on top of the background,
-     * so if you want to change texture of background, you'll need this method instead.
+     * Sets background that will be changed depending on the value stored.
+     * Each element of arguments is automatically split by the number of state length.
      */
     public CycleButtonWidget setVariableBackground(UITexture... textures) {
         return setVariableBackgroundGetter(val -> Arrays.stream(textures)
