@@ -140,7 +140,8 @@ public class TextRenderer {
 
     protected int getStartY(int lines) {
         if (alignment.y >= 0 && maxHeight > 0) {
-            float height = lines * getFontHeight() - scale;
+            //noinspection PointlessArithmeticExpression
+            float height = lines * getFontHeight() + Math.max(lines, 0) * 1 - scale;
             if (alignment.y > 0) {
                 return (int) (y + maxHeight - height);
             } else {
