@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -279,7 +280,8 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
                         ((IVanillaSlot) hovered).getMcSlot().getStack(),
                         mouseX,
                         mouseY,
-                        ((IVanillaSlot) hovered).getExtraTooltip());
+                        ((IVanillaSlot) hovered).getExtraTooltip(),
+                        ((IVanillaSlot) hovered).getOverwriteItemStackTooltip());
             } else if (hovered.getTooltipShowUpDelay() <= context.getCursor().getTimeHovered()) {
                 List<Text> tooltip = new ArrayList<>(hovered.getTooltip()); // avoid UOE
                 if (ModularUI.isNEILoaded && hovered.hasNEITransferRect()) {
@@ -386,7 +388,12 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
         drawRect(mousePos.x, mousePos.y, mousePos.x + 1, mousePos.y + 1, Color.withAlpha(Color.GREEN.normal, 0.8f));
     }
 
-    protected void renderToolTip(ItemStack stack, int x, int y, List<String> extraLines) {
+    protected void renderToolTip(
+            ItemStack stack,
+            int x,
+            int y,
+            List<String> extraLines,
+            Function<List<String>, List<String>> overwriteItemStackTooltip) {
         FontRenderer font = null;
         List<String> lines = new ArrayList<>();
         if (stack != null) {
@@ -404,6 +411,9 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
             lines.addAll(itemStackTooltips);
         }
         lines.addAll(extraLines);
+        if (overwriteItemStackTooltip != null) {
+            lines = overwriteItemStackTooltip.apply(lines);
+        }
         this.drawHoveringText(lines, x, y, (font == null ? fontRenderer : font));
     }
 

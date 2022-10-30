@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
@@ -54,6 +55,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     protected boolean handlePhantomActionClient = false;
 
     protected boolean controlsAmount = false;
+    private Function<List<String>, List<String>> overwriteItemStackTooltip;
 
     protected Consumer<Widget> onDragAndDropComplete;
 
@@ -106,6 +108,11 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     @Override
     public @Nullable String getBackgroundColorKey() {
         return Theme.KEY_ITEM_SLOT;
+    }
+
+    @Override
+    public Function<List<String>, List<String>> getOverwriteItemStackTooltip() {
+        return overwriteItemStackTooltip;
     }
 
     @Override
@@ -267,6 +274,11 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
 
     public SlotWidget setControlsAmount(boolean controlsAmount) {
         this.controlsAmount = controlsAmount;
+        return this;
+    }
+
+    public SlotWidget setOverwriteItemStackTooltip(Function<List<String>, List<String>> overwriteItemStackTooltip) {
+        this.overwriteItemStackTooltip = overwriteItemStackTooltip;
         return this;
     }
 
