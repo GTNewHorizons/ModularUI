@@ -448,11 +448,16 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         return getContext().getScreen();
     }
 
+    @SideOnly(Side.CLIENT)
+    protected void drawSlot(Slot slotIn) {
+        drawSlot(slotIn, true);
+    }
+
     /**
      * Copied from {@link net.minecraft.client.gui.inventory.GuiContainer} and removed the bad parts
      */
     @SideOnly(Side.CLIENT)
-    protected void drawSlot(Slot slotIn) {
+    protected void drawSlot(Slot slotIn, boolean drawStackSize) {
         int x = slotIn.xDisplayPosition;
         int y = slotIn.yDisplayPosition;
         ItemStack itemstack = slotIn.getStack();
@@ -524,35 +529,38 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
                                 1,
                                 1);
                 GlStateManager.popMatrix();
-                if (amount < 0) {
-                    amount = itemstack.stackSize;
-                }
-                // render the amount overlay
-                if (amount > 1 || format != null) {
-                    String amountText = NumberFormat.format(amount, 2);
-                    if (format != null) {
-                        amountText = format + amountText;
+
+                if (drawStackSize) {
+                    if (amount < 0) {
+                        amount = itemstack.stackSize;
                     }
-                    float scale = 1f;
-                    if (amountText.length() == 3) {
-                        scale = 0.8f;
-                    } else if (amountText.length() == 4) {
-                        scale = 0.6f;
-                    } else if (amountText.length() > 4) {
-                        scale = 0.5f;
+                    // render the amount overlay
+                    if (amount > 1 || format != null) {
+                        String amountText = NumberFormat.format(amount, 2);
+                        if (format != null) {
+                            amountText = format + amountText;
+                        }
+                        float scale = 1f;
+                        if (amountText.length() == 3) {
+                            scale = 0.8f;
+                        } else if (amountText.length() == 4) {
+                            scale = 0.6f;
+                        } else if (amountText.length() > 4) {
+                            scale = 0.5f;
+                        }
+                        textRenderer.setShadow(true);
+                        textRenderer.setScale(scale);
+                        textRenderer.setColor(Color.WHITE.normal);
+                        textRenderer.setAlignment(Alignment.BottomRight, size.width - 1, size.height - 1);
+                        textRenderer.setPos(1, 1);
+                        GlStateManager.disableLighting();
+                        GlStateManager.disableDepth();
+                        GlStateManager.disableBlend();
+                        textRenderer.draw(amountText);
+                        GlStateManager.enableLighting();
+                        GlStateManager.enableDepth();
+                        GlStateManager.enableBlend();
                     }
-                    textRenderer.setShadow(true);
-                    textRenderer.setScale(scale);
-                    textRenderer.setColor(Color.WHITE.normal);
-                    textRenderer.setAlignment(Alignment.BottomRight, size.width - 1, size.height - 1);
-                    textRenderer.setPos(1, 1);
-                    GlStateManager.disableLighting();
-                    GlStateManager.disableDepth();
-                    GlStateManager.disableBlend();
-                    textRenderer.draw(amountText);
-                    GlStateManager.enableLighting();
-                    GlStateManager.enableDepth();
-                    GlStateManager.enableBlend();
                 }
 
                 int cachedCount = itemstack.stackSize;
