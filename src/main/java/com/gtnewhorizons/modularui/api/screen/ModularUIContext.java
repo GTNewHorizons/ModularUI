@@ -176,6 +176,14 @@ public class ModularUIContext {
         }
     }
 
+    public void openClientWindow(IWindowCreator windowCreator) {
+        ModularWindow newWindow = openWindow(windowCreator);
+        newWindow.onResize(screenSize);
+        newWindow.rebuild();
+        newWindow.onOpen();
+        newWindow.initialized = true;
+    }
+
     public ModularWindow openWindow(IWindowCreator windowCreator) {
         ModularWindow window = windowCreator.create(player);
         pushWindow(window);
