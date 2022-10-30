@@ -51,6 +51,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     private ItemStack lastStoredPhantomItem = null;
 
     protected boolean interactionDisabled = false;
+    protected boolean handlePhantomActionClient = false;
 
     protected boolean controlsAmount = false;
 
@@ -213,6 +214,14 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         return this;
     }
 
+    /**
+     * @param handlePhantomActionClient If phantom click and scroll are handled on client too
+     */
+    public SlotWidget setHandlePhantomActionClient(boolean handlePhantomActionClient) {
+        this.handlePhantomActionClient = handlePhantomActionClient;
+        return this;
+    }
+
     public SlotWidget setChangeListener(Runnable runnable) {
         this.slot.setChangeListener(runnable);
         return this;
@@ -312,7 +321,11 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     public ClickResult onClick(int buttonId, boolean doubleClick) {
         if (interactionDisabled) return ClickResult.REJECT;
         if (isPhantom()) {
-            syncToServer(2, buffer -> ClickData.create(buttonId, doubleClick).writeToPacket(buffer));
+            ClickData clickData = ClickData.create(buttonId, doubleClick);
+            syncToServer(2, clickData::writeToPacket);
+            if (handlePhantomActionClient) {
+                phantomClick(clickData);
+            }
             return ClickResult.ACCEPT;
         }
         return ClickResult.REJECT;
@@ -327,6 +340,9 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
             }
             final int finalDirection = direction;
             syncToServer(3, buffer -> buffer.writeVarIntToBuffer(finalDirection));
+            if (handlePhantomActionClient) {
+                phantomScroll(finalDirection);
+            }
             return true;
         }
         return false;
@@ -392,14 +408,18 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     public boolean handleDragAndDrop(ItemStack draggedStack, int button) {
         if (interactionDisabled) return false;
         if (!isPhantom()) return false;
+        ClickData clickData = ClickData.create(button, false);
         syncToServer(5, buffer -> {
             try {
-                ClickData.create(button, false).writeToPacket(buffer);
+                clickData.writeToPacket(buffer);
                 buffer.writeItemStackToBuffer(draggedStack);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
+        if (handlePhantomActionClient) {
+            phantomClick(clickData, draggedStack);
+        }
         draggedStack.stackSize = 0;
         return true;
     }
