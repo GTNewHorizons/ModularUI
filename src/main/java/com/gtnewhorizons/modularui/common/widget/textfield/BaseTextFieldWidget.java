@@ -36,6 +36,10 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
 
     public static final DecimalFormat format = (DecimalFormat) NumberFormat.getInstance();
 
+    static {
+        format.setGroupingUsed(false);
+    }
+
     /**
      * all positive whole numbers
      */
