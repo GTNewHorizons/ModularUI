@@ -83,7 +83,9 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
             throw new IllegalStateException("TextFieldWidget can only have one line!");
         }
         setText(validator.apply(getText()));
-        setter.accept(getText());
+        if (setter != null) {
+            setter.accept(getText());
+        }
         if (syncsToServer()) {
             syncToServer(1, buffer -> NetworkUtils.writeStringSafe(buffer, getText()));
         }
@@ -94,7 +96,9 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
         if (!isFocused()) return false;
         if (onScroll != null) {
             setText(validator.apply(onScroll.apply(getText(), direction)));
-            setter.accept(getText());
+            if (setter != null) {
+                setter.accept(getText());
+            }
             if (syncsToServer()) {
                 syncToServer(1, buffer -> NetworkUtils.writeStringSafe(buffer, getText()));
             }
