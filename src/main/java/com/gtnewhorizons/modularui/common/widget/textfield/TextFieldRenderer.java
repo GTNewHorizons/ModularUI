@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import net.minecraft.client.renderer.Tessellator;
 import org.apache.commons.lang3.tuple.Pair;
+import org.lwjgl.opengl.GL11;
 
 public class TextFieldRenderer extends TextRenderer {
 
@@ -131,6 +132,8 @@ public class TextFieldRenderer extends TextRenderer {
         float alpha = Color.getAlphaF(markedColor);
         if (alpha == 0) alpha = 1f;
         Tessellator tessellator = Tessellator.instance;
+        GL11.glEnable(GL11.GL_LIGHT0);
+        GL11.glEnable(GL11.GL_COLOR_MATERIAL);
         GlStateManager.color(red, green, blue, alpha);
         GlStateManager.disableTexture2D();
         tessellator.startDrawingQuads();
