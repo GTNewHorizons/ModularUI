@@ -30,4 +30,11 @@ public class ModularUITextures {
     public static final UITexture VANILLA_TAB_TOP_START = VANILLA_TAB_TOP.getSubArea(0f, 0f, 1 / 3f, 1f);
     public static final UITexture VANILLA_TAB_TOP_MIDDLE = VANILLA_TAB_TOP.getSubArea(1 / 3f, 0f, 2 / 3f, 1f);
     public static final UITexture VANILLA_TAB_TOP_END = VANILLA_TAB_TOP.getSubArea(2 / 3f, 0f, 1f, 1f);
+
+    public static final AdaptableUITexture VANILLA_BUTTON_DISABLED =
+            AdaptableUITexture.of(ModularUI.MODID, "gui/widgets/vanilla_button_disabled", 20, 20, 2);
+    public static final AdaptableUITexture VANILLA_BUTTON_NORMAL =
+            AdaptableUITexture.of(ModularUI.MODID, "gui/widgets/vanilla_button_normal", 20, 20, 2);
+    public static final AdaptableUITexture VANILLA_BUTTON_HOVERED =
+            AdaptableUITexture.of(ModularUI.MODID, "gui/widgets/vanilla_button_hovered", 20, 20, 2);
 }
