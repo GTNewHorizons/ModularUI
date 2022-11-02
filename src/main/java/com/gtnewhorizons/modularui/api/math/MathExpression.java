@@ -127,6 +127,8 @@ public class MathExpression {
     public static List<Object> buildParsedList(String expr, double onFailReturn) {
         List<Object> parsed = new ArrayList<>();
         StringBuilder builder = new StringBuilder();
+        if (expr == null || expr.isEmpty()) return parsed;
+
         for (int i = 0; i < expr.length(); i++) {
             char c = expr.charAt(i);
             switch (c) {
