@@ -584,9 +584,9 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
                 this.context.tryClose();
             } else {
                 for (ModularWindow window : this.context.getOpenWindows()) {
-                    window.tryClose();
                     this.context.sendClientPacket(
                             ModularUIContext.DataCodes.CLOSE_WINDOW, null, window, NetworkUtils.EMPTY_PACKET);
+                    window.tryClose();
                     break;
                 }
             }
