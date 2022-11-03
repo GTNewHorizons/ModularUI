@@ -13,7 +13,9 @@ public class Column extends MultiChildWidget implements IWidgetBuilder<Column> {
     private MainAxisAlignment maa = MainAxisAlignment.START;
     private CrossAxisAlignment caa = CrossAxisAlignment.START;
     private int maxHeight = -1, maxWidth = 0;
-    private int space;
+    private Integer space;
+
+    protected boolean skipDisabledChild = false;
 
     @Override
     public void addWidgetInternal(Widget widget) {
@@ -42,6 +44,7 @@ public class Column extends MultiChildWidget implements IWidgetBuilder<Column> {
         int totalHeight = 0;
 
         for (Widget widget : getChildren()) {
+            if (skipDisabledChild && !widget.isEnabled()) continue;
             totalHeight += widget.getSize().height;
             maxWidth = Math.max(maxWidth, widget.getSize().width);
         }
@@ -54,6 +57,7 @@ public class Column extends MultiChildWidget implements IWidgetBuilder<Column> {
         }
 
         for (Widget widget : getChildren()) {
+            if (skipDisabledChild && !widget.isEnabled()) continue;
             int x = 0;
             if (caa == CrossAxisAlignment.CENTER) {
                 x = (int) (maxWidth / 2f - widget.getSize().width / 2f);
@@ -63,7 +67,7 @@ public class Column extends MultiChildWidget implements IWidgetBuilder<Column> {
             widget.setPosSilent(new Pos2d(x, lastY));
             lastY += widget.getSize().height;
             if (maa == MainAxisAlignment.SPACE_BETWEEN) {
-                if (space != 0) {
+                if (space != null) {
                     lastY += space;
                 } else {
                     lastY += (maxHeight - totalHeight) / (getChildren().size() - 1);
