@@ -16,7 +16,7 @@ import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Util widget for syncing pre-defined values.
+ * Util widget for syncing specific values from server to client.
  * Replacement of updateProgressBar workaround!
  * Does not draw anything.
  */

@@ -170,8 +170,6 @@ public abstract class Widget {
         int cw = constraints.width, ch = constraints.height;
         if (this instanceof IWidgetParent) {
             modifyConstraints(constraints);
-            cw = constraints.width;
-            ch = constraints.height;
             IWidgetParent parentThis = (IWidgetParent) this;
             for (Widget widget : parentThis.getChildren()) {
                 widget.buildTopToBottom(constraints);
