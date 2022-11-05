@@ -87,8 +87,8 @@ public abstract class Widget {
     private boolean respectNEIArea = true;
     private boolean hasTransferRect;
     private String transferRectID;
-    private String transferRectTooltip;
     private Object[] transferRectArgs;
+    private String transferRectTooltip;
 
     public Widget() {}
 
@@ -589,13 +589,13 @@ public abstract class Widget {
     }
 
     @Nullable
-    public String getNEITransferRectTooltip() {
-        return transferRectTooltip;
+    public Object[] getNEITransferRectArgs() {
+        return transferRectArgs;
     }
 
     @Nullable
-    public Object[] getNEITransferRectArgs() {
-        return transferRectArgs;
+    public String getNEITransferRectTooltip() {
+        return transferRectTooltip;
     }
 
     public void handleTransferRectMouseClick(boolean usage) {
@@ -934,20 +934,25 @@ public abstract class Widget {
         return this;
     }
 
-    public Widget setNEITransferRect(String transferRectID, String transferRectTooltip, Object[] transferRectArgs) {
+    public Widget setNEITransferRect(String transferRectID, Object[] transferRectArgs, String transferRectTooltip) {
         this.transferRectID = transferRectID;
-        this.transferRectTooltip = transferRectTooltip;
         this.transferRectArgs = transferRectArgs;
+        this.transferRectTooltip = transferRectTooltip;
         this.hasTransferRect = true;
         return this;
     }
 
+    public Widget setNEITransferRect(String transferRectID, Object[] transferRectArgs) {
+        return setNEITransferRect(
+                transferRectID, transferRectArgs, StatCollector.translateToLocal("nei.recipe.tooltip"));
+    }
+
     public Widget setNEITransferRect(String transferRectID, String transferRectTooltip) {
-        return setNEITransferRect(transferRectID, transferRectTooltip, new Object[0]);
+        return setNEITransferRect(transferRectID, new Object[0], transferRectTooltip);
     }
 
     public Widget setNEITransferRect(String transferRectID) {
-        return setNEITransferRect(transferRectID, StatCollector.translateToLocal("nei.recipe.tooltip"));
+        return setNEITransferRect(transferRectID, new Object[0]);
     }
 
     // ==== Utility ====
