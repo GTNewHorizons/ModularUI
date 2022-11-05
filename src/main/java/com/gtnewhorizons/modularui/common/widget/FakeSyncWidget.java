@@ -93,7 +93,7 @@ public class FakeSyncWidget<T> extends SyncedWidget {
         return list;
     }
 
-    public FakeSyncWidget<T> onClientUpdate(Consumer<T> onClientUpdate) {
+    public FakeSyncWidget<T> setOnClientUpdate(Consumer<T> onClientUpdate) {
         this.onClientUpdate = onClientUpdate;
         return this;
     }

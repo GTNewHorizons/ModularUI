@@ -910,18 +910,17 @@ public abstract class Widget {
 
     /**
      * Effect is the same as when you store this widget in a variable,
-     * set {@link FakeSyncWidget#onClientUpdate(Consumer)}, and add syncer to builder.
+     * set {@link FakeSyncWidget#setOnClientUpdate(Consumer)}, and add syncer to builder.
      * @param syncer To attach to this widget
      * @param builder To add syncer for window
      * @param onSync Called when syncer receives packet from server
      */
-    public <T> Widget attachSyncer(
-            FakeSyncWidget<T> syncer, ModularWindow.Builder builder, BiConsumer<Widget, T> onSync) {
-        builder.widget(syncer.onClientUpdate(val -> onSync.accept(this, val)));
+    public <T> Widget attachSyncer(FakeSyncWidget<T> syncer, IWidgetBuilder<?> builder, BiConsumer<Widget, T> onSync) {
+        builder.widget(syncer.setOnClientUpdate(val -> onSync.accept(this, val)));
         return this;
     }
 
-    public <T> Widget attachSyncer(FakeSyncWidget<T> syncer, ModularWindow.Builder builder) {
+    public <T> Widget attachSyncer(FakeSyncWidget<T> syncer, IWidgetBuilder<?> builder) {
         return attachSyncer(syncer, builder, (widget, val) -> {});
     }
 
