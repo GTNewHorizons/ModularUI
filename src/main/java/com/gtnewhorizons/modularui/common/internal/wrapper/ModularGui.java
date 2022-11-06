@@ -287,7 +287,7 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
                 if (ModularUI.isNEILoaded && hovered.hasNEITransferRect()) {
                     String transferRectTooltip = hovered.getNEITransferRectTooltip();
                     if (transferRectTooltip != null) {
-                        tooltip.add(new Text(transferRectTooltip));
+                        tooltip.add(new Text(transferRectTooltip).color(Color.WHITE.normal));
                     }
                 }
                 if (!tooltip.isEmpty()) {

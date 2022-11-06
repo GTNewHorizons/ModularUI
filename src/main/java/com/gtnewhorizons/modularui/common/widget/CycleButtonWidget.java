@@ -7,6 +7,7 @@ import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
+import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
@@ -284,7 +285,7 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
      * Should be called after {@link #setLength}.
      */
     public CycleButtonWidget addTooltip(int state, String tooltip) {
-        return addTooltip(state, new Text(tooltip));
+        return addTooltip(state, new Text(tooltip).color(Color.WHITE.normal));
     }
 
     /**

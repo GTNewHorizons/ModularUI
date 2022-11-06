@@ -7,6 +7,7 @@ import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
@@ -75,17 +76,28 @@ public class GuiHelper {
         if (textLines.isEmpty()) {
             return;
         }
+        List<Integer> colors = textLines.stream().map(Text::getColor).collect(Collectors.toList());
         List<String> lines = textLines.stream().map(line -> line.getFormatted()).collect(Collectors.toList());
         drawHoveringTextFormatted(
-                lines, mousePos, screenSize, maxWidth, scale, forceShadow, alignment, tooltipHasSpaceAfterFirstLine);
+                lines,
+                colors,
+                mousePos,
+                screenSize,
+                maxWidth,
+                scale,
+                forceShadow,
+                alignment,
+                tooltipHasSpaceAfterFirstLine);
     }
 
     public static void drawHoveringTextFormatted(List<String> lines, Pos2d mousePos, Size screenSize, int maxWidth) {
-        drawHoveringTextFormatted(lines, mousePos, screenSize, maxWidth, 1f, false, Alignment.TopLeft, true);
+        drawHoveringTextFormatted(
+                lines, Collections.emptyList(), mousePos, screenSize, maxWidth, 1f, false, Alignment.TopLeft, true);
     }
 
     public static void drawHoveringTextFormatted(
             List<String> lines,
+            List<Integer> colors,
             Pos2d mousePos,
             Size screenSize,
             int maxWidth,
@@ -136,7 +148,7 @@ public class GuiHelper {
 
         renderer.setAlignment(Alignment.TopLeft, maxTextWidth);
         measuredLines = renderer.measureLines(lines);
-        renderer.drawMeasuredLines(measuredLines, hasSpaceAfterFirstLine);
+        renderer.drawMeasuredLines(measuredLines, colors, hasSpaceAfterFirstLine);
         int tooltipTextWidth = (int) renderer.lastWidth;
         int tooltipHeight = (int) renderer.lastHeight;
 
@@ -148,8 +160,6 @@ public class GuiHelper {
         RenderHelper.disableStandardItemLighting();
         GlStateManager.disableLighting();
         GlStateManager.disableDepth();
-
-        int color = 0xFFFFFF;
 
         final int zLevel = 300;
         int backgroundColor = 0xF0100010;
@@ -234,17 +244,11 @@ public class GuiHelper {
                 borderColorEnd,
                 borderColorEnd);
 
-        //        MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostBackground(ItemStack.EMPTY, lines, tooltipX,
-        // tooltipY, TextRenderer.getFontRenderer(), tooltipTextWidth, tooltipHeight));
-
         renderer.setSimulate(false);
         renderer.setPos(tooltipX, tooltipY);
         renderer.setAlignment(alignment, maxTextWidth);
-        renderer.setColor(color);
-        renderer.drawMeasuredLines(measuredLines, hasSpaceAfterFirstLine);
-
-        //        MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostText(ItemStack.EMPTY, lines, tooltipX,
-        // tooltipY, TextRenderer.getFontRenderer(), tooltipTextWidth, tooltipHeight));
+        renderer.setColor(0xffffff);
+        renderer.drawMeasuredLines(measuredLines, colors, hasSpaceAfterFirstLine);
 
         GlStateManager.enableLighting();
         GlStateManager.enableDepth();

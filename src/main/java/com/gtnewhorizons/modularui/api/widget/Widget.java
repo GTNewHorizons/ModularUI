@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
+import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
@@ -361,7 +362,9 @@ public abstract class Widget {
     @SideOnly(Side.CLIENT)
     public void buildTooltip(List<Text> tooltip) {
         if (dynamicTooltip != null) {
-            tooltip.addAll(dynamicTooltip.get().stream().map(Text::new).collect(Collectors.toList()));
+            tooltip.addAll(dynamicTooltip.get().stream()
+                    .map(s -> new Text(s).color(Color.WHITE.normal))
+                    .collect(Collectors.toList()));
         }
     }
 
@@ -374,8 +377,9 @@ public abstract class Widget {
     @SideOnly(Side.CLIENT)
     public void buildTooltipShift(List<Text> tooltipShift) {
         if (dynamicTooltipShift != null) {
-            tooltipShift.addAll(
-                    dynamicTooltipShift.get().stream().map(Text::new).collect(Collectors.toList()));
+            tooltipShift.addAll(dynamicTooltipShift.get().stream()
+                    .map(s -> new Text(s).color(Color.WHITE.normal))
+                    .collect(Collectors.toList()));
         }
     }
 
@@ -811,7 +815,7 @@ public abstract class Widget {
      * Adds a line to the tooltip
      */
     public Widget addTooltip(String tooltip) {
-        return addTooltip(new Text(tooltip));
+        return addTooltip(new Text(tooltip).color(Color.WHITE.normal));
     }
 
     public Widget addTooltips(List<String> tooltips) {
@@ -842,7 +846,7 @@ public abstract class Widget {
      * Adds a line to the tooltip shown while holding shift key
      */
     public Widget addTooltipShift(String tooltipShift) {
-        return addTooltipShift(new Text(tooltipShift));
+        return addTooltipShift(new Text(tooltipShift).color(Color.WHITE.normal));
     }
 
     public Widget addTooltipsShift(List<String> tooltipsShift) {

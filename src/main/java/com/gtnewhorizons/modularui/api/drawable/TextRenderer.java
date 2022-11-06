@@ -70,15 +70,20 @@ public class TextRenderer {
     }
 
     protected void drawMeasuredLines(List<Pair<String, Float>> measuredLines) {
-        drawMeasuredLines(measuredLines, false);
+        drawMeasuredLines(measuredLines, Collections.emptyList(), false);
     }
 
-    protected void drawMeasuredLines(List<Pair<String, Float>> measuredLines, boolean hasSpaceAfterFirstLine) {
+    protected void drawMeasuredLines(
+            List<Pair<String, Float>> measuredLines, List<Integer> colors, boolean hasSpaceAfterFirstLine) {
         float maxW = 0;
         int y0 = getStartY(measuredLines.size());
         boolean addedExtraSpace = false;
         final int EXTRA_SPACE = 2;
-        for (Pair<String, Float> measuredLine : measuredLines) {
+        for (int i = 0; i < measuredLines.size(); i++) {
+            Pair<String, Float> measuredLine = measuredLines.get(i);
+            if (i < colors.size()) {
+                setColor(colors.get(i));
+            }
             int x0 = getStartX(measuredLine.getRight());
             maxW = Math.max(draw(measuredLine.getLeft(), x0, y0), maxW);
             y0 += getRenderHeight();

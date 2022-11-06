@@ -353,7 +353,8 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
 
     public <T extends Widget & IWidgetBuilder<T>> void addInfo(T builder) {
         builder.widget(new TextWidget(new Text("Probably a Machine Name").color(0x13610C)))
-                .widget(new TextWidget("Invalid Structure or whatever").addTooltip("This has a tooltip"));
+                .widget(new TextWidget("Invalid Structure or whatever")
+                        .addTooltip(new Text("This has a tooltip").color(Color.RED.normal)));
         if (true) {
             builder.widget(new TextWidget("Maintanance Problems"));
         }
