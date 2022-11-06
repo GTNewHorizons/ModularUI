@@ -1,6 +1,7 @@
 package com.gtnewhorizons.modularui.api;
 
 import com.gtnewhorizons.modularui.ModularUI;
+import com.gtnewhorizons.modularui.api.screen.IItemWithModularUI;
 import com.gtnewhorizons.modularui.api.screen.ITileWithModularUI;
 import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
@@ -16,6 +17,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import java.util.function.Function;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
 public class UIInfos {
@@ -35,6 +37,31 @@ public class UIInfos {
                 TileEntity te = world.getTileEntity(x, y, z);
                 if (te instanceof ITileWithModularUI) {
                     return ModularUI.createContainer(player, ((ITileWithModularUI) te)::createWindow, te::markDirty);
+                }
+                return null;
+            })
+            .build();
+
+    public static final UIInfo<?, ?> PLAYER_HELD_ITEM_UI = UIBuilder.of()
+            .container((player, world, x, y, z) -> {
+                ItemStack heldItem = player.getHeldItem();
+                if (heldItem.getItem() instanceof IItemWithModularUI) {
+                    UIBuildContext buildContext = new UIBuildContext(player);
+                    ModularWindow window =
+                            ((IItemWithModularUI) heldItem.getItem()).createWindow(buildContext, heldItem);
+                    return new ModularUIContainer(
+                            new ModularUIContext(buildContext, () -> player.inventoryContainer.detectAndSendChanges()),
+                            window);
+                }
+                return null;
+            })
+            .gui((player, world, x, y, z) -> {
+                ItemStack heldItem = player.getHeldItem();
+                if (heldItem.getItem() instanceof IItemWithModularUI) {
+                    UIBuildContext buildContext = new UIBuildContext(player);
+                    ModularWindow window =
+                            ((IItemWithModularUI) heldItem.getItem()).createWindow(buildContext, heldItem);
+                    return new ModularGui(new ModularUIContainer(new ModularUIContext(buildContext, null), window));
                 }
                 return null;
             })

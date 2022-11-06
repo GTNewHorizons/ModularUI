@@ -192,7 +192,7 @@ public class ProgressBar extends SyncedWidget {
      *
      * @param emptyTexture empty bar, always rendered
      * @param fullTexture  full bar, partly rendered, based on progress
-     * @param imageSize    image size in direction of progress. used for non smooth rendering
+     * @param imageSize    Image size in direction of progress. Used for non-smooth rendering.
      */
     public ProgressBar setTexture(UITexture emptyTexture, UITexture fullTexture, int imageSize) {
         this.emptyTexture = emptyTexture;
