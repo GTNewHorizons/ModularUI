@@ -15,6 +15,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
 
+@SuppressWarnings("unchecked")
 public interface IWidgetBuilder<T extends IWidgetBuilder<T>> {
 
     @ApiStatus.Internal
@@ -24,7 +25,9 @@ public interface IWidgetBuilder<T extends IWidgetBuilder<T>> {
      * Add Widget
      */
     default T widget(Widget widget) {
-        addWidgetInternal(widget);
+        if (widget != null) {
+            addWidgetInternal(widget);
+        }
         return (T) this;
     }
 
@@ -33,7 +36,9 @@ public interface IWidgetBuilder<T extends IWidgetBuilder<T>> {
      */
     default T widgets(Widget... widgets) {
         for (Widget widget : widgets) {
-            addWidgetInternal(widget);
+            if (widget != null) {
+                addWidgetInternal(widget);
+            }
         }
         return (T) this;
     }
