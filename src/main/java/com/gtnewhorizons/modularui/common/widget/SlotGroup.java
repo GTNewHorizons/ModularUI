@@ -135,7 +135,7 @@ public class SlotGroup extends MultiChildWidget {
                 } else {
                     baseSlot = new BaseSlot(itemHandler, i, phantom);
                 }
-                baseSlot.setAccess(canInsert, canTake);
+                baseSlot.setAccess(canTake, canInsert);
                 if (shiftClickPriority != null) {
                     baseSlot.setShiftClickPriority(shiftClickPriority);
                 }

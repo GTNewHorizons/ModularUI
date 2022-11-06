@@ -244,7 +244,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     }
 
     public SlotWidget setAccess(boolean canTake, boolean canInsert) {
-        this.slot.setAccess(canInsert, canTake);
+        this.slot.setAccess(canTake, canInsert);
         return this;
     }
 

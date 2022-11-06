@@ -66,7 +66,7 @@ public class BaseSlot extends SlotItemHandler {
         return setShiftClickPriority(Integer.MIN_VALUE);
     }
 
-    public BaseSlot setAccess(boolean canInsert, boolean canTake) {
+    public BaseSlot setAccess(boolean canTake, boolean canInsert) {
         this.canTake = canTake;
         this.canInsert = canInsert;
         return this;
