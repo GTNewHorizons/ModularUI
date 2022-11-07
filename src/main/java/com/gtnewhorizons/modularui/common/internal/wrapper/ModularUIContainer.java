@@ -129,12 +129,13 @@ public class ModularUIContainer extends Container {
             if (!slot.canTakeStack(playerIn)) return null;
             ItemStack stack = slot.getStack();
             if (stack != null) {
+                final ItemStack original = stack.copy();
                 ItemStack remainder = transferItem((BaseSlot) slot, stack.copy());
                 stack.stackSize = remainder.stackSize;
                 if (stack.stackSize < 1) {
                     slot.putStack(null);
                 }
-                return null;
+                return original;
             }
         }
         return null;
