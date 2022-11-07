@@ -88,6 +88,7 @@ public class DynamicTextWidget extends TextWidget implements ISyncedWidget {
             Text newText = new Text(NetworkUtils.readStringSafe(buf));
             newText.color(buf.readVarIntFromBuffer());
             newText.setFormatting(NetworkUtils.readStringSafe(buf));
+            newText.shadow(buf.readBoolean());
             lastText = newText;
             checkNeedsRebuild();
         }
@@ -106,6 +107,7 @@ public class DynamicTextWidget extends TextWidget implements ISyncedWidget {
                 NetworkUtils.writeStringSafe(buffer, newText.getRawText());
                 buffer.writeVarIntToBuffer(newText.getColor());
                 NetworkUtils.writeStringSafe(buffer, newText.getFormatting());
+                buffer.writeBoolean(newText.hasShadow());
             });
         }
     }
