@@ -374,7 +374,18 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
                 BaseSlot slot = ((SlotWidget) hovered).getMcSlot();
                 drawText("Slot Index: " + slot.getSlotIndex(), 5, lineY, 1, color, false);
                 lineY -= 11;
-                drawText("Shift-Click Priority: " + slot.getShiftClickPriority(), 5, lineY, 1, color, false);
+                drawText("Slot Number: " + slot.slotNumber, 5, lineY, 1, color, false);
+                lineY -= 11;
+                drawText(
+                        "Shift-Click Priority: "
+                                + (slot.getShiftClickPriority() != Integer.MIN_VALUE
+                                        ? slot.getShiftClickPriority()
+                                        : "DISABLED"),
+                        5,
+                        lineY,
+                        1,
+                        color,
+                        false);
             }
         }
         color = Color.withAlpha(color, 25);
