@@ -460,7 +460,7 @@ public class Color implements Iterable<Integer> {
             0x4E342E,
             0x3E2723);
 
-    public static final Color GREY = new Color(
+    public static final Color GRAY = new Color(
             0x9E9E9E,
             new int[] {0xBDBDBD, 0xE0E0E0, 0xEEEEEE, 0xF5F5F5, 0xFAFAFA},
             0x757575,
@@ -468,7 +468,7 @@ public class Color implements Iterable<Integer> {
             0x424242,
             0x212121);
 
-    public static final Color BLUE_GREY = new Color(
+    public static final Color BLUE_GRAY = new Color(
             0x607D8B,
             new int[] {0x78909C, 0x90A4AE, 0xB0BEC5, 0xCFD8DC, 0xECEFF1},
             0x546E7A,
