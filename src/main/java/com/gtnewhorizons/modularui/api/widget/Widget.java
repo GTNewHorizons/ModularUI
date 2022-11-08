@@ -295,7 +295,7 @@ public abstract class Widget {
     public void onFirstRebuild() {}
 
     /**
-     * Causes the modular ui to re-layout all children next screen update
+     * Causes the UI to re-layout all children next screen update
      */
     public void checkNeedsRebuild() {
         if (isInitialised() && isClient()) {
@@ -447,7 +447,7 @@ public abstract class Widget {
     public void onRemoveFocus() {}
 
     /**
-     * @return if the modular ui currently has this widget focused
+     * @return If current UI has this widget focused
      */
     @SideOnly(Side.CLIENT)
     public boolean isFocused() {

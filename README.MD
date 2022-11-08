@@ -1,5 +1,5 @@
-# Modular UI - Rendering mod for Minecraft 1.7.10
+# ModularUI - GUI library mod for Minecraft 1.7.10
 
-This is a WIP project for backporting [Modular UI](https://github.com/CleanroomMC/ModularUI) mod from 1.12.2
+This mod is a GUI library to ease the process of creating GUIs. Backported from 1.12.2 [ModularUI](https://github.com/CleanroomMC/ModularUI).
 
-This mod is under LGPL-3 license
+This mod is under LGPL-3 license.

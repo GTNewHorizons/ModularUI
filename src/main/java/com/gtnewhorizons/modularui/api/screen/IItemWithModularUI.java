@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 
 /**
  * Implement this interface for your {@link net.minecraft.item.Item}
- * to display Modular UI
+ * to display UI
  */
 public interface IItemWithModularUI {
 

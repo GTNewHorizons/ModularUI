@@ -3,7 +3,7 @@
 	"modList": [{
 		"modid": "${modId}",
 		"name": "${modName}",
-		"description": "A GUI library to ease the process of creating GUIs. Backported from 1.12.2",
+		"description": "A GUI library to ease the process of creating GUIs. Backported from 1.12.2.",
 		"version": "${modVersion}",
 		"mcversion": "${minecraftVersion}",
 		"url": "https://github.com/GTNewHorizons/ModularUI",
