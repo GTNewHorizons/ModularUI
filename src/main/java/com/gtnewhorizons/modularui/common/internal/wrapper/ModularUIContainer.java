@@ -144,7 +144,9 @@ public class ModularUIContainer extends Container {
                 if (stack.stackSize < 1) {
                     slot.putStack(null);
                 }
-                return original;
+                if (!ItemStack.areItemStacksEqual(original, remainder)) {
+                    return original;
+                }
             }
         }
         return null;
