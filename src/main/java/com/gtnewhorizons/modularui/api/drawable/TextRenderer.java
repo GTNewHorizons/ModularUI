@@ -177,6 +177,7 @@ public class TextRenderer {
         GL11.glDisable(GL11.GL_LIGHTING);
         int width = getFontRenderer().drawString(text, (int) (x / scale), (int) (y / scale), color, shadow);
         GL11.glColor4f(1f, 1f, 1f, 1f);
+        GL11.glEnable(GL11.GL_LIGHTING);
         GlStateManager.popMatrix();
         GlStateManager.enableBlend();
         return width * scale;
