@@ -202,8 +202,6 @@ public class Cursor {
     @ApiStatus.Internal
     public boolean onMouseReleased(int button) {
         if (button == this.lastButton && getItemStack() == null && this.cursorDraggable != null) {
-            long time = Minecraft.getSystemTime();
-            if (time - this.lastClickTime < 200) return false;
             ModularWindow window = findHoveredWindow();
             this.cursorDraggable.onDragEnd(this.cursorDraggable.canDropHere(hovered, window != null));
             this.cursorDraggable.setMoving(false);
