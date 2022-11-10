@@ -10,7 +10,7 @@ public class Config {
 
     public static int openCloseDurationMs = 200;
     public static boolean openCloseFade = false;
-    public static boolean openCloseScale = true;
+    public static boolean openCloseScale = false;
     public static boolean openCloseTranslateFromBottom = false;
     public static boolean openCloseRotateFast = false;
 
@@ -72,7 +72,7 @@ public class Config {
         openCloseScale = config.get(
                         CATEGORY_ANIMATIONS,
                         "openCloseScale",
-                        true,
+                        false,
                         "Whether to draw scale in/out animation on GUI open/close")
                 .setLanguageKey(LANG_PREFIX + CATEGORY_ANIMATIONS + ".openCloseScale")
                 .getBoolean();
