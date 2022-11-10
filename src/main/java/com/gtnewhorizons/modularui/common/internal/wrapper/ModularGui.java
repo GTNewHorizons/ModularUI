@@ -10,6 +10,7 @@ import codechicken.nei.api.TaggedInventoryArea;
 import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.guihook.IContainerDrawHandler;
 import codechicken.nei.guihook.IContainerObjectHandler;
+import codechicken.nei.guihook.IContainerTooltipHandler;
 import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
@@ -33,6 +34,7 @@ import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import java.awt.*;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -72,6 +74,18 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
     private int fps = 0;
 
     private float partialTicks;
+
+    private static Field GuiContainerManager$instanceTooltipHandlers;
+
+    static {
+        try {
+            Class<?> clazzGuiContainerManager = Class.forName("codechicken.nei.guihook.GuiContainerManager");
+            GuiContainerManager$instanceTooltipHandlers =
+                    clazzGuiContainerManager.getDeclaredField("instanceTooltipHandlers");
+            GuiContainerManager$instanceTooltipHandlers.setAccessible(true);
+        } catch (ClassNotFoundException | NoSuchFieldException ignored) {
+        }
+    }
 
     public ModularGui(ModularUIContainer container) {
         super(container);
@@ -425,7 +439,27 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
         if (overwriteItemStackTooltip != null) {
             lines = overwriteItemStackTooltip.apply(lines);
         }
+        if (ModularUI.isNEILoaded) {
+            applyNEITooltipHandler(lines, stack);
+        }
         this.drawHoveringText(lines, x, y, (font == null ? fontRenderer : font));
+    }
+
+    private void applyNEITooltipHandler(List<String> tooltip, ItemStack stack) {
+        if (GuiContainerManager$instanceTooltipHandlers == null || GuiContainerManager.getManager() == null) return;
+        List<IContainerTooltipHandler> instanceTooltipHandlers;
+        try {
+            //noinspection unchecked
+            instanceTooltipHandlers = (List<IContainerTooltipHandler>)
+                    GuiContainerManager$instanceTooltipHandlers.get(GuiContainerManager.getManager());
+        } catch (IllegalAccessException ignored) {
+            return;
+        }
+        if (GuiContainerManager.shouldShowTooltip(this)) {
+            for (IContainerTooltipHandler handler : instanceTooltipHandlers)
+                tooltip = handler.handleItemTooltip(
+                        this, stack, getCursor().getX(), getCursor().getY(), tooltip);
+        }
     }
 
     protected void drawVanillaElements(int mouseX, int mouseY, float partialTicks) {
