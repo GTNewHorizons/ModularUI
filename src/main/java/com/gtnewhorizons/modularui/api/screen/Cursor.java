@@ -232,8 +232,10 @@ public class Cursor {
                 this.cursorDraggable = draggable;
                 this.lastButton = button;
                 this.lastClickTime = Minecraft.getSystemTime();
-                return true;
             }
+            // Even if draggable is not updated, click should be acknowledged to prevent
+            // widgets behind window from handling clicks.
+            return true;
         }
         return false;
     }
