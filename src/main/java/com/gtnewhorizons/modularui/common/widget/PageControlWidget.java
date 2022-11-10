@@ -82,6 +82,24 @@ public class PageControlWidget extends Widget implements IWidgetParent {
     private void setPage(int page, boolean active) {
         Widget widget = pages.get(page);
         widget.setEnabled(active);
+        setEnabledAllChildren(active, widget);
+        if (active) {
+            for (Widget pageWidget : pages) {
+                if (pageWidget != widget) {
+                    pageWidget.setEnabled(false);
+                    setEnabledAllChildren(false, pageWidget);
+                }
+            }
+        }
+    }
+
+    private void setEnabledAllChildren(boolean active, Widget parent) {
+        if (parent instanceof IWidgetParent) {
+            IWidgetParent.forEachByLayer(parent, forEach -> {
+                forEach.setEnabled(active);
+                return false;
+            });
+        }
     }
 
     public PageControlWidget addPage(Widget page) {

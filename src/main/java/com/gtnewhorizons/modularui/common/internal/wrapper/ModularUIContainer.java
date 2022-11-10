@@ -123,6 +123,13 @@ public class ModularUIContainer extends Container {
     }
 
     @Override
+    public ItemStack slotClick(int slotId, int dragType, int clickTypeIn, EntityPlayer player) {
+        Slot slot = (Slot) this.inventorySlots.get(slotId);
+        if (slot != null && !slot.func_111238_b()) return null;
+        return super.slotClick(slotId, dragType, clickTypeIn, player);
+    }
+
+    @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
         Slot slot = (Slot) (this.inventorySlots.get(index));
         if (slot instanceof BaseSlot && !((BaseSlot) slot).isPhantom()) {
