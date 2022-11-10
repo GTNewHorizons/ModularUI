@@ -350,6 +350,9 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
             if (Interactable.hasShiftDown()) {
                 direction *= 8;
             }
+            if (Interactable.hasControlDown()) {
+                direction *= 64;
+            }
             final int finalDirection = direction;
             syncToServer(3, buffer -> buffer.writeVarIntToBuffer(finalDirection));
             if (handlePhantomActionClient) {
