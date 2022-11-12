@@ -17,8 +17,8 @@ import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.Theme;
 import com.gtnewhorizons.modularui.common.internal.wrapper.BaseSlot;
-import com.gtnewhorizons.modularui.common.internal.wrapper.GuiContainerAccessor;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
+import com.gtnewhorizons.modularui.mixins.GuiContainerMixin;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import java.io.IOException;
@@ -445,7 +445,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         phantomClick(clickData, draggedStack);
     }
 
-    private GuiContainerAccessor getGuiAccessor() {
+    private GuiContainerMixin getGuiAccessor() {
         return getContext().getScreen().getAccessor();
     }
 

@@ -30,6 +30,7 @@ import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.config.Config;
+import com.gtnewhorizons.modularui.mixins.GuiContainerMixin;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -59,7 +60,7 @@ import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 @Optional.Interface(modid = "NotEnoughItems", iface = "codechicken.nei.api.INEIGuiHandler")
-public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
+public class ModularGui extends GuiContainer implements INEIGuiHandler {
 
     private final ModularUIContext context;
     private Pos2d mousePos = Pos2d.ZERO;
@@ -126,8 +127,8 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
         this.context.getCurrentWindow().onOpen();
     }
 
-    public GuiContainerAccessor getAccessor() {
-        return this;
+    public GuiContainerMixin getAccessor() {
+        return (GuiContainerMixin) this;
     }
 
     @Override
@@ -144,7 +145,7 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
         GlStateManager.pushMatrix();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.enableRescaleNormal();
-        setHoveredSlot(null);
+        getAccessor().setHoveredSlot(null);
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
         GlStateManager.enableRescaleNormal();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -168,10 +169,10 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
         this.drawGuiContainerForegroundLayer(mouseX, mouseY);
         RenderHelper.enableGUIStandardItemLighting();
 
-        setHoveredSlot(null);
+        getAccessor().setHoveredSlot(null);
         Widget hovered = getCursor().getHovered();
         if (hovered instanceof IVanillaSlot) {
-            setHoveredSlot(((IVanillaSlot) hovered).getMcSlot());
+            getAccessor().setHoveredSlot(((IVanillaSlot) hovered).getMcSlot());
         }
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -180,18 +181,20 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
         GlStateManager.popMatrix();
 
         InventoryPlayer inventoryplayer = this.mc.thePlayer.inventory;
-        ItemStack itemstack = getDraggedStack() == null ? inventoryplayer.getItemStack() : getDraggedStack();
+        ItemStack itemstack = getAccessor().getDraggedStack() == null
+                ? inventoryplayer.getItemStack()
+                : getAccessor().getDraggedStack();
         GlStateManager.translate((float) i, (float) j, 0.0F);
         if (itemstack != null) {
-            int k2 = getDraggedStack() == null ? 8 : 16;
+            int k2 = getAccessor().getDraggedStack() == null ? 8 : 16;
             String s = null;
 
-            if (getDraggedStack() != null && getIsRightMouseClick()) {
+            if (getAccessor().getDraggedStack() != null && getAccessor().getIsRightMouseClick()) {
                 itemstack = itemstack.copy();
                 itemstack.stackSize = (int) Math.ceil((float) itemstack.stackSize / 2.0F);
             } else if (this.isDragSplitting() && this.getDragSlots().size() > 1) {
                 itemstack = itemstack.copy();
-                itemstack.stackSize = getDragSplittingRemnant();
+                itemstack.stackSize = getAccessor().getDragSplittingRemnant();
 
                 if (itemstack.stackSize < 1) {
                     s = EnumChatFormatting.YELLOW + "0";
@@ -201,19 +204,21 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
             this.drawItemStack(itemstack, mouseX - i - 8, mouseY - j - k2, s);
         }
 
-        if (getReturningStack() != null) {
-            float f = (float) (Minecraft.getSystemTime() - getReturningStackTime()) / 100.0F;
+        if (getAccessor().getReturningStack() != null) {
+            float f = (float) (Minecraft.getSystemTime() - getAccessor().getReturningStackTime()) / 100.0F;
 
             if (f >= 1.0F) {
                 f = 1.0F;
-                setReturningStack(null);
+                getAccessor().setReturningStack(null);
             }
 
-            int l2 = getReturningStackDestSlot().xDisplayPosition - getTouchUpX();
-            int i3 = getReturningStackDestSlot().yDisplayPosition - getTouchUpY();
-            int l1 = getTouchUpX() + (int) ((float) l2 * f);
-            int i2 = getTouchUpY() + (int) ((float) i3 * f);
-            this.drawItemStack(getReturningStack(), l1, i2, null);
+            int l2 = getAccessor().getReturningStackDestSlot().xDisplayPosition
+                    - getAccessor().getTouchUpX();
+            int i3 = getAccessor().getReturningStackDestSlot().yDisplayPosition
+                    - getAccessor().getTouchUpY();
+            int l1 = getAccessor().getTouchUpX() + (int) ((float) l2 * f);
+            int i2 = getAccessor().getTouchUpY() + (int) ((float) i3 * f);
+            this.drawItemStack(getAccessor().getReturningStack(), l1, i2, null);
         }
 
         GlStateManager.popMatrix();
@@ -663,11 +668,11 @@ public class ModularGui extends GuiContainerAccessor implements INEIGuiHandler {
     }
 
     public boolean isDragSplitting() {
-        return isDragSplittingInternal();
+        return getAccessor().isDragSplittingInternal();
     }
 
     public Set<Slot> getDragSlots() {
-        return getDragSplittingSlots();
+        return getAccessor().getDragSplittingSlots();
     }
 
     public static RenderItem getItemRenderer() {
