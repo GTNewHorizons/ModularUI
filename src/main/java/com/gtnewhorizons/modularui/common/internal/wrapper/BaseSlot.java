@@ -102,12 +102,22 @@ public class BaseSlot extends SlotItemHandler {
 
     @Override
     public boolean canTakeStack(EntityPlayer playerIn) {
-        return !this.phantom && canTake && super.canTakeStack(playerIn);
+        return !this.phantom && canTake && isEnabled() && super.canTakeStack(playerIn);
     }
 
+    /**
+     * If this slot is disabled, player cannot interact with it.
+     */
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    /**
+     * This is marked as client only, use {@link #isEnabled} instead.
+     */
     @Override
     public boolean func_111238_b() {
-        return enabled;
+        return isEnabled();
     }
 
     public boolean isCanInsert() {
