@@ -331,7 +331,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
 
     @Override
     public ClickResult onClick(int buttonId, boolean doubleClick) {
-        if (interactionDisabled || !getMcSlot().func_111238_b()) return ClickResult.REJECT;
+        if (interactionDisabled || !getMcSlot().isEnabled()) return ClickResult.REJECT;
         if (isPhantom()) {
             ClickData clickData = ClickData.create(buttonId, doubleClick);
             syncToServer(2, clickData::writeToPacket);
@@ -345,7 +345,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
 
     @Override
     public boolean onMouseScroll(int direction) {
-        if (interactionDisabled || !getMcSlot().func_111238_b()) return false;
+        if (interactionDisabled || !getMcSlot().isEnabled()) return false;
         if (isPhantom()) {
             if (Interactable.hasShiftDown()) {
                 direction *= 8;
@@ -368,7 +368,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     }
 
     protected void phantomClick(ClickData clickData, ItemStack cursorStack) {
-        if (interactionDisabled || !getMcSlot().func_111238_b()) return;
+        if (interactionDisabled || !getMcSlot().isEnabled()) return;
         ItemStack slotStack = getMcSlot().getStack();
         ItemStack stackToPut;
         if (slotStack == null) {
@@ -410,7 +410,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     }
 
     protected void phantomScroll(int direction) {
-        if (interactionDisabled || !getMcSlot().func_111238_b()) return;
+        if (interactionDisabled || !getMcSlot().isEnabled()) return;
         ItemStack currentItem = this.slot.getStack();
         if (direction > 0 && currentItem == null && lastStoredPhantomItem != null) {
             ItemStack stackToPut = this.lastStoredPhantomItem.copy();
@@ -423,7 +423,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
 
     @Override
     public boolean handleDragAndDrop(ItemStack draggedStack, int button) {
-        if (interactionDisabled || !getMcSlot().func_111238_b()) return false;
+        if (interactionDisabled || !getMcSlot().isEnabled()) return false;
         if (!isPhantom()) return false;
         ClickData clickData = ClickData.create(button, false);
         syncToServer(5, buffer -> {

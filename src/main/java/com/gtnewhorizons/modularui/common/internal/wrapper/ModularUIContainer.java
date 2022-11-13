@@ -126,16 +126,22 @@ public class ModularUIContainer extends Container {
     public ItemStack slotClick(int slotId, int dragType, int clickTypeIn, EntityPlayer player) {
         if (slotId >= 0 && slotId < this.inventorySlots.size()) {
             Slot slot = (Slot) this.inventorySlots.get(slotId);
-            if (slot != null && !slot.func_111238_b()) return null;
+            if (slot instanceof BaseSlot && !((BaseSlot) slot).isEnabled()) return null;
         }
         return super.slotClick(slotId, dragType, clickTypeIn, player);
+    }
+
+    @Override
+    public boolean canDragIntoSlot(Slot slot) {
+        if (slot instanceof BaseSlot && !((BaseSlot) slot).isEnabled()) return false;
+        return super.canDragIntoSlot(slot);
     }
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
         Slot slot = (Slot) (this.inventorySlots.get(index));
         if (slot instanceof BaseSlot && !((BaseSlot) slot).isPhantom()) {
-            if (!slot.canTakeStack(playerIn)) return null;
+            if (!slot.canTakeStack(playerIn) || !((BaseSlot) slot).isEnabled()) return null;
             ItemStack stack = slot.getStack();
             if (stack != null) {
                 final ItemStack original = stack.copy();
