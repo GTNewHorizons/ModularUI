@@ -11,6 +11,7 @@ import com.gtnewhorizons.modularui.api.widget.Widget;
 import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Uses {@link IDrawable} to draw widget.
@@ -39,6 +40,10 @@ public class DrawableWidget extends Widget {
     public void draw(float partialTicks) {
         if (drawable.get() != null) {
             GlStateManager.pushMatrix();
+            // enchantment effect applied to item makes drawable half-transparent
+            // https://discord.com/channels/181078474394566657/401118216228831252/1041639690937303120
+            // I'm not sure what's the best way to fix, but here it works
+            GL11.glDisable(GL11.GL_BLEND);
             // so that item z levels are properly ordered
             // todo: probably need better solution so that more windows can work
             GlStateManager.translate(0, 0, 150 * getWindowLayer());

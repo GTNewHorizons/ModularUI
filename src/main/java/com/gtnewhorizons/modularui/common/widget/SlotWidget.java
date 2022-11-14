@@ -30,6 +30,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.Container;
@@ -533,6 +534,20 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
                                 itemstack,
                                 1,
                                 1);
+                // asked by Forge :shrug:
+                // RenderItem#L627
+                if (itemstack.hasEffect()) {
+                    GL11.glDepthFunc(GL11.GL_EQUAL);
+                    GL11.glDisable(GL11.GL_LIGHTING);
+                    GL11.glDepthMask(false);
+                    GL11.glEnable(GL11.GL_ALPHA_TEST);
+                    GL11.glEnable(GL11.GL_BLEND);
+                    GL11.glColor4f(0.5F, 0.25F, 0.8F, 1.0F);
+                    OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+                    GL11.glDepthMask(true);
+                    GL11.glEnable(GL11.GL_LIGHTING);
+                    GL11.glDepthFunc(GL11.GL_LEQUAL);
+                }
                 GlStateManager.popMatrix();
 
                 if (drawStackSize) {
@@ -584,6 +599,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
             }
         }
 
+        GL11.glDisable(GL11.GL_BLEND);
         ModularGui.getItemRenderer().zLevel = 0.0F;
         getScreen().setZ(0f);
     }
