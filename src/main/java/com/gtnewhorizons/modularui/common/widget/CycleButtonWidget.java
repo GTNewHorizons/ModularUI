@@ -32,6 +32,7 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
     protected Function<Integer, IDrawable[]> backgroundGetter;
     protected IDrawable texture = IDrawable.EMPTY;
     private final List<List<Text>> stateTooltip = new ArrayList<>();
+    private boolean playClickSound = true;
 
     public CycleButtonWidget() {}
 
@@ -134,11 +135,15 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
         switch (buttonId) {
             case 0:
                 next();
-                Interactable.playButtonClickSound();
+                if (playClickSound) {
+                    Interactable.playButtonClickSound();
+                }
                 return ClickResult.ACCEPT;
             case 1:
                 prev();
-                Interactable.playButtonClickSound();
+                if (playClickSound) {
+                    Interactable.playButtonClickSound();
+                }
                 return ClickResult.ACCEPT;
         }
         return ClickResult.ACKNOWLEDGED;
@@ -303,6 +308,11 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
     public CycleButtonWidget setLength(int length) {
         this.length = length;
         setupTooltip();
+        return this;
+    }
+
+    public CycleButtonWidget setPlayClickSound(boolean playClickSound) {
+        this.playClickSound = playClickSound;
         return this;
     }
 

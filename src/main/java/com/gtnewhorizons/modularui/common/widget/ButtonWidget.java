@@ -36,12 +36,18 @@ public class ButtonWidget extends SyncedWidget implements Interactable {
     }
 
     private BiConsumer<ClickData, Widget> clickAction;
+    private boolean playClickSound = true;
 
     /**
      * Set callback that will be invoked when button is clicked.
      */
     public ButtonWidget setOnClick(BiConsumer<Widget.ClickData, Widget> clickAction) {
         this.clickAction = clickAction;
+        return this;
+    }
+
+    public ButtonWidget setPlayClickSound(boolean playClickSound) {
+        this.playClickSound = playClickSound;
         return this;
     }
 
@@ -63,7 +69,9 @@ public class ButtonWidget extends SyncedWidget implements Interactable {
             if (syncsToServer()) {
                 syncToServer(1, clickData::writeToPacket);
             }
-            Interactable.playButtonClickSound();
+            if (playClickSound) {
+                Interactable.playButtonClickSound();
+            }
             return ClickResult.ACCEPT;
         }
         return ClickResult.ACKNOWLEDGED;
