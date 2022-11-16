@@ -52,6 +52,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
     private boolean phantom = false;
     private boolean controlsAmount = true;
     private boolean lastShift = false;
+    private boolean playClickSound = true;
 
     private Consumer<Widget> onDragAndDropComplete;
 
@@ -211,7 +212,9 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
                 buffer.writeVarIntToBuffer(buttonId);
                 buffer.writeBoolean(Interactable.hasShiftDown());
             });
-            Interactable.playButtonClickSound();
+            if (playClickSound) {
+                Interactable.playButtonClickSound();
+            }
             return ClickResult.ACCEPT;
         }
         return ClickResult.ACKNOWLEDGED;
@@ -499,6 +502,11 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
 
     public FluidSlotWidget setOverlayTexture(@Nullable IDrawable overlayTexture) {
         this.overlayTexture = overlayTexture;
+        return this;
+    }
+
+    public FluidSlotWidget setPlayClickSound(boolean playClickSound) {
+        this.playClickSound = playClickSound;
         return this;
     }
 
