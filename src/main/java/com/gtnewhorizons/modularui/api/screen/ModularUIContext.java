@@ -36,7 +36,7 @@ public class ModularUIContext {
     private final ImmutableMap<Integer, IWindowCreator> syncedWindowsCreators;
     private final Deque<ModularWindow> windows = new LinkedList<>();
     private final BiMap<Integer, ModularWindow> syncedWindows = HashBiMap.create(4);
-    private final Map<Integer, Pos2d> lastWindowPos = new HashMap<>();
+    private final Map<ModularWindow, Pos2d> lastWindowPos = new HashMap<>();
     private ModularWindow mainWindow;
 
     @SideOnly(Side.CLIENT)
@@ -261,16 +261,15 @@ public class ModularUIContext {
     }
 
     public void storeWindowPos(ModularWindow window, Pos2d pos) {
-        if (syncedWindows.containsValue(window)) {
-            this.lastWindowPos.put(this.syncedWindows.inverse().get(window), pos);
+        if (windows.contains(window)) {
+            this.lastWindowPos.put(window, pos);
         }
     }
 
     public boolean tryApplyStoredPos(ModularWindow window) {
-        if (window == this.mainWindow || !this.syncedWindows.containsValue(window)) return false;
-        int id = this.syncedWindows.inverse().get(window);
-        if (this.lastWindowPos.containsKey(id)) {
-            window.setPos(this.lastWindowPos.get(id));
+        if (window == this.mainWindow || !this.windows.contains(window)) return false;
+        if (this.lastWindowPos.containsKey(window)) {
+            window.setPos(this.lastWindowPos.get(window));
             return true;
         }
         return false;
