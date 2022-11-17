@@ -129,6 +129,10 @@ public interface Interactable {
          */
         REJECT,
         /**
+         * Clicked, but it should be handled by {@link net.minecraft.client.gui.inventory.GuiContainer#mouseClicked}
+         */
+        DELEGATE,
+        /**
          * Success, but don't try to get focus
          */
         ACCEPT,

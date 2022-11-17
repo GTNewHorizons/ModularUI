@@ -342,7 +342,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
             }
             return ClickResult.SUCCESS;
         }
-        return ClickResult.IGNORE;
+        return ClickResult.DELEGATE;
     }
 
     @Override
