@@ -41,6 +41,7 @@ import net.minecraft.util.EnumChatFormatting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 public class SlotWidget extends Widget implements IVanillaSlot, Interactable, ISyncedWidget, IDragAndDropHandler {
 
@@ -524,6 +525,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
                 GlStateManager.enableLighting();
                 RenderHelper.enableGUIStandardItemLighting();
                 GlStateManager.enableDepth();
+                GL11.glEnable(GL12.GL_RESCALE_NORMAL);
                 GlStateManager.pushMatrix();
                 // so that item z levels are properly ordered
                 GlStateManager.translate(0, 0, 150 * getWindowLayer());
@@ -549,6 +551,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
                     GL11.glEnable(GL11.GL_LIGHTING);
                     GL11.glDepthFunc(GL11.GL_LEQUAL);
                 }
+                GL11.glDisable(GL12.GL_RESCALE_NORMAL);
                 GlStateManager.popMatrix();
 
                 if (drawStackSize) {
