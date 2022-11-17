@@ -125,7 +125,7 @@ public interface Interactable {
          */
         ACKNOWLEDGED,
         /**
-         * Nothing happened and no other hovered should get interacted
+         * Nothing happened. No other hovered widgets nor vanilla slots should get interacted
          */
         REJECT,
         /**
