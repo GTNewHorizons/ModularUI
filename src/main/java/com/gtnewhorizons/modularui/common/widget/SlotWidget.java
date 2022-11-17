@@ -333,8 +333,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
 
     @Override
     public ClickResult onClick(int buttonId, boolean doubleClick) {
-        // return ACCEPT instead of REJECT to prevent client-only window from sending C0EPacketClickWindow
-        if (interactionDisabled || !getMcSlot().isEnabled()) return ClickResult.ACCEPT;
+        if (interactionDisabled || !getMcSlot().isEnabled()) return ClickResult.REJECT;
         if (isPhantom()) {
             ClickData clickData = ClickData.create(buttonId, doubleClick);
             syncToServer(2, clickData::writeToPacket);
