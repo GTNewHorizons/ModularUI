@@ -66,7 +66,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
     private Pos2d mousePos = Pos2d.ZERO;
 
     @Nullable
-    private Interactable lastClicked;
+    private Object lastClicked;
 
     private long lastClick = -1;
     private long lastFocusedClick = -1;
@@ -523,6 +523,12 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                 probablyClicked = hovered;
                 break;
             }
+            if (hovered instanceof ModularWindow) {
+                // if floating window is clicked (while holding item), widgets/slots below should not be interacted
+                probablyClicked = hovered;
+                wasReject = true;
+                break;
+            }
             if (hovered instanceof Widget) {
                 Widget widget = (Widget) hovered;
                 if (ModularUI.isNEILoaded && widget.hasNEITransferRect()) {
@@ -551,6 +557,9 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                         probablyClicked = null;
                         wasReject = true;
                         break loop;
+                    case DELEGATE:
+                        probablyClicked = null;
+                        break loop;
                     case ACCEPT:
                         probablyClicked = interactable;
                         break loop;
@@ -562,11 +571,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                 }
             }
         }
-        if (probablyClicked instanceof Interactable) {
-            this.lastClicked = (Interactable) probablyClicked;
-        } else {
-            this.lastClicked = null;
-        }
+        this.lastClicked = probablyClicked;
         if (!wasSuccess) {
             getCursor().updateFocused(null);
         }
@@ -593,7 +598,10 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
             interactable.onClickReleased(mouseButton);
         }
         if (!context.getCursor().onMouseReleased(mouseButton)
-                && (lastClicked == null || !lastClicked.onClickReleased(mouseButton))) {
+                && (lastClicked == null
+                        || (lastClicked instanceof Interactable
+                                && !((Interactable) lastClicked).onClickReleased(mouseButton)))
+                && !(lastClicked instanceof ModularWindow)) {
             super.mouseMovedOrUp(mouseX, mouseY, mouseButton);
         }
     }
@@ -604,8 +612,8 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         for (Interactable interactable : context.getCurrentWindow().getInteractionListeners()) {
             interactable.onMouseDragged(mouseButton, timeSinceLastClick);
         }
-        if (lastClicked != null) {
-            lastClicked.onMouseDragged(mouseButton, timeSinceLastClick);
+        if (lastClicked != null && lastClicked instanceof Interactable) {
+            ((Interactable) lastClicked).onMouseDragged(mouseButton, timeSinceLastClick);
         }
     }
 
