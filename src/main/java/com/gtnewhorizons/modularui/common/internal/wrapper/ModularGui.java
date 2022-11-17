@@ -294,7 +294,8 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         Widget hovered = context.getCursor().getHovered();
         if (shouldRenderOurTooltip()) {
             if (hovered instanceof IVanillaSlot
-                    && ((IVanillaSlot) hovered).getMcSlot().getHasStack()) {
+                    && ((IVanillaSlot) hovered).getMcSlot().getHasStack()
+                    && !context.getCursor().isHoldingSomething()) {
                 renderToolTip(
                         ((IVanillaSlot) hovered).getMcSlot().getStack(),
                         mouseX,
@@ -338,7 +339,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
      * @return False if NEI wants to draw their own tooltip e.g. ItemPanel
      */
     protected boolean shouldRenderOurTooltip() {
-        return context.getCursor().getHovered() != null && !context.getCursor().isHoldingSomething();
+        return context.getCursor().getHovered() != null;
     }
 
     protected boolean shouldRenderNEITooltip() {
