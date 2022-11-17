@@ -123,7 +123,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         drawSlot(this.slot);
         RenderHelper.enableStandardItemLighting();
         GlStateManager.disableLighting();
-        if (isHovering()) {
+        if (isHovering() && !getContext().getCursor().hasDraggable()) {
             GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glEnable(GL11.GL_BLEND);
             GlStateManager.colorMask(true, true, true, false);
