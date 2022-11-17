@@ -514,6 +514,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
 
         Object probablyClicked = null;
         boolean wasSuccess = false;
+        boolean wasReject = false;
         doubleClick = isDoubleClick(lastFocusedClick, time);
         loop:
         for (Object hovered : getCursor().getAllHovered()) {
@@ -548,6 +549,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                         continue;
                     case REJECT:
                         probablyClicked = null;
+                        wasReject = true;
                         break loop;
                     case ACCEPT:
                         probablyClicked = interactable;
@@ -568,7 +570,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         if (!wasSuccess) {
             getCursor().updateFocused(null);
         }
-        if (probablyClicked == null) {
+        if (probablyClicked == null && !wasReject) {
             // NEI injects GuiContainerManager#mouseClicked there
             super.mouseClicked(mouseX, mouseY, mouseButton);
         }
