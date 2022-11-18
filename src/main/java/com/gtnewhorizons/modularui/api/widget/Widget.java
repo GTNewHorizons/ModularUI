@@ -66,8 +66,8 @@ public abstract class Widget {
     private boolean firstRebuild = true;
 
     // visuals
-    @Nullable
-    private IDrawable[] background;
+    @NotNull
+    private Supplier<IDrawable[]> background = () -> null;
 
     private final List<Text> additionalTooltip = new ArrayList<>();
     private final List<Text> mainTooltip = new ArrayList<>();
@@ -580,7 +580,7 @@ public abstract class Widget {
 
     @Nullable
     public IDrawable[] getBackground() {
-        return background;
+        return background.get();
     }
 
     public boolean hasNEITransferRect() {
@@ -799,6 +799,11 @@ public abstract class Widget {
      * @param drawables background to render
      */
     public Widget setBackground(IDrawable... drawables) {
+        this.background = () -> drawables;
+        return this;
+    }
+
+    public Widget setBackground(Supplier<IDrawable[]> drawables) {
         this.background = drawables;
         return this;
     }
