@@ -134,6 +134,12 @@ public class FakeSyncWidget<T> extends SyncedWidget {
         }
     }
 
+    public static class DoubleSyncer extends FakeSyncWidget<Double> {
+        public DoubleSyncer(Supplier<Double> getter, Consumer<Double> setter) {
+            super(getter, setter, PacketBuffer::writeDouble, PacketBuffer::readDouble);
+        }
+    }
+
     public static class StringSyncer extends FakeSyncWidget<String> {
         public StringSyncer(Supplier<String> getter, Consumer<String> setter) {
             super(getter, setter, NetworkUtils::writeStringSafe, NetworkUtils::readStringSafe);
