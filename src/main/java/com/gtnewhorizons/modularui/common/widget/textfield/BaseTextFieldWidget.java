@@ -313,6 +313,10 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
         return handler.getMaxLines();
     }
 
+    public List<String> getLastText() {
+        return lastText;
+    }
+
     public BaseTextFieldWidget setTextAlignment(Alignment textAlignment) {
         this.textAlignment = textAlignment;
         return this;
