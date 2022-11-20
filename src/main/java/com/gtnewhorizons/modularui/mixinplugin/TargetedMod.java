@@ -14,7 +14,6 @@ public enum TargetedMod {
 
     // Replace with your injected mods here, but always keep VANILLA:
     VANILLA("Minecraft", "unused", true),
-    CODECHICKENLIB("CodeChickenLib", "CodeChickenLib", true),
     NOTENOUGHITEMS("NotEnoughItems", "NotEnoughItems", true);
     //    GREGTECH("GregTech", "gregtech", false);
 

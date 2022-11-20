@@ -18,7 +18,8 @@ public enum Mixin {
     // Replace with your own mixins:
     GuiContainerMixin("GuiContainerMixin", Side.CLIENT, VANILLA),
     S2FPacketSetSlotMixin("S2FPacketSetSlotMixin", Side.BOTH, VANILLA),
-    NetHandlerPlayClientMixin("NetHandlerPlayClientMixin", Side.CLIENT, VANILLA);
+    NetHandlerPlayClientMixin("NetHandlerPlayClientMixin", Side.CLIENT, VANILLA),
+    NEIControllerMixin("NEIControllerMixin", Side.CLIENT, NOTENOUGHITEMS);
 
     public final String mixinClass;
     public final List<TargetedMod> targetedMods;

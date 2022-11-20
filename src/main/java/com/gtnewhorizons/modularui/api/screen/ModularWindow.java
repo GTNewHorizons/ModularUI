@@ -372,6 +372,10 @@ public class ModularWindow implements IWidgetParent {
         return enabled;
     }
 
+    public boolean isClientOnly() {
+        return clientOnly;
+    }
+
     public void setEnabled(boolean enabled) {
         if (this.enabled != enabled) {
             this.enabled = enabled;
