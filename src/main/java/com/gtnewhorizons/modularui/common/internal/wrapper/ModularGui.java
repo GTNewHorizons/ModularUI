@@ -665,6 +665,10 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
             return;
         }
         for (Object hovered : getCursor().getAllHovered()) {
+            if (hovered instanceof ModularWindow) {
+                // if floating window is scrolled, widgets/slots below should not be interacted
+                return;
+            }
             if (focused != hovered
                     && hovered instanceof Interactable
                     && ((Interactable) hovered).onMouseScroll(direction)) {

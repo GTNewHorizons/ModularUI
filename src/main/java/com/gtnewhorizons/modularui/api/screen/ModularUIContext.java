@@ -111,6 +111,7 @@ public class ModularUIContext {
         if (isClient()) {
             // if on client, notify the server that the client initialized, to allow syncing to client
             mainWindow.initialized = true;
+            mainWindow.clientOnly = false;
             sendClientPacket(DataCodes.SYNC_INIT, null, mainWindow, NetworkUtils.EMPTY_PACKET);
         }
     }
