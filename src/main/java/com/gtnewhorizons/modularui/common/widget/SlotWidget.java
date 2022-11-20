@@ -333,7 +333,9 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
 
     @Override
     public ClickResult onClick(int buttonId, boolean doubleClick) {
-        if (interactionDisabled || !getMcSlot().isEnabled()) return ClickResult.REJECT;
+        // vanilla slot interaction is handled on mouseMovedOrUp, so we need to hold the state
+        // of this widget being clicked and prevent further interaction
+        if (interactionDisabled || !getMcSlot().isEnabled()) return ClickResult.ACCEPT;
         if (isPhantom()) {
             ClickData clickData = ClickData.create(buttonId, doubleClick);
             syncToServer(2, clickData::writeToPacket);
