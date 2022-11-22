@@ -88,6 +88,7 @@ public class ModularUIContainer extends Container {
 
     @Override
     public void detectAndSendChanges() {
+        if (getContext().isClient()) return; // this can actually happen with Container#slotClick
         super.detectAndSendChanges();
         if (context.getValidator() != null && !context.getValidator().get()) {
             context.tryClose();
