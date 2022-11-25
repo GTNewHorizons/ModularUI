@@ -9,6 +9,7 @@ import codechicken.nei.api.INEIGuiHandler;
 import codechicken.nei.api.TaggedInventoryArea;
 import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.guihook.IContainerDrawHandler;
+import codechicken.nei.guihook.IContainerInputHandler;
 import codechicken.nei.guihook.IContainerObjectHandler;
 import codechicken.nei.guihook.IContainerTooltipHandler;
 import com.gtnewhorizons.modularui.ModularUI;
@@ -579,6 +580,12 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         if (probablyClicked == null && !wasReject) {
             // NEI injects GuiContainerManager#mouseClicked there
             super.mouseClicked(mouseX, mouseY, mouseButton);
+        } else {
+            if (shouldShowNEI()) {
+                for (IContainerInputHandler inputhander : GuiContainerManager.inputHandlers) {
+                    inputhander.onMouseClicked(this, mouseX, mouseY, mouseButton);
+                }
+            }
         }
 
         lastFocusedClick = time;
