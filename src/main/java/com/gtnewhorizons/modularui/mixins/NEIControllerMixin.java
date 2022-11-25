@@ -17,6 +17,9 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(NEIController.class)
 public class NEIControllerMixin {
 
+    /**
+     * @reason Prevent client-only window from sending slot click packet via NEI fast transfer
+     */
     @Inject(
             method = "mouseScrolled",
             at =
