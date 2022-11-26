@@ -23,6 +23,8 @@ public class TextWidget extends Widget {
     private Alignment textAlignment = Alignment.Center;
     private final TextRenderer textRenderer = new TextRenderer();
 
+    protected boolean isDynamic = false;
+
     public TextWidget() {
         this(new Text(""));
     }
@@ -77,7 +79,7 @@ public class TextWidget extends Widget {
 
     @Override
     public void onScreenUpdate() {
-        if (isAutoSized()) {
+        if (isDynamic || isAutoSized()) {
             String l = getText().getFormatted();
             if (!l.equals(localised)) {
                 checkNeedsRebuild();
