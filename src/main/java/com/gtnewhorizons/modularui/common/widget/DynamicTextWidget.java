@@ -26,6 +26,7 @@ public class DynamicTextWidget extends TextWidget implements ISyncedWidget {
 
     public DynamicTextWidget(Supplier<Text> text) {
         this.textSupplier = text;
+        this.isDynamic = true;
     }
 
     @Override
