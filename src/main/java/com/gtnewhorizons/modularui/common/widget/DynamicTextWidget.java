@@ -34,11 +34,6 @@ public class DynamicTextWidget extends TextWidget implements ISyncedWidget {
     }
 
     @Override
-    public void onScreenUpdate() {
-        if (!syncsToClient()) super.onScreenUpdate();
-    }
-
-    @Override
     public Text getText() {
         return syncsToClient() ? lastText : updateText();
     }
