@@ -247,6 +247,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         itemRender.renderItemAndEffectIntoGUI(font, mc.getTextureManager(), stack, x, y);
         itemRender.renderItemOverlayIntoGUI(
                 font, mc.getTextureManager(), stack, x, y - (getDragSlots() != null ? 0 : 8), altText);
+        GuiHelper.afterRenderItemAndEffectIntoGUI(stack);
         this.zLevel = 0.0F;
         itemRender.zLevel = 0.0F;
         GlStateManager.disableDepth();

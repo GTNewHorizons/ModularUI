@@ -14,9 +14,11 @@ import java.util.stream.Collectors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.fluids.Fluid;
@@ -410,5 +412,23 @@ public class GuiHelper {
         int s = r == null ? 1 : r.getScaleFactor();
         int translatedY = r == null ? 0 : (r.getScaledHeight() - y - h);
         GL11.glScissor(x * s, translatedY * s, w * s, h * s);
+    }
+
+    public static void afterRenderItemAndEffectIntoGUI(ItemStack stack) {
+        // asked by Forge :shrug:
+        // RenderItem#L627
+        if (stack.hasEffect()) {
+            GL11.glDepthFunc(GL11.GL_EQUAL);
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glDepthMask(false);
+            GL11.glEnable(GL11.GL_ALPHA_TEST);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glColor4f(0.5F, 0.25F, 0.8F, 1.0F);
+            OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+            GL11.glDepthMask(true);
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glDepthFunc(GL11.GL_LEQUAL);
+            GL11.glDisable(GL11.GL_BLEND);
+        }
     }
 }

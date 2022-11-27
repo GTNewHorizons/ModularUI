@@ -47,6 +47,8 @@ public class ItemDrawable implements IDrawable {
                         item,
                         (int) x,
                         (int) y);
+        GuiHelper.afterRenderItemAndEffectIntoGUI(item);
+
         GlStateManager.disableDepth();
         RenderHelper.enableStandardItemLighting();
         GlStateManager.disableLighting();
