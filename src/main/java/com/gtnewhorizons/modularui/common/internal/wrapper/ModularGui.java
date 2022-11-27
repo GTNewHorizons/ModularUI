@@ -324,6 +324,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                             hovered.isTooltipHasSpaceAfterFirstLine());
                 }
             }
+            GlStateManager.disableDepth();
         }
 
         if (context.getCurrentWindow().isEnabled()) {
