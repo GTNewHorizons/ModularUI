@@ -150,9 +150,6 @@ public class BaseSlot extends SlotItemHandler {
 
     @Override
     public void onSlotChanged() {
-        if (this.cachedItem != null && ItemStack.areItemStacksEqual(this.cachedItem, getStack())) {
-            return;
-        }
         if (getStack() != null) {
             this.cachedItem = getStack().copy();
         }
