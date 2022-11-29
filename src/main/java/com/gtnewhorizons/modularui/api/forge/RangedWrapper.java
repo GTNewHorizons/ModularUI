@@ -80,4 +80,8 @@ public class RangedWrapper implements IItemHandlerModifiable {
     private boolean checkSlot(int localSlot) {
         return localSlot + minSlot < maxSlot;
     }
+
+    public IItemHandlerModifiable getCompose() {
+        return compose;
+    }
 }

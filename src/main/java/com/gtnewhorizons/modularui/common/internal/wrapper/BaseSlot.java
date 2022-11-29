@@ -1,12 +1,15 @@
 package com.gtnewhorizons.modularui.common.internal.wrapper;
 
 import com.gtnewhorizons.modularui.api.forge.IItemHandlerModifiable;
+import com.gtnewhorizons.modularui.api.forge.InvWrapper;
 import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
+import com.gtnewhorizons.modularui.api.forge.RangedWrapper;
 import com.gtnewhorizons.modularui.api.forge.SlotItemHandler;
 import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import java.util.function.Predicate;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -163,6 +166,17 @@ public class BaseSlot extends SlotItemHandler {
         this.parentWidget.markForUpdate();
     }
 
+    @Override
+    public boolean isSlotInInventory(IInventory inventory, int index) {
+        if (getItemHandler() instanceof RangedWrapper) {
+            IItemHandlerModifiable itemHandler = ((RangedWrapper) getItemHandler()).getCompose();
+            if (itemHandler instanceof InvWrapper) {
+                return ((InvWrapper) itemHandler).getInv() == inventory && index == getSlotIndex();
+            }
+        }
+        return super.isSlotInInventory(inventory, index);
+    }
+
     public boolean isNeedsSyncing() {
         return needsSyncing;
     }
@@ -176,18 +190,6 @@ public class BaseSlot extends SlotItemHandler {
     public ResourceLocation getBackgroundIconTexture() {
         return null;
     }
-
-    //    @Nullable
-    //    @Override
-    //    public String getSlotTexture() {
-    //        return null;
-    //    }
-    //
-    //    @Nullable
-    //    @Override
-    //    public TextureAtlasSprite getBackgroundSprite() {
-    //        return null;
-    //    }
 
     public void incrementStackCount(int amount) {
         ItemStack stack = getStack();
