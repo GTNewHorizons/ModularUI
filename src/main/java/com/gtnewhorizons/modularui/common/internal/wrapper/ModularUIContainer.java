@@ -1,6 +1,7 @@
 package com.gtnewhorizons.modularui.common.internal.wrapper;
 
 import com.gtnewhorizons.modularui.api.forge.ItemHandlerHelper;
+import com.gtnewhorizons.modularui.api.forge.PlayerMainInvWrapper;
 import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
@@ -20,12 +21,17 @@ public class ModularUIContainer extends Container {
     private final Map<String, List<Slot>> sortingAreas = new HashMap<>();
     private final Map<String, Integer> sortRowSizes = new HashMap<>();
 
-    public ModularUIContainer(ModularUIContext context, ModularWindow mainWindow) {
+    public ModularUIContainer(ModularUIContext context, ModularWindow mainWindow, Integer interactionDisabledSlot) {
         this.context = context;
         this.context.initialize(this, mainWindow);
+        disablePlayerSlotInteraction(interactionDisabledSlot);
         checkSlotIds();
         sortSlots();
         initialisedContainer = true;
+    }
+
+    public ModularUIContainer(ModularUIContext context, ModularWindow mainWindow) {
+        this(context, mainWindow, null);
     }
 
     public void sortSlots() {
@@ -44,6 +50,15 @@ public class ModularUIContainer extends Container {
     private void checkSlotIds() {
         for (int i = 0; i < inventorySlots.size(); i++) {
             ((Slot) (inventorySlots.get(i))).slotNumber = i;
+        }
+    }
+
+    public void disablePlayerSlotInteraction(Integer interactionDisabledSlot) {
+        if (interactionDisabledSlot != null && inventorySlots.size() > interactionDisabledSlot) {
+            Slot slot = getSlotFromInventory(getContext().getPlayer().inventory, interactionDisabledSlot);
+            if (slot instanceof BaseSlot && ((BaseSlot) slot).getItemHandler() instanceof PlayerMainInvWrapper) {
+                ((BaseSlot) slot).setEnabled(false);
+            }
         }
     }
 

@@ -51,7 +51,8 @@ public class UIInfos {
                             ((IItemWithModularUI) heldItem.getItem()).createWindow(buildContext, heldItem);
                     return new ModularUIContainer(
                             new ModularUIContext(buildContext, () -> player.inventoryContainer.detectAndSendChanges()),
-                            window);
+                            window,
+                            player.inventory.currentItem);
                 }
                 return null;
             })
@@ -61,7 +62,8 @@ public class UIInfos {
                     UIBuildContext buildContext = new UIBuildContext(player);
                     ModularWindow window =
                             ((IItemWithModularUI) heldItem.getItem()).createWindow(buildContext, heldItem);
-                    return new ModularGui(new ModularUIContainer(new ModularUIContext(buildContext, null), window));
+                    return new ModularGui(new ModularUIContainer(
+                            new ModularUIContext(buildContext, null), window, player.inventory.currentItem));
                 }
                 return null;
             })
