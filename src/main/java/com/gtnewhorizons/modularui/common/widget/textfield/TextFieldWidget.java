@@ -4,6 +4,7 @@ import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
 import com.gtnewhorizons.modularui.api.math.MathExpression;
 import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
+import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import java.awt.*;
 import java.text.ParseException;
@@ -316,6 +317,19 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
                 format.format(onScroll.apply((int) MathExpression.parseMathExpression(text), direction)));
     }
 
+    public TextFieldWidget setOnScrollNumbers(int baseStep, int ctrlStep, int shiftStep) {
+        return setOnScrollNumbers((val, direction) -> {
+            int step = (Interactable.hasShiftDown() ? shiftStep : Interactable.hasControlDown() ? ctrlStep : baseStep)
+                    * direction;
+            try {
+                val = Math.addExact(val, step);
+            } catch (ArithmeticException ignored) {
+                val = Integer.MAX_VALUE;
+            }
+            return val;
+        });
+    }
+
     /**
      * (current number, direction) -> new number
      */
@@ -330,5 +344,18 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
     public TextFieldWidget setOnScrollNumbersLong(BiFunction<Long, Integer, Long> onScroll) {
         return setOnScroll((text, direction) ->
                 format.format(onScroll.apply((long) MathExpression.parseMathExpression(text), direction)));
+    }
+
+    public TextFieldWidget setOnScrollNumbersLong(long baseStep, long ctrlStep, long shiftStep) {
+        return setOnScrollNumbersLong((val, direction) -> {
+            long step = (Interactable.hasShiftDown() ? shiftStep : Interactable.hasControlDown() ? ctrlStep : baseStep)
+                    * direction;
+            try {
+                val = Math.addExact(val, step);
+            } catch (ArithmeticException ignored) {
+                val = Long.MAX_VALUE;
+            }
+            return val;
+        });
     }
 }
