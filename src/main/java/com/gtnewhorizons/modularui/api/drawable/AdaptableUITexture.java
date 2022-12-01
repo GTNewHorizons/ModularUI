@@ -77,8 +77,17 @@ public class AdaptableUITexture extends UITexture {
         float borderU = borderWidthU * 1f / imageWidth;
         float borderV = borderWidthV * 1f / imageHeight;
         // draw corners
-        draw(location, x, y, borderWidthU, borderWidthV, u0, v0, borderU, borderV); // x0 y0
-        draw(location, x + width - borderWidthU, y, borderWidthU, borderWidthV, u1 - borderU, v0, u1, borderV); // x1 y0
+        draw(location, x, y, borderWidthU, borderWidthV, u0, v0, u0 + borderU, v0 + borderV); // x0 y0
+        draw(
+                location,
+                x + width - borderWidthU,
+                y,
+                borderWidthU,
+                borderWidthV,
+                u1 - borderU,
+                v0,
+                u1,
+                v0 + borderV); // x1 y0
         draw(
                 location,
                 x,
@@ -87,7 +96,7 @@ public class AdaptableUITexture extends UITexture {
                 borderWidthV,
                 u0,
                 v1 - borderV,
-                borderU,
+                u0 + borderU,
                 v1); // x0 y1
         draw(
                 location,
@@ -106,17 +115,17 @@ public class AdaptableUITexture extends UITexture {
                 y,
                 width - borderWidthU * 2,
                 borderWidthV,
-                borderU,
+                u0 + borderU,
                 v0,
                 u1 - borderU,
-                borderV); // top
+                v0 + borderV); // top
         draw(
                 location,
                 x + borderWidthU,
                 y + height - borderWidthV,
                 width - borderWidthU * 2,
                 borderWidthV,
-                borderU,
+                u0 + borderU,
                 v1 - borderV,
                 u1 - borderU,
                 v1); // bottom
@@ -127,8 +136,8 @@ public class AdaptableUITexture extends UITexture {
                 borderWidthU,
                 height - borderWidthV * 2,
                 u0,
-                borderV,
-                borderU,
+                v0 + borderV,
+                u0 + borderU,
                 v1 - borderV); // left
         draw(
                 location,
@@ -137,7 +146,7 @@ public class AdaptableUITexture extends UITexture {
                 borderWidthU,
                 height - borderWidthV * 2,
                 u1 - borderU,
-                borderV,
+                v0 + borderV,
                 u1,
                 v1 - borderV); // left
         // draw body
@@ -147,8 +156,8 @@ public class AdaptableUITexture extends UITexture {
                 y + borderWidthV,
                 width - borderWidthU * 2,
                 height - borderWidthV * 2,
-                borderU,
-                borderV,
+                u0 + borderU,
+                v0 + borderV,
                 u1 - borderU,
                 v1 - borderV);
     }
