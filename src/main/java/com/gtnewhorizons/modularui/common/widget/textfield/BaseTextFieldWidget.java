@@ -60,15 +60,15 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
     /**
      * ascii letters
      */
-    private static final Pattern BASE_PATTERN = Pattern.compile("[A-Za-z0-9\\s_+\\-.,!@#$%^&*();\\\\/|<>\"'\\[\\]?=]");
+    public static final Pattern BASE_PATTERN = Pattern.compile("[A-Za-z0-9\\s_+\\-.,!@#$%^&*();\\\\/|<>\"'\\[\\]?=]");
 
     protected TextFieldHandler handler = new TextFieldHandler();
-    private List<String> lastText;
+    protected List<String> lastText;
     protected TextFieldRenderer renderer = new TextFieldRenderer(handler);
     protected Alignment textAlignment = Alignment.TopLeft;
     protected int scrollOffset = 0;
     protected float scale = 1f;
-    private int cursorTimer;
+    protected int cursorTimer;
     protected boolean focusOnGuiOpen;
 
     protected ScrollBar scrollBar;

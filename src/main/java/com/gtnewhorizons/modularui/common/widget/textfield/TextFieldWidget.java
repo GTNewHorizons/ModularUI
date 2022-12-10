@@ -8,6 +8,7 @@ import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import java.awt.*;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -114,7 +115,10 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
             String val = getter.get();
             if (init || !getText().equals(val)) {
                 setText(val);
-                syncToClient(1, buffer -> NetworkUtils.writeStringSafe(buffer, getText()));
+                syncToClient(1, buffer -> {
+                    buffer.writeBoolean(init);
+                    NetworkUtils.writeStringSafe(buffer, getText());
+                });
                 markForUpdate();
             }
         }
@@ -123,8 +127,15 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
     @Override
     public void readOnClient(int id, PacketBuffer buf) {
         if (id == 1) {
-            if (!isFocused()) {
+            boolean init = buf.readBoolean();
+            if (init || !isFocused()) {
                 setText(NetworkUtils.readStringSafe(buf));
+                if (init) {
+                    lastText = new ArrayList<>(handler.getText());
+                    if (focusOnGuiOpen) {
+                        forceFocus();
+                    }
+                }
                 if (this.setter != null && (this.getter == null || !getText().equals(this.getter.get()))) {
                     this.setter.accept(getText());
                 }
