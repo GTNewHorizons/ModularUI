@@ -3,6 +3,7 @@ package com.gtnewhorizons.modularui.common.widget;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -125,6 +126,16 @@ public class FakeSyncWidget<T> extends SyncedWidget {
     public static class LongSyncer extends FakeSyncWidget<Long> {
         public LongSyncer(Supplier<Long> getter, Consumer<Long> setter) {
             super(getter, setter, PacketBuffer::writeLong, PacketBuffer::readLong);
+        }
+    }
+
+    public static class BigIntegerSyncer extends FakeSyncWidget<BigInteger> {
+        public BigIntegerSyncer(Supplier<BigInteger> getter, Consumer<BigInteger> setter) {
+            super(
+                    getter,
+                    setter,
+                    (buffer, bigInteger) -> NetworkUtils.writeStringSafe(buffer, bigInteger.toString()),
+                    buffer -> new BigInteger(NetworkUtils.readStringSafe(buffer)));
         }
     }
 
