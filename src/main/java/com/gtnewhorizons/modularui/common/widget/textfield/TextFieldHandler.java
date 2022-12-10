@@ -138,8 +138,13 @@ public class TextFieldHandler {
         if (this.text.isEmpty()) return;
         Point main = getMainCursor();
         if (main.x == 0) {
-            if (main.y == 0) return;
-            setCursor(main.y - 1, this.text.get(main.y - 1).length(), !shift);
+            if (main.y == 0) {
+                // At the very first position. Deselect marker if needed
+                setCursor(main.y, 0, !shift);
+            } else {
+                // Move to former line
+                setCursor(main.y - 1, this.text.get(main.y - 1).length(), !shift);
+            }
         } else {
             int newPos = main.x - 1;
             if (ctrl) {
@@ -166,8 +171,13 @@ public class TextFieldHandler {
         Point main = getMainCursor();
         String line = this.text.get(main.y);
         if (main.x == line.length()) {
-            if (main.y == this.text.size() - 1) return;
-            setCursor(main.y + 1, 0, !shift);
+            if (main.y == this.text.size() - 1) {
+                // At the very last position. Deselect marker if needed
+                setCursor(main.y, main.x, !shift);
+            } else {
+                // Move to latter line
+                setCursor(main.y + 1, 0, !shift);
+            }
         } else {
             int newPos = main.x + 1;
             if (ctrl) {
