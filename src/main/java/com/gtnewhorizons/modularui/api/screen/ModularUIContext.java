@@ -407,6 +407,8 @@ public class ModularUIContext {
         if (isClient() && !isClientOnly()) {
             if (!syncedWindows.containsValue(window)) {
                 ModularUI.logger.error("Window is not synced!");
+                ModularUI.logger.warn(
+                        "stacktrace: " + Arrays.toString(Thread.currentThread().getStackTrace()));
                 return;
             }
             int syncId = syncedWidget == null ? DataCodes.INTERNAL_SYNC : window.getSyncedWidgetId(syncedWidget);
@@ -427,6 +429,8 @@ public class ModularUIContext {
         if (!isClient()) {
             if (!syncedWindows.containsValue(window)) {
                 ModularUI.logger.error("Window is not synced!");
+                ModularUI.logger.warn(
+                        "stacktrace: " + Arrays.toString(Thread.currentThread().getStackTrace()));
                 return;
             }
             int syncId = syncedWidget == null ? DataCodes.INTERNAL_SYNC : window.getSyncedWidgetId(syncedWidget);

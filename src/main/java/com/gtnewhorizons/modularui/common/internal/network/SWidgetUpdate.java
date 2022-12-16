@@ -45,7 +45,10 @@ public class SWidgetUpdate implements IPacket {
                 e.printStackTrace();
             }
         } else {
-            ModularUI.logger.error("Expected ModularGui screen on client, but got {}", screen);
+            // no-op
+            // This can legitimately happen when:
+            // - client opens NEI GuiRecipe
+            // - client closes GUI (until server receives packet of closing GUI server-side)
         }
         return null;
     }
