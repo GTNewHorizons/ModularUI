@@ -432,17 +432,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         List<String> lines = new ArrayList<>();
         if (stack != null) {
             font = stack.getItem().getFontRenderer(stack);
-            //noinspection unchecked
-            List<String> itemStackTooltips =
-                    stack.getTooltip(context.getPlayer(), this.mc.gameSettings.advancedItemTooltips);
-            for (int i = 0; i < itemStackTooltips.size(); i++) {
-                if (i == 0) {
-                    itemStackTooltips.set(0, stack.getRarity().rarityColor.toString() + itemStackTooltips.get(0));
-                } else {
-                    itemStackTooltips.set(i, EnumChatFormatting.GRAY + itemStackTooltips.get(i));
-                }
-            }
-            lines.addAll(itemStackTooltips);
+            lines.addAll(getItemTooltip(stack));
         }
         lines.addAll(extraLines);
         if (overwriteItemStackTooltip != null) {
@@ -454,7 +444,20 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         this.drawHoveringText(lines, x, y, (font == null ? fontRenderer : font));
     }
 
-    private void applyNEITooltipHandler(List<String> tooltip, ItemStack stack) {
+    public List<String> getItemTooltip(ItemStack stack) {
+        //noinspection unchecked
+        List<String> tooltips = stack.getTooltip(context.getPlayer(), this.mc.gameSettings.advancedItemTooltips);
+        for (int i = 0; i < tooltips.size(); i++) {
+            if (i == 0) {
+                tooltips.set(0, stack.getRarity().rarityColor.toString() + tooltips.get(0));
+            } else {
+                tooltips.set(i, EnumChatFormatting.GRAY + tooltips.get(i));
+            }
+        }
+        return tooltips;
+    }
+
+    public void applyNEITooltipHandler(List<String> tooltip, ItemStack stack) {
         if (GuiContainerManager$instanceTooltipHandlers == null || GuiContainerManager.getManager() == null) return;
         List<IContainerTooltipHandler> instanceTooltipHandlers;
         try {

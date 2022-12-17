@@ -1,8 +1,13 @@
 package com.gtnewhorizons.modularui.api.drawable;
 
+import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.GlStateManager;
+import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
@@ -58,6 +63,20 @@ public class ItemDrawable implements IDrawable {
     @Override
     public DrawableWidget asWidget() {
         return (DrawableWidget) IDrawable.super.asWidget().setSize(16, 16);
+    }
+
+    public DrawableWidget asWidgetWithTooltip() {
+        Widget widget = asWidget();
+        return (DrawableWidget) widget.setUpdateTooltipEveryTick(true).dynamicTooltip(() -> {
+            if (item.get() == null) return Collections.emptyList();
+            ModularGui gui = widget.getContext().getScreen();
+
+            List<String> lines = new ArrayList<>(gui.getItemTooltip(item.get()));
+            if (ModularUI.isNEILoaded) {
+                gui.applyNEITooltipHandler(lines, item.get());
+            }
+            return lines;
+        });
     }
 
     public ItemStack getItem() {

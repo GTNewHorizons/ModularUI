@@ -76,6 +76,7 @@ public abstract class Widget {
     private final List<Text> mainTooltipShift = new ArrayList<>();
     private Supplier<List<String>> dynamicTooltipShift;
     private int tooltipShowUpDelay = 0;
+    private boolean updateTooltipEveryTick = false;
     private boolean tooltipHasSpaceAfterFirstLine = true;
 
     @Nullable
@@ -614,7 +615,7 @@ public abstract class Widget {
     }
 
     private void checkTooltip() {
-        if (this.tooltipDirty) {
+        if (this.tooltipDirty || this.updateTooltipEveryTick) {
             this.mainTooltip.clear();
             this.mainTooltipShift.clear();
             buildTooltip(this.mainTooltip);
@@ -880,6 +881,15 @@ public abstract class Widget {
 
     public Widget setTooltipShowUpDelay(int tooltipShowUpDelay) {
         this.tooltipShowUpDelay = tooltipShowUpDelay;
+        return this;
+    }
+
+    /**
+     * By default, dynamic tooltip doesn't get updated unless {@link #notifyTooltipChange} is called.
+     * Passing true to this method will force tooltip to update on every render tick.
+     */
+    public Widget setUpdateTooltipEveryTick(boolean updateTooltipEveryTick) {
+        this.updateTooltipEveryTick = updateTooltipEveryTick;
         return this;
     }
 
