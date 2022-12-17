@@ -113,15 +113,6 @@ public class GuiHelper {
         if (maxWidth < 0) {
             maxWidth = Integer.MAX_VALUE;
         }
-        //        RenderTooltipEvent.Pre event = new RenderTooltipEvent.Pre(ItemStack.EMPTY, lines, mousePos.x,
-        // mousePos.y, screenSize.width, screenSize.height, maxWidth, TextRenderer.getFontRenderer());
-        //        if (MinecraftForge.EVENT_BUS.post(event)) {
-        //            return;
-        //        }
-        //        lines = event.getLines();
-        //        mousePos = new Pos2d(event.x(), event.getY());
-        //        screenSize = new Size(event.getScreenWidth(), event.getScreenHeight());
-        //        maxWidth = event.getMaxWidth();
 
         int maxTextWidth = maxWidth;
 
@@ -167,12 +158,6 @@ public class GuiHelper {
         int backgroundColor = 0xF0100010;
         int borderColorStart = 0x505000FF;
         int borderColorEnd = (borderColorStart & 0xFEFEFE) >> 1 | borderColorStart & 0xFF000000;
-        //        RenderTooltipEvent.Color colorEvent = new RenderTooltipEvent.Color(ItemStack.EMPTY, lines, tooltipX,
-        // tooltipY, TextRenderer.getFontRenderer(), backgroundColor, borderColorStart, borderColorEnd);
-        //        MinecraftForge.EVENT_BUS.post(colorEvent);
-        //        backgroundColor = colorEvent.getBackground();
-        //        borderColorStart = colorEvent.getBorderStart();
-        //        borderColorEnd = colorEvent.getBorderEnd();
         drawGradientRect(
                 zLevel,
                 tooltipX - 3,
