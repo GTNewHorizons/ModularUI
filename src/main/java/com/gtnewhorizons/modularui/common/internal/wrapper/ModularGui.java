@@ -2,6 +2,7 @@ package com.gtnewhorizons.modularui.common.internal.wrapper;
 
 import static codechicken.lib.render.FontUtils.fontRenderer;
 
+import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.ItemPanels;
 import codechicken.nei.NEIClientUtils;
 import codechicken.nei.VisiblityData;
@@ -438,10 +439,15 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         if (overwriteItemStackTooltip != null) {
             lines = overwriteItemStackTooltip.apply(lines);
         }
+
+        FontRenderer fontToUse = font == null ? fontRenderer : font;
         if (ModularUI.isNEILoaded) {
             applyNEITooltipHandler(lines, stack);
+            // see GuiContainerManager#renderToolTips for these magic numbers
+            GuiDraw.drawMultilineTip(fontToUse, x + 12, y - 12, lines);
+        } else {
+            this.drawHoveringText(lines, x, y, fontToUse);
         }
-        this.drawHoveringText(lines, x, y, (font == null ? fontRenderer : font));
     }
 
     public List<String> getItemTooltip(ItemStack stack) {
