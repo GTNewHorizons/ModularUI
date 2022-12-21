@@ -37,7 +37,6 @@ import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import java.awt.*;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -77,18 +76,6 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
     private int fps = 0;
 
     private float partialTicks;
-
-    private static Field GuiContainerManager$instanceTooltipHandlers;
-
-    static {
-        try {
-            Class<?> clazzGuiContainerManager = Class.forName("codechicken.nei.guihook.GuiContainerManager");
-            GuiContainerManager$instanceTooltipHandlers =
-                    clazzGuiContainerManager.getDeclaredField("instanceTooltipHandlers");
-            GuiContainerManager$instanceTooltipHandlers.setAccessible(true);
-        } catch (ClassNotFoundException | NoSuchFieldException ignored) {
-        }
-    }
 
     public ModularGui(ModularUIContainer container) {
         super(container);
@@ -467,17 +454,11 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
     }
 
     public void applyNEITooltipHandler(List<String> tooltip, ItemStack stack) {
-        if (GuiContainerManager$instanceTooltipHandlers == null || GuiContainerManager.getManager() == null) return;
-        List<IContainerTooltipHandler> instanceTooltipHandlers;
-        try {
-            //noinspection unchecked
-            instanceTooltipHandlers = (List<IContainerTooltipHandler>)
-                    GuiContainerManager$instanceTooltipHandlers.get(GuiContainerManager.getManager());
-        } catch (IllegalAccessException ignored) {
-            return;
-        }
+        GuiContainerManager.applyItemCountDetails(tooltip, stack);
+
+        if (GuiContainerManager.getManager() == null) return;
         if (GuiContainerManager.shouldShowTooltip(this)) {
-            for (IContainerTooltipHandler handler : instanceTooltipHandlers)
+            for (IContainerTooltipHandler handler : GuiContainerManager.getManager().instanceTooltipHandlers)
                 tooltip = handler.handleItemTooltip(
                         this, stack, getCursor().getX(), getCursor().getY(), tooltip);
         }
