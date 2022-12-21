@@ -460,6 +460,9 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                 tooltips.set(i, EnumChatFormatting.GRAY + tooltips.get(i));
             }
         }
+        if (tooltips.size() > 0) {
+            tooltips.set(0, tooltips.get(0) + GuiDraw.TOOLTIP_LINESPACE); // add space after 'title'
+        }
         return tooltips;
     }
 
