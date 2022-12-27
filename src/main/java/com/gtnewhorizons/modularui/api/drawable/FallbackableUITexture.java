@@ -70,7 +70,7 @@ public class FallbackableUITexture {
                     }
                 }
             } else {
-                useFallback = false;
+                useFallback = true;
             }
         }
     }
