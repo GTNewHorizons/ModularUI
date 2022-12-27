@@ -1,6 +1,7 @@
 package com.gtnewhorizons.modularui;
 
 import codechicken.nei.guihook.GuiContainerManager;
+import com.gtnewhorizons.modularui.api.drawable.FallbackableUITexture;
 import com.gtnewhorizons.modularui.common.internal.JsonLoader;
 import com.gtnewhorizons.modularui.common.peripheral.PeripheralInputHandler;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -34,6 +35,7 @@ public class ClientProxy extends CommonProxy {
         public void onResourceManagerReload(IResourceManager p_110549_1_) {
             ModularUI.logger.info("Reloading GUIs");
             JsonLoader.loadJson();
+            FallbackableUITexture.reload();
         }
     }
 }
