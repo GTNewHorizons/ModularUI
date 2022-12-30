@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-public class ItemStackHandler implements IItemHandler, IItemHandlerModifiable, INBTSerializable<NBTTagCompound> {
+public class ItemStackHandler implements IItemHandlerModifiable, INBTSerializable<NBTTagCompound> {
     protected List<ItemStack> stacks;
 
     public ItemStackHandler() {
