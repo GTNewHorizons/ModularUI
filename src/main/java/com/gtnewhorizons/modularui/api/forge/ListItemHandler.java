@@ -28,33 +28,33 @@ public class ListItemHandler implements IItemHandlerModifiable {
 
     @Override
     public ItemStack getStackInSlot(int slot) {
-        Pair<? extends IItemHandler, Integer> result = searchItemHandler(slot);
+        Pair<? extends IItemHandler, Integer> result = findItemHandler(slot);
         return result.getLeft().getStackInSlot(result.getRight());
     }
 
     @Nullable
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-        Pair<? extends IItemHandler, Integer> result = searchItemHandler(slot);
+        Pair<? extends IItemHandler, Integer> result = findItemHandler(slot);
         return result.getLeft().insertItem(result.getRight(), stack, simulate);
     }
 
     @Nullable
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        Pair<? extends IItemHandler, Integer> result = searchItemHandler(slot);
+        Pair<? extends IItemHandler, Integer> result = findItemHandler(slot);
         return result.getLeft().extractItem(result.getRight(), amount, simulate);
     }
 
     @Override
     public int getSlotLimit(int slot) {
-        Pair<? extends IItemHandler, Integer> result = searchItemHandler(slot);
+        Pair<? extends IItemHandler, Integer> result = findItemHandler(slot);
         return result.getLeft().getSlotLimit(result.getRight());
     }
 
     @Override
     public void setStackInSlot(int slot, ItemStack stack) {
-        Pair<? extends IItemHandler, Integer> result = searchItemHandler(slot);
+        Pair<? extends IItemHandler, Integer> result = findItemHandler(slot);
         if (result.getLeft() instanceof IItemHandlerModifiable) {
             ((IItemHandlerModifiable) result.getLeft()).setStackInSlot(result.getRight(), stack);
         }
@@ -62,7 +62,7 @@ public class ListItemHandler implements IItemHandlerModifiable {
 
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
-        Pair<? extends IItemHandler, Integer> result = searchItemHandler(slot);
+        Pair<? extends IItemHandler, Integer> result = findItemHandler(slot);
         return result.getLeft().isItemValid(result.getRight(), stack);
     }
 
@@ -71,7 +71,7 @@ public class ListItemHandler implements IItemHandlerModifiable {
      * @param slot Index to search
      * @return Pair of item handler and actual index for it
      */
-    protected Pair<? extends IItemHandler, Integer> searchItemHandler(int slot) {
+    protected Pair<? extends IItemHandler, Integer> findItemHandler(int slot) {
         int searching = 0;
         for (IItemHandler itemHandler : listItemHandler) {
             int numSlots = itemHandler.getSlots();
