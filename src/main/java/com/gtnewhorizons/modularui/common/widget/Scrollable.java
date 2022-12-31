@@ -172,10 +172,12 @@ public class Scrollable extends Widget
     public boolean onMouseScroll(int direction) {
         if (canScrollHorizontal() && (canScrollVertical() && Interactable.hasShiftDown()) || !canScrollVertical()) {
             horizontalScrollBar.onMouseScroll(direction);
+            return true;
         } else if (canScrollVertical()) {
             verticalScrollBar.onMouseScroll(direction);
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Override

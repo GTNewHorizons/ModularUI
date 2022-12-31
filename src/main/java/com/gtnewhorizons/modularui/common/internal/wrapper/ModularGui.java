@@ -660,24 +660,36 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         }
     }
 
-    public void mouseScroll(int direction) {
-        for (Interactable interactable : context.getCurrentWindow().getInteractionListeners()) {
-            interactable.onMouseScroll(direction);
-        }
+    /**
+     * Called when mouse is scrolled, after {@link #onMouseScrolled} being called.
+     */
+    public boolean mouseScrolled(int direction) {
         Widget focused = getCursor().getFocused();
         if (focused instanceof Interactable && ((Interactable) focused).onMouseScroll(direction)) {
-            return;
+            return true;
         }
+        boolean foundFirstElement = false;
         for (Object hovered : getCursor().getAllHovered()) {
-            if (hovered instanceof ModularWindow) {
+            if (!foundFirstElement && hovered instanceof ModularWindow) {
                 // if floating window is scrolled, widgets/slots below should not be interacted
-                return;
+                return true;
             }
             if (focused != hovered
                     && hovered instanceof Interactable
                     && ((Interactable) hovered).onMouseScroll(direction)) {
-                return;
+                return true;
             }
+            foundFirstElement = true;
+        }
+        return false;
+    }
+
+    /**
+     * This version of mouseScrolled is passive and will be called on every input handler before mouseScrolled is processed.
+     */
+    public void onMouseScrolled(int direction) {
+        for (Interactable interactable : context.getCurrentWindow().getInteractionListeners()) {
+            interactable.onMouseScroll(direction);
         }
     }
 

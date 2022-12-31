@@ -32,13 +32,16 @@ public class PeripheralInputHandler implements IContainerInputHandler {
 
     @Override
     public boolean mouseScrolled(GuiContainer gui, int mousex, int mousey, int scrolled) {
+        if (gui instanceof ModularGui && scrolled != 0) {
+            return ((ModularGui) gui).mouseScrolled(scrolled);
+        }
         return false;
     }
 
     @Override
     public void onMouseScrolled(GuiContainer gui, int mousex, int mousey, int scrolled) {
         if (gui instanceof ModularGui && scrolled != 0) {
-            ((ModularGui) gui).mouseScroll(scrolled);
+            ((ModularGui) gui).onMouseScrolled(scrolled);
         }
     }
 
