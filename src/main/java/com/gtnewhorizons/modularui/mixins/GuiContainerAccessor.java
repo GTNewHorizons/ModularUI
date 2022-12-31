@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(GuiContainer.class)
-public interface GuiContainerMixin {
+public interface GuiContainerAccessor {
 
     @Accessor("theSlot")
     void setHoveredSlot(Slot slot);

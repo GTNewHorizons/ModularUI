@@ -32,7 +32,7 @@ import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.config.Config;
-import com.gtnewhorizons.modularui.mixins.GuiContainerMixin;
+import com.gtnewhorizons.modularui.mixins.GuiContainerAccessor;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -116,8 +116,8 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         this.context.getCurrentWindow().onOpen();
     }
 
-    public GuiContainerMixin getAccessor() {
-        return (GuiContainerMixin) this;
+    public GuiContainerAccessor getAccessor() {
+        return (GuiContainerAccessor) this;
     }
 
     @Override
