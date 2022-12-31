@@ -693,6 +693,19 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         }
     }
 
+    /**
+     * This somehow overrides {@link GuiContainer#getSlotAtPosition}
+     */
+    @SuppressWarnings("unused")
+    public Slot getSlotAtPosition(int x, int y) {
+        for (Object hovered : getCursor().getAllHovered()) {
+            if (hovered instanceof SlotWidget) {
+                return ((SlotWidget) hovered).getMcSlot();
+            }
+        }
+        return null;
+    }
+
     @Override
     public void onGuiClosed() {
         context.getCloseListeners().forEach(Runnable::run);
