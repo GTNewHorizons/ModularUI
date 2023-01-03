@@ -150,6 +150,7 @@ public class ModularUIContext {
                 newWindow.rebuild();
                 newWindow.onOpen();
                 newWindow.initialized = true;
+                newWindow.clientOnly = false;
                 sendClientPacket(DataCodes.INIT_WINDOW, null, newWindow, NetworkUtils.EMPTY_PACKET);
                 return true;
             });
