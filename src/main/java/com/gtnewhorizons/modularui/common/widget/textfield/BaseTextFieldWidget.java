@@ -268,7 +268,7 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
             removeFocus();
             return true;
         }
-        return false;
+        return true;
     }
 
     @Override
