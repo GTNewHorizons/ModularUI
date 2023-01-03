@@ -49,8 +49,7 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
      */
     public static final Pattern WHOLE_NUMS = Pattern.compile("-?[0-9]*([+\\-*/%^][0-9]*)*");
 
-    public static final Pattern DECIMALS = Pattern.compile(
-            "[0-9]*(" + getDecimalSeparator() + "[0-9]*)?([+\\-*/%^][0-9]*(" + getDecimalSeparator() + "[0-9]*)?)*");
+    public static final Pattern DECIMALS = Pattern.compile("[0-9]*(\\.[0-9]*)?([+\\-*/%^][0-9]*(\\.[0-9]*)?)*");
     /**
      * alphabets
      */
