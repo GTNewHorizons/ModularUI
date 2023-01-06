@@ -1,5 +1,9 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import static com.gtnewhorizons.modularui.ModularUI.isGT5ULoaded;
+import static com.gtnewhorizons.modularui.ModularUI.isNEILoaded;
+
+import codechicken.nei.recipe.StackInfo;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.NumberFormat;
@@ -18,18 +22,25 @@ import com.gtnewhorizons.modularui.common.internal.Theme;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.common.internal.wrapper.FluidTankHandler;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
+import gregtech.api.util.GT_Utility;
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("unused")
 public class FluidSlotWidget extends SyncedWidget implements Interactable, IDragAndDropHandler {
 
     public static final Size SIZE = new Size(18, 18);
@@ -50,7 +61,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
     private boolean canDrainSlot = true;
     private boolean canFillSlot = true;
     private boolean phantom = false;
-    private boolean controlsAmount = true;
+    private boolean controlsAmount = false;
     private boolean lastShift = false;
     private boolean playClickSound = true;
 
@@ -206,11 +217,16 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
             return ClickResult.ACKNOWLEDGED;
         }
         ItemStack cursorStack = getContext().getCursor().getItemStack();
-        // todo fluid capability check
-        if (this.phantom || (cursorStack != null)) {
+        if (phantom || cursorStack != null) {
+            ClickData clickData = ClickData.create(buttonId, doubleClick);
+            ItemStack verifyToken = tryClickContainer(clickData);
             syncToServer(1, buffer -> {
-                buffer.writeVarIntToBuffer(buttonId);
-                buffer.writeBoolean(Interactable.hasShiftDown());
+                clickData.writeToPacket(buffer);
+                try {
+                    buffer.writeItemStackToBuffer(verifyToken);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             });
             if (playClickSound) {
                 Interactable.playButtonClickSound();
@@ -267,11 +283,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
     @Override
     public void readOnServer(int id, PacketBuffer buf) throws IOException {
         if (id == 1) {
-            if (this.phantom) {
-                tryClickPhantom(buf.readVarIntFromBuffer(), buf.readBoolean());
-            } else {
-                tryClickContainer(buf.readVarIntFromBuffer(), buf.readBoolean());
-            }
+            onClickServer(ClickData.readPacket(buf), buf.readItemStackFromBuffer());
         } else if (id == 2) {
             if (this.phantom) {
                 tryScrollPhantom(buf.readVarIntFromBuffer());
@@ -279,8 +291,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
         } else if (id == 3) {
             this.controlsAmount = buf.readBoolean();
         } else if (id == 4) {
-            this.fluidTank.drain(Integer.MAX_VALUE, true);
-            this.fluidTank.fill(NetworkUtils.readFluidStack(buf), true);
+            tryClickPhantom(ClickData.readPacket(buf), buf.readItemStackFromBuffer());
             if (onDragAndDropComplete != null) {
                 onDragAndDropComplete.accept(this);
             }
@@ -288,125 +299,222 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
         markForUpdate();
     }
 
-    private void tryClickContainer(int mouseButton, boolean isShiftKeyDown) {
-        //        EntityPlayer player = getContext().getPlayer();
-        //        ItemStack currentStack = getContext().getCursor().getItemStack();
-        //        if (!currentStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)) {
-        //            return;
-        //        }
-        //        int maxAttempts = isShiftKeyDown ? currentStack.stackSize : 1;
-        //        if (mouseButton == 0 && canFillSlot) {
-        //            boolean performedTransfer = false;
-        //            for (int i = 0; i < maxAttempts; i++) {
-        //                FluidActionResult result = FluidUtil.tryEmptyContainer(currentStack, tankHandler,
-        // Integer.MAX_VALUE, null, false);
-        //                ItemStack remainingStack = result.getResult();
-        //                if (!result.isSuccess() || (currentStack.stackSize > 1 && remainingStack != null &&
-        // !player.inventory.addItemStackToInventory(remainingStack))) {
-        //                    player.dropItem(remainingStack.getItem(), remainingStack.stackSize);
-        //                    break; //do not continue if we can't add resulting container into inventory
-        //                }
-        //
-        //                remainingStack = FluidUtil.tryEmptyContainer(currentStack, tankHandler, Integer.MAX_VALUE,
-        // null, true).result;
-        //                if (currentStack.stackSize == 1) {
-        //                    currentStack = remainingStack;
-        //                } else {
-        //                    currentStack.stackSize -= 1;
-        //                }
-        //                performedTransfer = true;
-        //                if (currentStack == null) {
-        //                    break;
-        //                }
-        //            }
-        //            FluidStack fluid = fluidTank.getFluid();
-        //            if (performedTransfer && fluid != null) {
-        //                playSound(fluid, false);
-        //                getContext().getCursor().setItemStack(currentStack, true);
-        //            }
-        //            return;
-        //        }
-        //        FluidStack currentFluid = fluidTank.getFluid();
-        //        if (mouseButton == 1 && canDrainSlot && currentFluid != null && currentFluid.amount > 0) {
-        //            boolean performedTransfer = false;
-        //            for (int i = 0; i < maxAttempts; i++) {
-        //                FluidActionResult result = FluidUtil.tryFillContainer(currentStack, tankHandler,
-        // Integer.MAX_VALUE, null, false);
-        //                ItemStack remainingStack = result.getResult();
-        //                if (!result.isSuccess() || (currentStack.stackSize > 1 && remainingStack != null &&
-        // !player.inventory.addItemStackToInventory(remainingStack))) {
-        //                    break; //do not continue if we can't add resulting container into inventory
-        //                }
-        //
-        //                remainingStack = FluidUtil.tryFillContainer(currentStack, tankHandler, Integer.MAX_VALUE,
-        // null, true).result;
-        //                if (currentStack.getCount() == 1) {
-        //                    currentStack = remainingStack;
-        //                } else {
-        //                    currentStack.shrink(1);
-        //                }
-        //                performedTransfer = true;
-        //                if (currentStack.isEmpty()) {
-        //                    break;
-        //                }
-        //            }
-        //            if (performedTransfer) {
-        //                playSound(currentFluid, true);
-        //                getContext().getCursor().setItemStack(currentStack, true);
-        //            }
-        //        }
+    protected void onClickServer(ClickData clickData, ItemStack clientVerifyToken) {
+        ItemStack serverVerifyToken = tryClickContainer(clickData);
+        // similar to what NetHandlerPlayServer#processClickWindow does
+        if (!ItemStack.areItemStacksEqual(clientVerifyToken, serverVerifyToken)) {
+            ((EntityPlayerMP) getContext().getPlayer())
+                    .sendContainerToPlayer(getContext().getContainer());
+        }
     }
 
-    protected void tryClickPhantom(int mouseButton, boolean isShiftKeyDown) {
-        tryClickPhantom(mouseButton, isShiftKeyDown, getContext().getCursor().getItemStack());
+    protected ItemStack tryClickContainer(ClickData clickData) {
+        if (this.phantom) {
+            tryClickPhantom(clickData);
+            return null;
+        } else {
+            return transferFluid(clickData);
+        }
     }
 
-    protected void tryClickPhantom(int mouseButton, boolean isShiftKeyDown, ItemStack cursorStack) {
-        //        EntityPlayer player = getContext().getPlayer();
-        //        ItemStack currentStack = getContext().getCursor().getItemStack();
-        //        FluidStack currentFluid = this.fluidTank.getFluid();
-        //        IFluidHandlerItem fluidHandlerItem =
-        // currentStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
-        //
-        //        if (mouseButton == 0) {
-        //            if (currentStack == null || fluidHandlerItem == null) {
-        //                if (canDrainSlot) {
-        //                    this.fluidTank.drain(isShiftKeyDown ? Integer.MAX_VALUE : 1000, true);
-        //                }
-        //            } else {
-        //                FluidStack cellFluid = fluidHandlerItem.drain(Integer.MAX_VALUE, false);
-        //                if ((this.controlsAmount || currentFluid == null) && cellFluid != null) {
-        //                    if (canFillSlot) {
-        //                        if (!this.controlsAmount) {
-        //                            cellFluid.amount = 1;
-        //                        }
-        //                        if (this.fluidTank.fill(cellFluid, true) > 0) {
-        //                            this.lastStoredPhantomFluid = cellFluid.copy();
-        //                        }
-        //                    }
-        //                } else {
-        //                    if (canDrainSlot) {
-        //                        fluidTank.drain(isShiftKeyDown ? Integer.MAX_VALUE : 1000, true);
-        //                    }
-        //                }
-        //            }
-        //        } else if (mouseButton == 1) {
-        //            if (canFillSlot) {
-        //                if (currentFluid != null) {
-        //                    if (this.controlsAmount) {
-        //                        FluidStack toFill = currentFluid.copy();
-        //                        toFill.amount = 1000;
-        //                        this.fluidTank.fill(toFill, true);
-        //                    }
-        //                } else if (lastStoredPhantomFluid != null) {
-        //                    FluidStack toFill = this.lastStoredPhantomFluid.copy();
-        //                    toFill.amount = this.controlsAmount ? 1000 : 1;
-        //                    this.fluidTank.fill(toFill, true);
-        //                }
-        //            }
-        //        } else if (mouseButton == 2 && currentFluid != null && canDrainSlot) {
-        //            this.fluidTank.drain(isShiftKeyDown ? Integer.MAX_VALUE : 1000, true);
-        //        }
+    protected ItemStack transferFluid(ClickData clickData) {
+        EntityPlayer player = getContext().getPlayer();
+        boolean processFullStack = clickData.mouseButton == 0;
+        ItemStack heldItem = player.inventory.getItemStack();
+        if (heldItem == null || heldItem.stackSize == 0) return null;
+
+        ItemStack heldItemSizedOne = heldItem.copy();
+        heldItemSizedOne.stackSize = 1;
+        FluidStack currentFluid = fluidTank.getFluid();
+        FluidStack heldFluid = getFluidForRealItem(heldItemSizedOne);
+        if (heldFluid != null && heldFluid.amount <= 0) {
+            heldFluid = null;
+        }
+
+        if (currentFluid == null) {
+            // tank empty, consider fill only from now on
+            if (!canFillSlot)
+                // cannot fill and nothing to take, bail out
+                return null;
+            if (heldFluid == null)
+                // no fluid to fill
+                return null;
+            return fillFluid(heldFluid, processFullStack);
+        }
+
+        // tank not empty, both action possible
+        if (heldFluid != null && currentFluid.amount < fluidTank.getCapacity()) {
+            // both nonnull and have space left for filling.
+            if (canFillSlot)
+                // actually both pickup and fill is reasonable, but I'll go with fill here
+                return fillFluid(heldFluid, processFullStack);
+            if (!canDrainSlot)
+                // cannot take AND cannot fill, why make this call then?
+                return null;
+            // the slot does not allow filling, so try take some
+            return drainFluid(processFullStack);
+        } else {
+            // cannot fill and there is something to take
+            if (!canDrainSlot)
+                // but the slot does not allow taking, so bail out
+                return null;
+            return drainFluid(processFullStack);
+        }
+    }
+
+    protected ItemStack drainFluid(boolean processFullStack) {
+        EntityPlayer player = getContext().getPlayer();
+        ItemStack heldItem = player.inventory.getItemStack();
+        if (heldItem == null || heldItem.stackSize == 0) return null;
+
+        ItemStack heldItemSizedOne = heldItem.copy();
+        heldItemSizedOne.stackSize = 1;
+        FluidStack currentFluid = fluidTank.getFluid();
+        if (currentFluid == null) return null;
+
+        int originalFluidAmount = currentFluid.amount;
+        ItemStack filledContainer = fillFluidContainer(currentFluid, heldItemSizedOne);
+        if (filledContainer != null) {
+            if (processFullStack) {
+                int filledAmount = originalFluidAmount - currentFluid.amount;
+                /*
+                 Work out how many more items we can fill.
+                 One cell is already used, so account for that.
+                 The round down behavior will leave over a fraction of a cell worth of fluid.
+                 The user then get to decide what to do with it.
+                 It will not be too fancy if it spills out partially filled cells.
+                */
+                int additionalParallel = Math.min(heldItem.stackSize - 1, currentFluid.amount / filledAmount);
+                fluidTank.drain(filledAmount * additionalParallel, true);
+                filledContainer.stackSize += additionalParallel;
+            }
+            replaceCursorItemStack(filledContainer);
+            playSound(currentFluid, false);
+        }
+        return filledContainer;
+    }
+
+    protected ItemStack fillFluid(FluidStack heldFluid, boolean processFullStack) {
+        EntityPlayer player = getContext().getPlayer();
+        ItemStack heldItem = player.inventory.getItemStack();
+        if (heldItem == null || heldItem.stackSize == 0) return null;
+
+        ItemStack heldItemSizedOne = heldItem.copy();
+        heldItemSizedOne.stackSize = 1;
+        FluidStack currentFluid = fluidTank.getFluid();
+        // we are not using aMachine.fill() here anymore, so we need to check for fluid type here ourselves
+        if (currentFluid != null && currentFluid.isFluidEqual(heldFluid)) return null;
+
+        int freeSpace = fluidTank.getCapacity() - (currentFluid != null ? currentFluid.amount : 0);
+        if (freeSpace <= 0)
+            // no space left
+            return null;
+
+        // find out how much fluid can be taken
+        // some cells cannot be partially filled
+        ItemStack itemStackEmptied = null;
+        int fluidAmountTaken = 0;
+        if (freeSpace >= heldFluid.amount) {
+            // fully accepted - try take it from item now
+            // IFluidContainerItem is intentionally not checked here. it will be checked later
+            itemStackEmptied = getContainerForFilledItemWithoutIFluidContainerItem(heldItemSizedOne);
+            fluidAmountTaken = heldFluid.amount;
+        }
+        if (itemStackEmptied == null && heldItemSizedOne.getItem() instanceof IFluidContainerItem) {
+            // either partially accepted, or is IFluidContainerItem
+            IFluidContainerItem container = (IFluidContainerItem) heldItemSizedOne.getItem();
+            FluidStack tDrained = container.drain(heldItemSizedOne, freeSpace, true);
+            if (tDrained != null && tDrained.amount > 0) {
+                // something is actually drained - change the cell and drop it to player
+                itemStackEmptied = heldItemSizedOne;
+                fluidAmountTaken = tDrained.amount;
+            }
+        }
+        if (itemStackEmptied == null)
+            // somehow the cell refuse to give out that amount of fluid, no op then
+            return null;
+
+        // find out how many fill can we do
+        // same round down behavior as above
+        // however here the fluid stack is not changed at all, so the exact code will slightly differ
+        int parallel = processFullStack ? Math.min(freeSpace / fluidAmountTaken, heldItem.stackSize) : 1;
+        FluidStack copiedFluidStack = heldFluid.copy();
+        copiedFluidStack.amount = fluidAmountTaken * parallel;
+        fluidTank.fill(copiedFluidStack, true);
+
+        itemStackEmptied.stackSize = parallel;
+        replaceCursorItemStack(itemStackEmptied);
+        playSound(heldFluid, true);
+        return itemStackEmptied;
+    }
+
+    protected void replaceCursorItemStack(ItemStack resultStack) {
+        EntityPlayer player = getContext().getPlayer();
+        int resultStackMaxStackSize = resultStack.getMaxStackSize();
+        while (resultStack.stackSize > resultStackMaxStackSize) {
+            player.inventory.getItemStack().stackSize -= resultStackMaxStackSize;
+            addItemToPlayerInventory(player, resultStack.splitStack(resultStackMaxStackSize));
+        }
+        if (player.inventory.getItemStack().stackSize == resultStack.stackSize) {
+            // every cell is mutated. it could just stay on the cursor.
+            player.inventory.setItemStack(resultStack);
+        } else {
+            // some cells not mutated. The mutated cells must go into the inventory
+            // or drop into the world if there isn't enough space.
+            ItemStack tStackHeld = player.inventory.getItemStack();
+            tStackHeld.stackSize -= resultStack.stackSize;
+            addItemToPlayerInventory(player, resultStack);
+        }
+    }
+
+    protected void tryClickPhantom(ClickData clickData) {
+        tryClickPhantom(clickData, getContext().getCursor().getItemStack());
+    }
+
+    protected void tryClickPhantom(ClickData clickData, ItemStack cursorStack) {
+        FluidStack currentFluid = fluidTank.getFluid();
+
+        if (clickData.mouseButton == 0) {
+            if (cursorStack == null) {
+                if (canDrainSlot) {
+                    fluidTank.drain(clickData.shift ? Integer.MAX_VALUE : 1000, true);
+                }
+            } else {
+                ItemStack heldItemSizedOne = cursorStack.copy();
+                heldItemSizedOne.stackSize = 1;
+                FluidStack heldFluid = getFluidForPhantomItem(heldItemSizedOne);
+                if ((controlsAmount || currentFluid == null) && heldFluid != null) {
+                    if (canFillSlot) {
+                        if (!controlsAmount) {
+                            heldFluid.amount = 1;
+                        }
+                        if (fluidTank.fill(heldFluid, true) > 0) {
+                            lastStoredPhantomFluid = heldFluid.copy();
+                        }
+                    }
+                } else {
+                    if (canDrainSlot) {
+                        fluidTank.drain(clickData.shift ? Integer.MAX_VALUE : 1000, true);
+                    }
+                }
+            }
+        } else if (clickData.mouseButton == 1) {
+            if (canFillSlot) {
+                if (currentFluid != null) {
+                    if (controlsAmount) {
+                        FluidStack toFill = currentFluid.copy();
+                        toFill.amount = 1000;
+                        fluidTank.fill(toFill, true);
+                    }
+                } else if (lastStoredPhantomFluid != null) {
+                    FluidStack toFill = lastStoredPhantomFluid.copy();
+                    toFill.amount = controlsAmount ? 1000 : 1;
+                    fluidTank.fill(toFill, true);
+                }
+            }
+        } else if (clickData.mouseButton == 2 && currentFluid != null && canDrainSlot) {
+            fluidTank.drain(clickData.shift ? Integer.MAX_VALUE : 1000, true);
+        }
     }
 
     protected void tryScrollPhantom(int direction) {
@@ -428,31 +536,97 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
         }
     }
 
-    private void playSound(FluidStack fluid, boolean fill) {
-        //        EntityPlayer player = getContext().getPlayer();
-        //        SoundEvent soundevent = fill ? fluid.getFluid().getFillSound(fluid) :
-        // fluid.getFluid().getEmptySound(fluid);
-        //        player.world.playSound(null, player.posX, player.posY + 0.5, player.posZ, soundevent,
-        // SoundCategory.BLOCKS, 1.0F, 1.0F);
-    }
+    /**
+     * In 1.7.10 placing water or lava does not play sound, so we do nothing here.
+     * Override if you want to play something.
+     */
+    protected void playSound(FluidStack fluid, boolean fill) {}
 
     @Override
     public boolean handleDragAndDrop(ItemStack draggedStack, int button) {
         if (!isPhantom()) return false;
-        //        FluidStack fluid = null;
-        //        if (ingredient instanceof FluidStack) {
-        //            fluid = (FluidStack) ingredient;
-        //        } else if (ingredient instanceof ItemStack) {
-        //            IFluidHandlerItem fluidHandlerItem = ((ItemStack)
-        // ingredient).getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
-        //            if (fluidHandlerItem == null) return;
-        //            fluid = fluidHandlerItem.drain(Integer.MAX_VALUE, false);
-        //        }
-        //        if (fluid == null) return;
-        //        final FluidStack finalFluid = fluid;
-        //        syncToServer(4, buffer -> NetworkUtils.writeFluidStack(buffer, finalFluid));
+        ClickData clickData = ClickData.create(button, false);
+        tryClickPhantom(clickData, draggedStack);
+        syncToServer(4, buffer -> {
+            try {
+                clickData.writeToPacket(buffer);
+                buffer.writeItemStackToBuffer(draggedStack);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
         draggedStack.stackSize = 0;
         return true;
+    }
+
+    /**
+     * Gets fluid actually stored in item. Used for transferring fluid.
+     */
+    protected FluidStack getFluidForRealItem(ItemStack itemStack) {
+        if (isGT5ULoaded) {
+            return GT_Utility.getFluidForFilledItem(itemStack, true);
+        } else {
+            FluidStack fluidStack = FluidContainerRegistry.getFluidForFilledItem(itemStack);
+            if (fluidStack == null && itemStack.getItem() instanceof IFluidContainerItem) {
+                fluidStack = ((IFluidContainerItem) itemStack.getItem()).getFluid(itemStack);
+            }
+            return fluidStack;
+        }
+    }
+
+    /**
+     * Gets fluid for use in phantom slot.
+     */
+    protected FluidStack getFluidForPhantomItem(ItemStack itemStack) {
+        if (isGT5ULoaded) {
+            return GT_Utility.getFluidFromContainerOrFluidDisplay(itemStack);
+        } else if (isNEILoaded) {
+            return StackInfo.getFluid(itemStack);
+        } else {
+            return getFluidForRealItem(itemStack);
+        }
+    }
+
+    protected ItemStack fillFluidContainer(FluidStack fluidStack, ItemStack itemStack) {
+        ItemStack filledContainer = fillFluidContainerWithoutIFluidContainerItem(fluidStack, itemStack);
+        if (filledContainer == null) {
+            filledContainer = fillFluidContainerWithIFluidContainerItem(fluidStack, itemStack);
+        }
+        return filledContainer;
+    }
+
+    protected ItemStack fillFluidContainerWithoutIFluidContainerItem(FluidStack fluidStack, ItemStack itemStack) {
+        if (isGT5ULoaded) {
+            return GT_Utility.fillFluidContainer(fluidStack, itemStack, true, false);
+        }
+        return null;
+    }
+
+    protected ItemStack fillFluidContainerWithIFluidContainerItem(FluidStack fluidStack, ItemStack itemStack) {
+        if (itemStack.getItem() instanceof IFluidContainerItem) {
+            IFluidContainerItem tContainerItem = (IFluidContainerItem) itemStack.getItem();
+            int tFilledAmount = tContainerItem.fill(itemStack, fluidStack, true);
+            if (tFilledAmount > 0) {
+                fluidStack.amount -= tFilledAmount;
+                return itemStack;
+            }
+        }
+        return null;
+    }
+
+    protected ItemStack getContainerForFilledItemWithoutIFluidContainerItem(ItemStack itemStack) {
+        if (isGT5ULoaded) {
+            return GT_Utility.getContainerForFilledItem(itemStack, false);
+        }
+        return null;
+    }
+
+    protected static void addItemToPlayerInventory(EntityPlayer player, ItemStack stack) {
+        if (stack == null) return;
+        if (!player.inventory.addItemStackToInventory(stack) && !player.worldObj.isRemote) {
+            EntityItem dropItem = player.entityDropItem(stack, 0);
+            dropItem.delayBeforeCanPickup = 0;
+        }
     }
 
     public boolean canFillSlot() {

@@ -3,6 +3,7 @@ package com.gtnewhorizons.modularui.api.widget;
 import codechicken.nei.recipe.GuiCraftingRecipe;
 import codechicken.nei.recipe.GuiUsageRecipe;
 import com.google.gson.JsonObject;
+import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
@@ -872,7 +873,7 @@ public abstract class Widget {
         return this;
     }
 
-    @Optional.Method(modid = "gregtech")
+    @Optional.Method(modid = ModularUI.MODID_GT5U)
     public Widget setGTTooltip(Supplier<GT_TooltipDataCache.TooltipData> tooltipDataGetter) {
         dynamicTooltip(() -> tooltipDataGetter.get().text);
         dynamicTooltipShift(() -> tooltipDataGetter.get().shiftText);
