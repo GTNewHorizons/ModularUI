@@ -1,5 +1,11 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import static codechicken.lib.gui.GuiDraw.drawRect;
+import static codechicken.nei.NEIClientConfig.getSearchExpression;
+import static com.gtnewhorizons.modularui.ModularUI.isNEILoaded;
+
+import codechicken.nei.LayoutManager;
+import codechicken.nei.SearchField;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.NumberFormat;
@@ -589,10 +595,33 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
                 itemstack.stackSize = cachedCount;
                 GlStateManager.disableDepth();
             }
+
+            if (isNEILoaded) {
+                renderSlotOverlayNEI();
+            }
         }
 
         GL11.glDisable(GL11.GL_BLEND);
         ModularGui.getItemRenderer().zLevel = 0.0F;
         getScreen().setZ(0f);
+    }
+
+    /**
+     * Adapted from {@link LayoutManager#renderSlotOverlay}
+     */
+    protected void renderSlotOverlayNEI() {
+        ItemStack item = slot.getStack();
+        if (SearchField.searchInventories()
+                && (item == null
+                        ? !getSearchExpression().equals("")
+                        : !LayoutManager.searchField.getFilter().matches(item))) {
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            GL11.glTranslatef(0, 0, 150);
+            drawRect(0, 0, 16, 16, 0x80000000);
+            GL11.glTranslatef(0, 0, -150);
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
+        }
     }
 }
