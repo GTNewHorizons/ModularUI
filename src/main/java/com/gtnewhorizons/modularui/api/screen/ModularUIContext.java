@@ -43,7 +43,7 @@ public class ModularUIContext {
     private ModularGui screen;
 
     private final EntityPlayer player;
-    private final com.gtnewhorizons.modularui.api.screen.Cursor cursor;
+    private final Cursor cursor;
     private final List<Integer> queuedOpenWindow = new ArrayList<>();
     public final boolean clientOnly;
     private boolean isClosing = false;
@@ -69,7 +69,7 @@ public class ModularUIContext {
         }
         this.clientOnly = clientOnly;
         this.syncedWindowsCreators = context.syncedWindows.build();
-        this.cursor = new com.gtnewhorizons.modularui.api.screen.Cursor(this);
+        this.cursor = new Cursor(this);
         this.closeListeners = context.closeListeners;
         this.onWidgetUpdate = onWidgetUpdate;
         this.validator = context.validator;
