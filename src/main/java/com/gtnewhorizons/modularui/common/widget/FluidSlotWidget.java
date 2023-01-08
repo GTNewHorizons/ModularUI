@@ -404,7 +404,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
         heldItemSizedOne.stackSize = 1;
         FluidStack currentFluid = fluidTank.getFluid();
         // we are not using aMachine.fill() here anymore, so we need to check for fluid type here ourselves
-        if (currentFluid != null && currentFluid.isFluidEqual(heldFluid)) return null;
+        if (currentFluid != null && !currentFluid.isFluidEqual(heldFluid)) return null;
 
         int freeSpace = fluidTank.getCapacity() - (currentFluid != null ? currentFluid.amount : 0);
         if (freeSpace <= 0)
