@@ -26,11 +26,14 @@ import gregtech.api.util.GT_Utility;
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -124,23 +127,33 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
         FluidStack fluid = cachedFluid;
         if (phantom) {
             if (fluid != null) {
-                tooltip.add(new Text(fluid.getLocalizedName()));
+                tooltip.add(new Text(fluid.getLocalizedName()).format(EnumChatFormatting.WHITE));
+                if (Minecraft.getMinecraft().gameSettings.advancedItemTooltips) {
+                    tooltip.add(Text.localised(
+                            "modularui.fluid.registry", fluid.getFluid().getName()));
+                }
                 if (controlsAmount) {
                     tooltip.add(Text.localised("modularui.fluid.phantom.amount", fluid.amount));
+                    addAdditionalFluidInfo(tooltip, fluid);
                     tooltip.add(Text.localised("modularui.fluid.phantom.control"));
                 } else {
                     tooltip.add(Text.localised("modularui.phantom.single.clear"));
                 }
             } else {
-                tooltip.add(Text.localised("modularui.fluid.empty"));
+                tooltip.add(Text.localised("modularui.fluid.empty").format(EnumChatFormatting.WHITE));
             }
         } else {
             if (fluid != null) {
-                tooltip.add(new Text(fluid.getLocalizedName()));
+                tooltip.add(new Text(fluid.getLocalizedName()).format(EnumChatFormatting.WHITE));
+                if (Minecraft.getMinecraft().gameSettings.advancedItemTooltips) {
+                    tooltip.add(Text.localised(
+                            "modularui.fluid.registry", fluid.getFluid().getName()));
+                }
                 tooltip.add(Text.localised("modularui.fluid.amount", fluid.amount, fluidTank.getCapacity()));
                 addAdditionalFluidInfo(tooltip, fluid);
             } else {
-                tooltip.add(Text.localised("modularui.fluid.empty"));
+                tooltip.add(Text.localised("modularui.fluid.empty").format(EnumChatFormatting.WHITE));
+                tooltip.add(Text.localised("modularui.fluid.capacity", fluidTank.getCapacity()));
             }
             if (canFillSlot || canDrainSlot) {
                 tooltip.add(Text.EMPTY); // Add an empty line to separate from the bottom material tooltips
@@ -165,7 +178,17 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
      * @param tooltipContainer add lines here
      * @param fluid            the nonnull fluid
      */
-    public void addAdditionalFluidInfo(List<Text> tooltipContainer, @NotNull FluidStack fluid) {}
+    public void addAdditionalFluidInfo(List<Text> tooltipContainer, @NotNull FluidStack fluid) {
+        if (Interactable.hasShiftDown()) {
+            tooltipContainer.add(Text.localised(
+                    "modularui.fluid.temperature", fluid.getFluid().getTemperature(fluid)));
+            tooltipContainer.add(Text.localised(
+                    "modularui.fluid.state",
+                    fluid.getFluid().isGaseous(fluid)
+                            ? StatCollector.translateToLocal("modularui.fluid.gas")
+                            : StatCollector.translateToLocal("modularui.fluid.liquid")));
+        }
+    }
 
     @Override
     public @Nullable String getBackgroundColorKey() {
