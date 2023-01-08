@@ -303,9 +303,9 @@ public class GuiHelper {
                 g = Color.getGreenF(fluidColor),
                 b = Color.getBlueF(fluidColor),
                 a = Color.getAlphaF(fluidColor);
+        a = a == 0f ? 1f : a;
 
         Tessellator tessellator = Tessellator.instance;
-        //        tessellator.startDrawing(7, DefaultVertexFormats.POSITION_TEX_COLOR);
         tessellator.startDrawingQuads();
         tessellator.setColorRGBA_F(r, g, b, a);
         tessellator.setTextureUV(u0, v1);

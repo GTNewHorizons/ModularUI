@@ -41,7 +41,10 @@ public class ModularUI {
     public static final Logger logger = LogManager.getLogger(Tags.MODID);
 
     public static final String MODID_NEI = "NotEnoughItems";
+    public static final String MODID_GT5U = "gregtech";
+    public static final String MODID_GT6 = "gregapi_post";
     public static final boolean isNEILoaded = Loader.isModLoaded(MODID_NEI);
+    public static final boolean isGT5ULoaded = Loader.isModLoaded(MODID_GT5U) && !Loader.isModLoaded(MODID_GT6);
 
     public static final boolean isDevEnv = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 
