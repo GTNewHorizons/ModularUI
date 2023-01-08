@@ -137,7 +137,12 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
                     addAdditionalFluidInfo(tooltip, fluid);
                     tooltip.add(Text.localised("modularui.fluid.phantom.control"));
                 } else {
+                    addAdditionalFluidInfo(tooltip, fluid);
                     tooltip.add(Text.localised("modularui.phantom.single.clear"));
+                }
+                if (!Interactable.hasShiftDown()) {
+                    tooltip.add(Text.EMPTY); // Add an empty line to separate from the bottom material tooltips
+                    tooltip.add(Text.localised("modularui.tooltip.shift"));
                 }
             } else {
                 tooltip.add(Text.localised("modularui.fluid.empty").format(EnumChatFormatting.WHITE));
