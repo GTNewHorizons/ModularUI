@@ -23,6 +23,7 @@ import com.gtnewhorizons.modularui.common.internal.Theme;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 import gregtech.api.util.GT_Utility;
+import gregtech.common.items.GT_FluidDisplayItem;
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
@@ -124,11 +125,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
         FluidStack fluid = cachedFluid;
         if (phantom) {
             if (fluid != null) {
-                tooltip.add(new Text(fluid.getLocalizedName()).format(EnumChatFormatting.WHITE));
-                if (Minecraft.getMinecraft().gameSettings.advancedItemTooltips) {
-                    tooltip.add(Text.localised(
-                            "modularui.fluid.registry", fluid.getFluid().getName()));
-                }
+                addFluidNameInfo(tooltip, fluid);
                 if (controlsAmount) {
                     tooltip.add(Text.localised("modularui.fluid.phantom.amount", fluid.amount));
                     addAdditionalFluidInfo(tooltip, fluid);
@@ -146,11 +143,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
             }
         } else {
             if (fluid != null) {
-                tooltip.add(new Text(fluid.getLocalizedName()).format(EnumChatFormatting.WHITE));
-                if (Minecraft.getMinecraft().gameSettings.advancedItemTooltips) {
-                    tooltip.add(Text.localised(
-                            "modularui.fluid.registry", fluid.getFluid().getName()));
-                }
+                addFluidNameInfo(tooltip, fluid);
                 tooltip.add(Text.localised("modularui.fluid.amount", fluid.amount, fluidTank.getCapacity()));
                 addAdditionalFluidInfo(tooltip, fluid);
             } else {
@@ -171,6 +164,20 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
                     tooltip.add(Text.localised("modularui.tooltip.shift"));
                 }
             }
+        }
+    }
+
+    protected void addFluidNameInfo(List<Text> tooltip, @NotNull FluidStack fluid) {
+        tooltip.add(new Text(fluid.getLocalizedName()).format(EnumChatFormatting.WHITE));
+        if (isGT5ULoaded) {
+            String formula = GT_FluidDisplayItem.getChemicalFormula(fluid);
+            if (!formula.isEmpty()) {
+                tooltip.add(new Text(formula).format(EnumChatFormatting.YELLOW));
+            }
+        }
+        if (Minecraft.getMinecraft().gameSettings.advancedItemTooltips) {
+            tooltip.add(
+                    Text.localised("modularui.fluid.registry", fluid.getFluid().getName()));
         }
     }
 
