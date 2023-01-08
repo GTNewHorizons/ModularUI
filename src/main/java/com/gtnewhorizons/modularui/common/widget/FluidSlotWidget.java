@@ -16,6 +16,7 @@ import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.IDragAndDropHandler;
+import com.gtnewhorizons.modularui.api.widget.IHasStackUnderMouse;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.Theme;
@@ -44,7 +45,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("unused")
-public class FluidSlotWidget extends SyncedWidget implements Interactable, IDragAndDropHandler {
+public class FluidSlotWidget extends SyncedWidget implements Interactable, IDragAndDropHandler, IHasStackUnderMouse {
 
     public static final Size SIZE = new Size(18, 18);
 
@@ -685,6 +686,14 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
     @Nullable
     public IDrawable getOverlayTexture() {
         return overlayTexture;
+    }
+
+    @Override
+    public ItemStack getStackUnderMouse() {
+        if (isGT5ULoaded) {
+            return GT_Utility.getFluidDisplayStack(cachedFluid, false);
+        }
+        return null;
     }
 
     public FluidSlotWidget setInteraction(boolean canDrainSlot, boolean canFillSlot) {
