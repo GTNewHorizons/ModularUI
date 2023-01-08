@@ -375,8 +375,9 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
         int originalFluidAmount = currentFluid.amount;
         ItemStack filledContainer = fillFluidContainer(currentFluid, heldItemSizedOne);
         if (filledContainer != null) {
+            int filledAmount = originalFluidAmount - currentFluid.amount;
+            fluidTank.drain(filledAmount, true);
             if (processFullStack) {
-                int filledAmount = originalFluidAmount - currentFluid.amount;
                 /*
                  Work out how many more items we can fill.
                  One cell is already used, so account for that.
