@@ -21,7 +21,6 @@ import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.Theme;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
-import com.gtnewhorizons.modularui.common.internal.wrapper.FluidTankHandler;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 import gregtech.api.util.GT_Utility;
 import java.io.IOException;
@@ -39,7 +38,6 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -54,7 +52,6 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
 
     private final TextRenderer textRenderer = new TextRenderer();
     private final IFluidTank fluidTank;
-    private final IFluidHandler tankHandler;
 
     @Nullable
     private FluidStack cachedFluid;
@@ -73,7 +70,6 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
 
     public FluidSlotWidget(IFluidTank fluidTank) {
         this.fluidTank = fluidTank;
-        this.tankHandler = FluidTankHandler.getTankFluidHandler(fluidTank);
         this.textRenderer.setColor(Color.WHITE.normal);
         this.textRenderer.setShadow(true);
     }
