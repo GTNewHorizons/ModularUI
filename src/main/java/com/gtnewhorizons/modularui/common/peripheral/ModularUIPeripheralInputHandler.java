@@ -4,7 +4,7 @@ import codechicken.nei.guihook.IContainerInputHandler;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 import net.minecraft.client.gui.inventory.GuiContainer;
 
-public class PeripheralInputHandler implements IContainerInputHandler {
+public class ModularUIPeripheralInputHandler implements IContainerInputHandler {
 
     @Override
     public boolean keyTyped(GuiContainer gui, char keyChar, int keyCode) {

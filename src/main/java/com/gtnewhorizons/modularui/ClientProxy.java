@@ -3,7 +3,7 @@ package com.gtnewhorizons.modularui;
 import codechicken.nei.guihook.GuiContainerManager;
 import com.gtnewhorizons.modularui.api.drawable.FallbackableUITexture;
 import com.gtnewhorizons.modularui.common.internal.JsonLoader;
-import com.gtnewhorizons.modularui.common.peripheral.PeripheralInputHandler;
+import com.gtnewhorizons.modularui.common.peripheral.ModularUIPeripheralInputHandler;
 import com.gtnewhorizons.modularui.integration.nei.ModularUIContainerObjectHandler;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -21,7 +21,7 @@ public class ClientProxy extends CommonProxy {
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
         if (ModularUI.isNEILoaded) {
-            GuiContainerManager.addInputHandler(new PeripheralInputHandler());
+            GuiContainerManager.addInputHandler(new ModularUIPeripheralInputHandler());
             GuiContainerManager.addObjectHandler(new ModularUIContainerObjectHandler());
         }
     }
