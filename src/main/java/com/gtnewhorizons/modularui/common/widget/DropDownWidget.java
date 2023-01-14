@@ -6,12 +6,15 @@ import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.drawable.shapes.Rectangle;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
+import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
 import com.gtnewhorizons.modularui.api.widget.Widget;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
+import net.minecraft.network.PacketBuffer;
 
-public class DropDownWidget extends ExpandTab {
+public class DropDownWidget extends ExpandTab implements ISyncedWidget {
 
     private final ListWidget listContainer;
     private final DrawableWidget selectedWidget;
@@ -23,6 +26,10 @@ public class DropDownWidget extends ExpandTab {
     private int selected = -1;
     private IDrawable textUnselected =
             Text.localised("modularui.dropdown.select").withOffset(0, 1);
+
+    private boolean syncsToServer = true;
+    private boolean syncsToClient = true;
+    private boolean needsUpdate;
 
     private static final IDrawable TEXTURE_ARROW_UP = ModularUITextures.ARROW_GRAY_UP.withFixedSize(10, 10);
     private static final IDrawable TEXTURE_ARROW_DOWN = ModularUITextures.ARROW_GRAY_DOWN.withFixedSize(10, 10);
@@ -157,6 +164,42 @@ public class DropDownWidget extends ExpandTab {
         });
     }
 
+    public int getSelected() {
+        return selected;
+    }
+
+    public boolean syncsToClient() {
+        return syncsToClient;
+    }
+
+    public boolean syncsToServer() {
+        return syncsToServer;
+    }
+
+    @Override
+    public void readOnClient(int id, PacketBuffer buf) throws IOException {
+        if (id == 1) {
+            setSelected(buf.readVarIntFromBuffer(), false);
+        }
+    }
+
+    @Override
+    public void readOnServer(int id, PacketBuffer buf) throws IOException {
+        if (id == 1) {
+            setSelected(buf.readVarIntFromBuffer(), false);
+        }
+    }
+
+    @Override
+    public void detectAndSendChanges(boolean init) {
+        if (syncsToClient()) {
+            if (init) {
+                setSelected(selected, true);
+                markForUpdate();
+            }
+        }
+    }
+
     public DropDownWidget setDirection(Direction direction) {
         this.direction = direction;
         return this;
@@ -169,7 +212,22 @@ public class DropDownWidget extends ExpandTab {
     }
 
     public DropDownWidget setSelected(int selected) {
+        return setSelected(selected, false);
+    }
+
+    public DropDownWidget setSelected(int selected, boolean sync) {
         this.selected = selected;
+        if (sync) {
+            if (isClient()) {
+                if (syncsToServer()) {
+                    syncToServer(1, buffer -> buffer.writeVarIntToBuffer(selected));
+                }
+            } else {
+                if (syncsToClient()) {
+                    syncToClient(1, buffer -> buffer.writeVarIntToBuffer(selected));
+                }
+            }
+        }
         return this;
     }
 
@@ -180,6 +238,27 @@ public class DropDownWidget extends ExpandTab {
 
     public DropDownWidget setTextUnselected(String textUnselected) {
         return setTextUnselected(new Text(textUnselected).withOffset(0, 1));
+    }
+
+    public DropDownWidget setSynced(boolean syncsToClient, boolean syncsToServer) {
+        this.syncsToClient = syncsToClient;
+        this.syncsToServer = syncsToServer;
+        return this;
+    }
+
+    @Override
+    public void markForUpdate() {
+        needsUpdate = true;
+    }
+
+    @Override
+    public void unMarkForUpdate() {
+        needsUpdate = false;
+    }
+
+    @Override
+    public boolean isMarkedForUpdate() {
+        return needsUpdate;
     }
 
     public enum Direction {
