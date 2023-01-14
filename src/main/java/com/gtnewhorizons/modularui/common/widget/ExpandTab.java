@@ -27,10 +27,10 @@ public class ExpandTab extends MultiChildWidget implements Interactable, IWidget
     private boolean expanded = false, animating = false, firstBuild = true;
     private Interpolator openAnimator;
     private Interpolator closeAnimator;
-    private Size expandedSize;
-    private Size normalSize;
-    private Pos2d expandedPos;
-    private Pos2d normalPos;
+    protected Size expandedSize;
+    protected Size normalSize;
+    protected Pos2d expandedPos;
+    protected Pos2d normalPos;
     private int animateDuration = 250;
     private float animateX, animateY, animateWidth, animateHeight;
 
@@ -69,11 +69,15 @@ public class ExpandTab extends MultiChildWidget implements Interactable, IWidget
             this.animateHeight = this.normalSize.height;
             this.animating = false;
             for (Widget widget : getChildren()) {
-                widget.setEnabled(false);
+                if (!shouldDrawChildWidgetWhenCollapsed(widget)) {
+                    widget.setEnabled(false);
+                }
             }
         });
         for (Widget widget : getChildren()) {
-            widget.setEnabled(false);
+            if (!shouldDrawChildWidgetWhenCollapsed(widget)) {
+                widget.setEnabled(false);
+            }
         }
 
         FMLCommonHandler.instance().bus().register(this);
@@ -169,6 +173,12 @@ public class ExpandTab extends MultiChildWidget implements Interactable, IWidget
             } else {
                 super.drawChildren(partialTicks);
             }
+        } else {
+            for (Widget child : getChildren()) {
+                if (shouldDrawChildWidgetWhenCollapsed(child)) {
+                    child.drawInternal(partialTicks);
+                }
+            }
         }
     }
 
@@ -209,6 +219,10 @@ public class ExpandTab extends MultiChildWidget implements Interactable, IWidget
     @Override
     public void addWidgetInternal(Widget widget) {
         addChild(widget);
+    }
+
+    public boolean shouldDrawChildWidgetWhenCollapsed(Widget child) {
+        return false;
     }
 
     public ExpandTab setExpandedPos(int x, int y) {

@@ -49,7 +49,7 @@ public class MultiChildWidget extends Widget implements IWidgetParent {
     }
 
     public static Size getSizeOf(List<Widget> widgets) {
-        int x1 = Integer.MIN_VALUE, y1 = Integer.MIN_VALUE;
+        int x1 = 0, y1 = 0;
         for (Widget widget : widgets) {
             x1 = Math.max(x1, widget.getPos().x + widget.getSize().width);
             y1 = Math.max(y1, widget.getPos().y + widget.getSize().height);

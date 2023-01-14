@@ -23,6 +23,7 @@ import com.gtnewhorizons.modularui.common.widget.ChangeableWidget;
 import com.gtnewhorizons.modularui.common.widget.Column;
 import com.gtnewhorizons.modularui.common.widget.CycleButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
+import com.gtnewhorizons.modularui.common.widget.DropDownWidget;
 import com.gtnewhorizons.modularui.common.widget.ExpandTab;
 import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
 import com.gtnewhorizons.modularui.common.widget.MultiChildWidget;
@@ -46,6 +47,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fluids.FluidTank;
 import org.jetbrains.annotations.NotNull;
@@ -138,6 +140,27 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
                                 .addChild(SlotGroup.ofItemHandler(items, 3)
                                         .build()
                                         .setPos(12, 80))
+                                .addChild(new DropDownWidget()
+                                        .addDropDownItemsSimple(
+                                                IntStream.range(0, 20)
+                                                        .boxed()
+                                                        .map(i -> "label " + i)
+                                                        .collect(Collectors.toList()),
+                                                (buttonWidget, index, label, setSelected) ->
+                                                        buttonWidget.setOnClick((clickData, widget) -> {
+                                                            if (!widget.isClient()) {
+                                                                widget.getContext()
+                                                                        .getPlayer()
+                                                                        .addChatMessage(new ChatComponentText(
+                                                                                "Selected " + label));
+                                                            }
+                                                            setSelected.run();
+                                                        }),
+                                                true)
+                                        .setExpandedMaxHeight(60)
+                                        .setDirection(DropDownWidget.Direction.DOWN)
+                                        .setPos(90, 30)
+                                        .setSize(60, 11))
                                 .setPos(10, 10)
                                 .setDebugLabel("Page1"))
                         .addPage(new MultiChildWidget()

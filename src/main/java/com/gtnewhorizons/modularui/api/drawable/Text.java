@@ -20,6 +20,7 @@ public class Text implements IDrawable {
     public static final Text EMPTY = new Text("");
 
     private static final TextRenderer renderer = new TextRenderer();
+    private Alignment alignment = Alignment.Center;
     private final String text;
     private String formatting = "";
 
@@ -71,6 +72,11 @@ public class Text implements IDrawable {
         return shadow(true);
     }
 
+    public Text alignment(Alignment alignment) {
+        this.alignment = alignment;
+        return this;
+    }
+
     public int getColor() {
         return color;
     }
@@ -105,7 +111,7 @@ public class Text implements IDrawable {
     public void draw(float x, float y, float width, float height, float partialTicks) {
         renderer.setPos((int) (x + 0.5), (int) (y + 0.5));
         renderer.setShadow(shadow);
-        renderer.setAlignment(Alignment.Center, width, height);
+        renderer.setAlignment(alignment, width, height);
         renderer.draw(getFormatted());
     }
 

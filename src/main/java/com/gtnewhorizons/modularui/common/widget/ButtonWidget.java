@@ -1,6 +1,7 @@
 package com.gtnewhorizons.modularui.common.widget;
 
 import com.gtnewhorizons.modularui.api.ModularUITextures;
+import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
@@ -15,6 +16,8 @@ import org.jetbrains.annotations.Nullable;
  * Clickable button widget.
  */
 public class ButtonWidget extends SyncedWidget implements Interactable {
+
+    private IDrawable[] hoveredBackground;
 
     public static ButtonWidget openSyncedWindowButton(int id) {
         return (ButtonWidget) new ButtonWidget()
@@ -51,9 +54,22 @@ public class ButtonWidget extends SyncedWidget implements Interactable {
         return this;
     }
 
+    public ButtonWidget setHoveredBackground(IDrawable... hoveredBackground) {
+        this.hoveredBackground = hoveredBackground;
+        return this;
+    }
+
     @Override
     protected @NotNull Size determineSize(int maxWidth, int maxHeight) {
         return new Size(20, 20);
+    }
+
+    @Override
+    public @Nullable IDrawable[] getBackground() {
+        if (hoveredBackground != null && isHovering()) {
+            return hoveredBackground;
+        }
+        return super.getBackground();
     }
 
     @Override

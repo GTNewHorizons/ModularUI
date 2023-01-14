@@ -111,6 +111,10 @@ public class ListWidget extends MultiChildWidget implements Interactable, IVerti
         return allChildren;
     }
 
+    public List<Widget> getUnnestedChildren() {
+        return children;
+    }
+
     @Override
     public void setVerticalScrollOffset(int offset) {
         if (this.scrollOffset != offset) {

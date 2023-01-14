@@ -15,6 +15,7 @@ modularui.fluid.state=§aState: %s
 modularui.fluid.gas=Gas
 modularui.fluid.liquid=Liquid
 modularui.phantom.single.clear=§8left click to remove
+modularui.dropdown.select=Select...
 
 modularui.fluid.click_to_fill=§7Left Click with a Fluid Container to fill the tank.\nRight Click to process 1 item per click.
 modularui.fluid.click_combined=§7Left Click with a Fluid Container to fill/empty the tank.\nRight Click to process 1 item per click.

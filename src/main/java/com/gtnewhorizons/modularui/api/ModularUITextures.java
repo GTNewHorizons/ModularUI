@@ -9,6 +9,8 @@ public class ModularUITextures {
     public static final UITexture ICON_INFO = UITexture.fullImage(ModularUI.MODID, "gui/widgets/information");
     public static final UITexture VANILLA_BACKGROUND =
             AdaptableUITexture.of(ModularUI.MODID, "gui/background/vanilla_background", 195, 136, 4);
+    public static final AdaptableUITexture BACKGROUND_BORDER_1PX =
+            AdaptableUITexture.of(ModularUI.MODID, "gui/background/background_border_1px", 8, 8, 1);
     public static final AdaptableUITexture BASE_BUTTON =
             AdaptableUITexture.of(ModularUI.MODID, "gui/widgets/base_button", 18, 18, 1);
     public static final AdaptableUITexture ITEM_SLOT =
@@ -21,6 +23,11 @@ public class ModularUITextures {
     public static final UITexture ARROW_UP = UITexture.fullImage(ModularUI.MODID, "gui/icons/arrow_up");
     public static final UITexture ARROW_DOWN = UITexture.fullImage(ModularUI.MODID, "gui/icons/arrow_down");
     public static final UITexture CROSS = UITexture.fullImage(ModularUI.MODID, "gui/icons/cross");
+    public static final UITexture ARROW_GRAY_LEFT = UITexture.fullImage(ModularUI.MODID, "gui/icons/arrow_gray_left");
+    public static final UITexture ARROW_GRAY_RIGHT = UITexture.fullImage(ModularUI.MODID, "gui/icons/arrow_gray_right");
+    public static final UITexture ARROW_GRAY_UP = UITexture.fullImage(ModularUI.MODID, "gui/icons/arrow_gray_up");
+    public static final UITexture ARROW_GRAY_DOWN = UITexture.fullImage(ModularUI.MODID, "gui/icons/arrow_gray_down");
+    public static final UITexture CROSS_GRAY = UITexture.fullImage(ModularUI.MODID, "gui/icons/cross_gray");
 
     public static final UITexture VANILLA_TAB_TOP = UITexture.fullImage(ModularUI.MODID, "gui/tab/tabs_top");
     public static final UITexture VANILLA_TAB_BOTTOM = UITexture.fullImage(ModularUI.MODID, "gui/tab/tabs_bottom");
