@@ -273,7 +273,8 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         if (enabled != isEnabled()) {
             super.setEnabled(enabled);
             slot.setEnabled(enabled);
-            if (isClient()) {
+            // If window is not initialised, probably both client and server knows this should be enabled/disabled
+            if (isInitialised() && isClient()) {
                 syncToServer(4, buffer -> buffer.writeBoolean(enabled));
             }
         }
