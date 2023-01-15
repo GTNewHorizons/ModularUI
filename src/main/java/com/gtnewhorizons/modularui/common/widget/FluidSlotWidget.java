@@ -42,6 +42,7 @@ import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidTank;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.opengl.GL11;
 
 @SuppressWarnings("unused")
 public class FluidSlotWidget extends SyncedWidget implements Interactable, IDragAndDropHandler, IHasStackUnderMouse {
@@ -221,17 +222,18 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
             overlayTexture.draw(Pos2d.ZERO, size, partialTicks);
         }
         if (content != null && (!phantom || controlsAmount)) {
-            String s = NumberFormat.format(content.amount);
-            textRenderer.setAlignment(Alignment.CenterRight, size.width - contentOffset.x - 1f);
+            String s = NumberFormat.format(content.amount) + "L";
+            textRenderer.setAlignment(Alignment.CenterLeft, size.width - contentOffset.x - 1f);
             textRenderer.setPos((int) (contentOffset.x + 0.5f), (int) (size.height - 4.5f));
             textRenderer.draw(s);
         }
-        if (isHovering()) {
-            if (isHovering()) {
-                GlStateManager.colorMask(true, true, true, false);
-                ModularGui.drawSolidRect(1, 1, 16, 16, Theme.INSTANCE.getSlotHighlight());
-                GlStateManager.colorMask(true, true, true, true);
-            }
+        if (isHovering() && !getContext().getCursor().hasDraggable()) {
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL11.GL_BLEND);
+            GlStateManager.colorMask(true, true, true, false);
+            ModularGui.drawSolidRect(1, 1, 16, 16, Theme.INSTANCE.getSlotHighlight());
+            GlStateManager.colorMask(true, true, true, true);
+            GL11.glDisable(GL11.GL_BLEND);
         }
     }
 
