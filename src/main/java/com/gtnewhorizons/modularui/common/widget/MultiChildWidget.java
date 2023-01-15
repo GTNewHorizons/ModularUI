@@ -49,12 +49,20 @@ public class MultiChildWidget extends Widget implements IWidgetParent {
     }
 
     public static Size getSizeOf(List<Widget> widgets) {
-        int x1 = 0, y1 = 0;
+        if (widgets.isEmpty()) return new Size(0, 0);
+
+        int xMin = Integer.MAX_VALUE, yMin = Integer.MAX_VALUE;
         for (Widget widget : widgets) {
-            x1 = Math.max(x1, widget.getPos().x + widget.getSize().width);
-            y1 = Math.max(y1, widget.getPos().y + widget.getSize().height);
+            xMin = Math.min(xMin, widget.getPos().x);
+            yMin = Math.min(yMin, widget.getPos().y);
         }
-        return new Size(x1, y1);
+
+        int xMax = Integer.MIN_VALUE, yMax = Integer.MIN_VALUE;
+        for (Widget widget : widgets) {
+            xMax = Math.max(xMax, widget.getPos().x + widget.getSize().width);
+            yMax = Math.max(yMax, widget.getPos().y + widget.getSize().height);
+        }
+        return new Size(xMax - xMin, yMax - yMin);
     }
 
     public static boolean checkChild(Widget parent, Widget widget) {
