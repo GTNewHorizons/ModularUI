@@ -56,7 +56,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
     private final IFluidTank fluidTank;
 
     @Nullable
-    private FluidStack cachedFluid;
+    private FluidStack lastStoredFluid;
 
     private FluidStack lastStoredPhantomFluid;
     private Pos2d contentOffset = new Pos2d(1, 1);
@@ -123,7 +123,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
     @Override
     public void buildTooltip(List<Text> tooltip) {
         super.buildTooltip(tooltip);
-        FluidStack fluid = cachedFluid;
+        FluidStack fluid = fluidTank.getFluid();
         if (phantom) {
             if (fluid != null) {
                 addFluidNameInfo(tooltip, fluid);
@@ -207,7 +207,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
 
     @Override
     public void draw(float partialTicks) {
-        FluidStack content = cachedFluid;
+        FluidStack content = fluidTank.getFluid();
         if (content != null) {
             float y = contentOffset.y;
             float height = size.height - contentOffset.y * 2;
@@ -292,8 +292,8 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
     @Override
     public void detectAndSendChanges(boolean init) {
         FluidStack currentFluid = this.fluidTank.getFluid();
-        if (init || fluidChanged(currentFluid, this.cachedFluid)) {
-            this.cachedFluid = currentFluid == null ? null : currentFluid.copy();
+        if (init || fluidChanged(currentFluid, this.lastStoredFluid)) {
+            this.lastStoredFluid = currentFluid == null ? null : currentFluid.copy();
             syncToClient(1, buffer -> NetworkUtils.writeFluidStack(buffer, currentFluid));
             markForUpdate();
         }
@@ -307,7 +307,9 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
     @Override
     public void readOnClient(int id, PacketBuffer buf) throws IOException {
         if (id == 1) {
-            this.cachedFluid = NetworkUtils.readFluidStack(buf);
+            FluidStack fluidStack = NetworkUtils.readFluidStack(buf);
+            fluidTank.drain(Integer.MAX_VALUE, true);
+            fluidTank.fill(fluidStack, true);
             notifyTooltipChange();
         } else if (id == 3) {
             this.controlsAmount = buf.readBoolean();
@@ -696,7 +698,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
     @Override
     public ItemStack getStackUnderMouse() {
         if (isGT5ULoaded) {
-            return GT_Utility.getFluidDisplayStack(cachedFluid, false);
+            return GT_Utility.getFluidDisplayStack(fluidTank.getFluid(), false);
         }
         return null;
     }
