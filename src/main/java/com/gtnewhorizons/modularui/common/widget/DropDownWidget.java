@@ -7,6 +7,7 @@ import com.gtnewhorizons.modularui.api.drawable.shapes.Rectangle;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
+import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,6 +67,15 @@ public class DropDownWidget extends ExpandTab implements ISyncedWidget {
     public void onRebuild() {
         super.onRebuild();
         setExpandedSizeAndPos();
+    }
+
+    @Override
+    public ClickResult onClick(int buttonId, boolean doubleClick) {
+        ClickResult clickResult = super.onClick(buttonId, doubleClick);
+        if (clickResult == ClickResult.ACCEPT) {
+            Interactable.playButtonClickSound();
+        }
+        return clickResult;
     }
 
     @Override
