@@ -2,7 +2,6 @@ package com.gtnewhorizons.modularui.common.widget;
 
 import static codechicken.lib.gui.GuiDraw.drawRect;
 import static codechicken.nei.NEIClientConfig.getSearchExpression;
-import static com.gtnewhorizons.modularui.ModularUI.isNEILoaded;
 
 import codechicken.nei.LayoutManager;
 import codechicken.nei.SearchField;
@@ -597,9 +596,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
                 GlStateManager.disableDepth();
             }
 
-            if (isNEILoaded) {
-                renderSlotOverlayNEI();
-            }
+            renderSlotOverlayNEI();
         }
 
         GL11.glDisable(GL11.GL_BLEND);

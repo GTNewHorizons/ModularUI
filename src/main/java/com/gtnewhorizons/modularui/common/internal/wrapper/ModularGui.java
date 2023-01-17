@@ -294,7 +294,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                         ((IVanillaSlot) hovered).getOverwriteItemStackTooltip());
             } else if (hovered.getTooltipShowUpDelay() <= context.getCursor().getTimeHovered()) {
                 List<Text> tooltip = new ArrayList<>(hovered.getTooltip()); // avoid UOE
-                if (ModularUI.isNEILoaded && hovered.hasNEITransferRect()) {
+                if (hovered.hasNEITransferRect()) {
                     String transferRectTooltip = hovered.getNEITransferRectTooltip();
                     if (transferRectTooltip != null) {
                         tooltip.add(new Text(transferRectTooltip).color(Color.WHITE.normal));
@@ -428,13 +428,9 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         }
 
         FontRenderer fontToUse = font == null ? fontRenderer : font;
-        if (ModularUI.isNEILoaded) {
-            applyNEITooltipHandler(lines, stack);
-            // see GuiContainerManager#renderToolTips for these magic numbers
-            GuiDraw.drawMultilineTip(fontToUse, x + 12, y - 12, lines);
-        } else {
-            this.drawHoveringText(lines, x, y, fontToUse);
-        }
+        applyNEITooltipHandler(lines, stack);
+        // see GuiContainerManager#renderToolTips for these magic numbers
+        GuiDraw.drawMultilineTip(fontToUse, x + 12, y - 12, lines);
     }
 
     public List<String> getItemTooltip(ItemStack stack) {
@@ -528,7 +524,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
             }
             if (hovered instanceof Widget) {
                 Widget widget = (Widget) hovered;
-                if (ModularUI.isNEILoaded && widget.hasNEITransferRect()) {
+                if (widget.hasNEITransferRect()) {
                     if (mouseButton == 0) {
                         widget.handleTransferRectMouseClick(false);
                     } else if (mouseButton == 1) {
@@ -805,7 +801,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
     }
 
     private boolean shouldShowNEI() {
-        return ModularUI.isNEILoaded && getContext().doShowNEI();
+        return getContext().doShowNEI();
     }
 
     // === NEI ===

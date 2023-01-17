@@ -1,7 +1,6 @@
 package com.gtnewhorizons.modularui.common.widget;
 
 import static com.gtnewhorizons.modularui.ModularUI.isGT5ULoaded;
-import static com.gtnewhorizons.modularui.ModularUI.isNEILoaded;
 
 import codechicken.nei.recipe.StackInfo;
 import com.gtnewhorizons.modularui.api.GlStateManager;
@@ -618,10 +617,8 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
     protected FluidStack getFluidForPhantomItem(ItemStack itemStack) {
         if (isGT5ULoaded) {
             return GT_Utility.getFluidFromContainerOrFluidDisplay(itemStack);
-        } else if (isNEILoaded) {
-            return StackInfo.getFluid(itemStack);
         } else {
-            return getFluidForRealItem(itemStack);
+            return StackInfo.getFluid(itemStack);
         }
     }
 

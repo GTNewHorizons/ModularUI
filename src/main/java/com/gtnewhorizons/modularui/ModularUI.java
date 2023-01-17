@@ -34,8 +34,8 @@ import org.apache.logging.log4j.Logger;
 public class ModularUI {
 
     public static final String MODID = "modularui";
-    public static final String DEPENDENCIES = "required-after:CodeChickenLib;" + "required-after:gtnhmixins@[2.0.1,); "
-            + "after:NotEnoughItems@[2.3.20-GTNH,);" + "before:gregtech";
+    public static final String DEPENDENCIES = "required-after:gtnhmixins@[2.0.1,); "
+            + "required-after:NotEnoughItems@[2.3.20-GTNH,);" + "before:gregtech";
     public static final String GUI_FACTORY = Tags.GROUPNAME + ".config.GuiFactory";
 
     public static final Logger logger = LogManager.getLogger(Tags.MODID);
@@ -43,7 +43,6 @@ public class ModularUI {
     public static final String MODID_NEI = "NotEnoughItems";
     public static final String MODID_GT5U = "gregtech";
     public static final String MODID_GT6 = "gregapi_post";
-    public static final boolean isNEILoaded = Loader.isModLoaded(MODID_NEI);
     public static final boolean isGT5ULoaded = Loader.isModLoaded(MODID_GT5U) && !Loader.isModLoaded(MODID_GT6);
 
     public static final boolean isDevEnv = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");

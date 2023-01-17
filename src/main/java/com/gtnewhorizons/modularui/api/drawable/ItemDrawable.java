@@ -1,6 +1,5 @@
 package com.gtnewhorizons.modularui.api.drawable;
 
-import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
@@ -72,9 +71,7 @@ public class ItemDrawable implements IDrawable {
             ModularGui gui = widget.getContext().getScreen();
 
             List<String> lines = new ArrayList<>(gui.getItemTooltip(item.get()));
-            if (ModularUI.isNEILoaded) {
-                gui.applyNEITooltipHandler(lines, item.get());
-            }
+            gui.applyNEITooltipHandler(lines, item.get());
             return lines;
         });
     }
