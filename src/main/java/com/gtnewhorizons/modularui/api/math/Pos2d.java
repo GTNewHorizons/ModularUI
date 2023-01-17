@@ -41,15 +41,19 @@ public class Pos2d {
     }
 
     public Pos2d add(Pos2d p) {
-        return new Pos2d(x + p.x, y + p.y);
+        return add(p.x, p.y);
     }
 
     public Pos2d add(int x, int y) {
-        return new Pos2d(x + this.x, y + this.y);
+        return new Pos2d(this.x + x, this.y + y);
     }
 
     public Pos2d subtract(Pos2d p) {
-        return new Pos2d(x - p.x, y - p.y);
+        return subtract(p.x, p.y);
+    }
+
+    public Pos2d subtract(int x, int y) {
+        return new Pos2d(this.x - x, this.y - y);
     }
 
     public double distance(Pos2d p) {
