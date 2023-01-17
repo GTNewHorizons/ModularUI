@@ -695,6 +695,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
 
     /**
      * This somehow overrides {@link GuiContainer#getSlotAtPosition}
+     * // todo: maybe this doesn't work in deobf env?
      */
     @SuppressWarnings("unused")
     public Slot getSlotAtPosition(int x, int y) {

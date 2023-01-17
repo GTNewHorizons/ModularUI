@@ -207,6 +207,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
 
     @Override
     public void draw(float partialTicks) {
+        // todo does texture animate with hodgepodge?
         FluidStack content = fluidTank.getFluid();
         if (content != null) {
             float y = contentOffset.y;
