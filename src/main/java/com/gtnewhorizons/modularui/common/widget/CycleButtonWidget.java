@@ -1,5 +1,16 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.*;
+import java.util.stream.Collectors;
+
+import net.minecraft.network.PacketBuffer;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -13,14 +24,6 @@ import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.common.internal.JsonHelper;
 import com.gtnewhorizons.modularui.common.internal.Theme;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.*;
-import java.util.stream.Collectors;
-import net.minecraft.network.PacketBuffer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class CycleButtonWidget extends SyncedWidget implements Interactable {
 
@@ -184,8 +187,7 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
     @Override
     public boolean hasTooltip() {
         return super.hasTooltip()
-                || (this.stateTooltip.size() > this.state
-                        && !this.stateTooltip.get(this.state).isEmpty());
+                || (this.stateTooltip.size() > this.state && !this.stateTooltip.get(this.state).isEmpty());
     }
 
     @Override
@@ -228,6 +230,7 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
 
     /**
      * Sets texture that will be changed depending on the value stored and drawn on top of background.
+     * 
      * @param textureGetter state of button -> texture
      */
     public CycleButtonWidget setTextureGetter(Function<Integer, IDrawable> textureGetter) {
@@ -236,8 +239,8 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
     }
 
     /**
-     * Sets texture that will be changed depending on the value stored and drawn on top of background.
-     * Argument is automatically split by the number of state length.
+     * Sets texture that will be changed depending on the value stored and drawn on top of background. Argument is
+     * automatically split by the number of state length.
      */
     public CycleButtonWidget setTexture(UITexture texture) {
         return setTextureGetter(val -> {
@@ -247,8 +250,7 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
     }
 
     /**
-     * Sets static texture that is drawn on top of background.
-     * Probably use along with {@link #setVariableBackground}.
+     * Sets static texture that is drawn on top of background. Probably use along with {@link #setVariableBackground}.
      */
     public CycleButtonWidget setStaticTexture(IDrawable texture) {
         return setTextureGetter(val -> texture);
@@ -256,6 +258,7 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
 
     /**
      * Sets background that will be changed depending on the value stored.
+     * 
      * @param backgroundGetter state of button -> background
      */
     public CycleButtonWidget setVariableBackgroundGetter(Function<Integer, IDrawable[]> backgroundGetter) {
@@ -264,17 +267,14 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
     }
 
     /**
-     * Sets background that will be changed depending on the value stored.
-     * Each element of arguments is automatically split by the number of state length.
+     * Sets background that will be changed depending on the value stored. Each element of arguments is automatically
+     * split by the number of state length.
      */
     public CycleButtonWidget setVariableBackground(UITexture... textures) {
-        return setVariableBackgroundGetter(val -> Arrays.stream(textures)
-                .map(texture -> {
-                    float a = 1f / length;
-                    return texture.getSubArea(0, val * a, 1, val * a + a);
-                })
-                .collect(Collectors.toList())
-                .toArray(new IDrawable[] {}));
+        return setVariableBackgroundGetter(val -> Arrays.stream(textures).map(texture -> {
+            float a = 1f / length;
+            return texture.getSubArea(0, val * a, 1, val * a + a);
+        }).collect(Collectors.toList()).toArray(new IDrawable[] {}));
     }
 
     public CycleButtonWidget addTooltip(int state, Text tooltip) {
@@ -286,16 +286,16 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
     }
 
     /**
-     * Adds a line to the tooltip that can be changed depending on the value stored.
-     * Should be called after {@link #setLength}.
+     * Adds a line to the tooltip that can be changed depending on the value stored. Should be called after
+     * {@link #setLength}.
      */
     public CycleButtonWidget addTooltip(int state, String tooltip) {
         return addTooltip(state, new Text(tooltip).color(Color.WHITE.normal));
     }
 
     /**
-     * Adds tooltips with given function.
-     * Should be called after {@link #setLength}.
+     * Adds tooltips with given function. Should be called after {@link #setLength}.
+     * 
      * @param tooltipFunc state -> tooltip
      */
     public CycleButtonWidget addTooltip(Function<Integer, String> tooltipFunc) {

@@ -1,14 +1,16 @@
 package com.gtnewhorizons.modularui.api.drawable;
 
-import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.client.Minecraft;
 
+import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
+
 /**
- * Wrapper for {@link UITexture} that you can specify candidate and fallback. If resource path for candidate
- * doesn't exist, fallback is automatically selected.
+ * Wrapper for {@link UITexture} that you can specify candidate and fallback. If resource path for candidate doesn't
+ * exist, fallback is automatically selected.
  */
 public class FallbackableUITexture {
 
@@ -20,7 +22,7 @@ public class FallbackableUITexture {
 
     /**
      * @param candidate Texture to look for first.
-     * @param fallback Texture to look for second.
+     * @param fallback  Texture to look for second.
      */
     public FallbackableUITexture(UITexture candidate, UITexture fallback) {
         this(candidate, (Object) fallback);
@@ -28,7 +30,7 @@ public class FallbackableUITexture {
 
     /**
      * @param candidate Texture to look for first.
-     * @param fallback Fallback object to look for second. You can chain multiple fallbacks.
+     * @param fallback  Fallback object to look for second. You can chain multiple fallbacks.
      */
     public FallbackableUITexture(UITexture candidate, FallbackableUITexture fallback) {
         this(candidate, (Object) fallback);

@@ -1,11 +1,14 @@
 package com.gtnewhorizons.modularui.api.widget;
 
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.io.IOException;
 import java.util.function.Consumer;
+
 import net.minecraft.network.PacketBuffer;
+
+import com.gtnewhorizons.modularui.api.screen.ModularWindow;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Implement this to let them synchronize data between server and client.
@@ -31,8 +34,8 @@ public interface ISyncedWidget {
     default void detectAndSendChanges(boolean init) {}
 
     /**
-     * Mark this widget as "updated". Call this on appropriate timing on
-     * {@link #detectAndSendChanges} or {@link #readOnServer} etc. invocation.
+     * Mark this widget as "updated". Call this on appropriate timing on {@link #detectAndSendChanges} or
+     * {@link #readOnServer} etc. invocation.
      */
     void markForUpdate();
 

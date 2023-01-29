@@ -1,18 +1,22 @@
 package com.gtnewhorizons.modularui.common.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
+
+import org.jetbrains.annotations.Nullable;
+
 import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.screen.IContainerCreator;
 import com.gtnewhorizons.modularui.api.screen.IGuiCreator;
+
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.util.ArrayList;
-import java.util.List;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 public class InternalUIMapper implements IGuiHandler {
 

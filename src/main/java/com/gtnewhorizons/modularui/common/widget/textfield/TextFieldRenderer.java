@@ -1,18 +1,22 @@
 package com.gtnewhorizons.modularui.common.widget.textfield;
 
-import com.gtnewhorizons.modularui.api.GlStateManager;
-import com.gtnewhorizons.modularui.api.drawable.TextRenderer;
-import com.gtnewhorizons.modularui.api.math.Color;
-import com.gtnewhorizons.modularui.config.Config;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.Collections;
 import java.util.List;
+
 import net.minecraft.client.renderer.Tessellator;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
+
+import com.gtnewhorizons.modularui.api.GlStateManager;
+import com.gtnewhorizons.modularui.api.drawable.TextRenderer;
+import com.gtnewhorizons.modularui.api.math.Color;
+import com.gtnewhorizons.modularui.config.Config;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TextFieldRenderer extends TextRenderer {
 
@@ -94,8 +98,7 @@ public class TextFieldRenderer extends TextRenderer {
         int index = (int) (y / (getFontHeight()));
         if (index < 0) return new Point();
         if (index >= measuredLines.size())
-            return new Point(
-                    measuredLines.get(measuredLines.size() - 1).getKey().length(), measuredLines.size() - 1);
+            return new Point(measuredLines.get(measuredLines.size() - 1).getKey().length(), measuredLines.size() - 1);
         Pair<String, Float> line = measuredLines.get(index);
         x -= getStartX(line.getValue()) + this.x;
         if (line.getValue() <= 0) return new Point(0, index);
@@ -150,7 +153,7 @@ public class TextFieldRenderer extends TextRenderer {
     @SideOnly(Side.CLIENT)
     private void drawCursor(float x0, float y0) {
         float x1, y1;
-        //noinspection SwitchStatementWithTooFewBranches
+        // noinspection SwitchStatementWithTooFewBranches
         switch (Config.textCursor) {
             case "vertical":
                 x0 = (x0 - 0.8f) / scale;

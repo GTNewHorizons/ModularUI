@@ -4,23 +4,16 @@ import java.text.DecimalFormat;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+
 import org.jetbrains.annotations.NotNull;
 
 public class NumberFormat {
 
     private static final NavigableMap<Double, String> suffixesByPower = new TreeMap<>();
-    private static final java.text.NumberFormat[] NUMBER_FORMAT = {
-        new DecimalFormat("0."),
-        new DecimalFormat("0.#"),
-        new DecimalFormat("0.##"),
-        new DecimalFormat("0.###"),
-        new DecimalFormat("0.####"),
-        new DecimalFormat("0.#####"),
-        new DecimalFormat("0.######"),
-        new DecimalFormat("0.#######"),
-        new DecimalFormat("0.########"),
-        new DecimalFormat("0.#########"),
-    };
+    private static final java.text.NumberFormat[] NUMBER_FORMAT = { new DecimalFormat("0."), new DecimalFormat("0.#"),
+            new DecimalFormat("0.##"), new DecimalFormat("0.###"), new DecimalFormat("0.####"),
+            new DecimalFormat("0.#####"), new DecimalFormat("0.######"), new DecimalFormat("0.#######"),
+            new DecimalFormat("0.########"), new DecimalFormat("0.#########"), };
 
     static {
         suffixesByPower.put(0.000_000_000_000_000_001D, "a");
@@ -56,8 +49,7 @@ public class NumberFormat {
 
         double truncated = value / (divideBy / 10); // the number part of the output times 10
         boolean hasDecimal = truncated < 100 && (truncated / 10D) != (truncated / 10);
-        return hasDecimal
-                ? NUMBER_FORMAT[precision].format(truncated / 10D) + suffix
+        return hasDecimal ? NUMBER_FORMAT[precision].format(truncated / 10D) + suffix
                 : NUMBER_FORMAT[precision].format(truncated / 10) + suffix;
     }
 

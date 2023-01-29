@@ -1,7 +1,8 @@
 package com.gtnewhorizons.modularui.mixinplugin;
 
-import com.google.common.io.Files;
 import java.nio.file.Path;
+
+import com.google.common.io.Files;
 
 public enum TargetedMod {
 
@@ -15,7 +16,7 @@ public enum TargetedMod {
     // Replace with your injected mods here, but always keep VANILLA:
     VANILLA("Minecraft", "unused", true),
     NOTENOUGHITEMS("NotEnoughItems", "NotEnoughItems", true);
-    //    GREGTECH("GregTech", "gregtech", false);
+    // GREGTECH("GregTech", "gregtech", false);
 
     public final String modName;
     public final String jarNamePrefixLowercase;
@@ -40,7 +41,11 @@ public enum TargetedMod {
     @Override
     public String toString() {
         return "TargetedMod{" + "modName='"
-                + modName + '\'' + ", jarNamePrefixLowercase='"
-                + jarNamePrefixLowercase + '\'' + '}';
+                + modName
+                + '\''
+                + ", jarNamePrefixLowercase='"
+                + jarNamePrefixLowercase
+                + '\''
+                + '}';
     }
 }

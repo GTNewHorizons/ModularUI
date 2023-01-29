@@ -1,10 +1,12 @@
 package com.gtnewhorizons.modularui.common.internal;
 
+import java.util.HashMap;
+
+import org.jetbrains.annotations.Nullable;
+
 import com.google.gson.JsonObject;
 import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.math.Color;
-import java.util.HashMap;
-import org.jetbrains.annotations.Nullable;
 
 public class Theme {
 

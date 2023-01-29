@@ -1,13 +1,16 @@
 package com.gtnewhorizons.modularui.api.screen;
 
-import com.google.common.collect.ImmutableMap;
-import com.gtnewhorizons.modularui.ModularUI;
-import com.gtnewhorizons.modularui.api.widget.Widget;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
 import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.EntityPlayer;
+
+import com.google.common.collect.ImmutableMap;
+import com.gtnewhorizons.modularui.ModularUI;
+import com.gtnewhorizons.modularui.api.widget.Widget;
 
 public class UIBuildContext {
 
@@ -27,9 +30,8 @@ public class UIBuildContext {
     }
 
     /**
-     * Sets validator that will be called on every tick on server.
-     * If validator returns false, it means GUI is in invalid state,
-     * and GUI will be closed.
+     * Sets validator that will be called on every tick on server. If validator returns false, it means GUI is in
+     * invalid state, and GUI will be closed.
      */
     public void setValidator(Supplier<Boolean> validator) {
         this.validator = validator;
@@ -65,14 +67,14 @@ public class UIBuildContext {
         if (t != null) {
             consumer.accept(t);
         } else {
-            ModularUI.logger.error(
-                    "Expected Widget with name {}, of class {}, but was not found!", name, clazz.getName());
+            ModularUI.logger
+                    .error("Expected Widget with name {}, of class {}, but was not found!", name, clazz.getName());
         }
     }
 
     /**
-     * Registers synced window that can be displayed on top of main window.
-     * Call {@link ModularUIContext#openSyncedWindow} to actually open the window.
+     * Registers synced window that can be displayed on top of main window. Call
+     * {@link ModularUIContext#openSyncedWindow} to actually open the window.
      */
     public void addSyncedWindow(int id, IWindowCreator windowCreator) {
         if (id <= 0) {

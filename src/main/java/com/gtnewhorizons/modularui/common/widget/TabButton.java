@@ -1,9 +1,10 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import javax.annotation.Nullable;
+
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
-import javax.annotation.Nullable;
 
 /**
  * Tab-styled button widget. Can be switched between other tab buttons by {@link TabContainer}.

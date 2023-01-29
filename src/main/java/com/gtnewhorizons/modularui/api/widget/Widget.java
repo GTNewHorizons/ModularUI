@@ -1,7 +1,25 @@
 package com.gtnewhorizons.modularui.api.widget;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.StatCollector;
+
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import codechicken.nei.recipe.GuiCraftingRecipe;
 import codechicken.nei.recipe.GuiUsageRecipe;
+
 import com.google.gson.JsonObject;
 import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.GlStateManager;
@@ -15,24 +33,11 @@ import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.internal.JsonHelper;
 import com.gtnewhorizons.modularui.common.internal.Theme;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
+
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.util.GT_TooltipDataCache;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.StatCollector;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * This class draws a functional element of ModularUI
@@ -204,8 +209,8 @@ public abstract class Widget {
             pos = fixedPos;
         } else {
             if (this.posProvider != null) {
-                this.relativePos =
-                        this.posProvider.getPos(getContext().getScaledScreenSize(), getWindow(), this.parent);
+                this.relativePos = this.posProvider
+                        .getPos(getContext().getScaledScreenSize(), getWindow(), this.parent);
             }
             this.pos = this.parent.getAbsolutePos().add(this.relativePos);
         }
@@ -364,9 +369,9 @@ public abstract class Widget {
     @SideOnly(Side.CLIENT)
     public void buildTooltip(List<Text> tooltip) {
         if (dynamicTooltip != null) {
-            tooltip.addAll(dynamicTooltip.get().stream()
-                    .map(s -> new Text(s).color(Color.WHITE.normal))
-                    .collect(Collectors.toList()));
+            tooltip.addAll(
+                    dynamicTooltip.get().stream().map(s -> new Text(s).color(Color.WHITE.normal))
+                            .collect(Collectors.toList()));
         }
     }
 
@@ -379,9 +384,9 @@ public abstract class Widget {
     @SideOnly(Side.CLIENT)
     public void buildTooltipShift(List<Text> tooltipShift) {
         if (dynamicTooltipShift != null) {
-            tooltipShift.addAll(dynamicTooltipShift.get().stream()
-                    .map(s -> new Text(s).color(Color.WHITE.normal))
-                    .collect(Collectors.toList()));
+            tooltipShift.addAll(
+                    dynamicTooltipShift.get().stream().map(s -> new Text(s).color(Color.WHITE.normal))
+                            .collect(Collectors.toList()));
         }
     }
 
@@ -410,8 +415,7 @@ public abstract class Widget {
     public void onPostInit() {}
 
     /**
-     * Called when another window opens over the current one
-     * or when this window is active and it closes
+     * Called when another window opens over the current one or when this window is active and it closes
      */
     @ApiStatus.OverrideOnly
     public void onPause() {}
@@ -514,8 +518,7 @@ public abstract class Widget {
     }
 
     /**
-     * Which window does this widget belong to.
-     * 0 == main window.
+     * Which window does this widget belong to. 0 == main window.
      */
     public int getWindowLayer() {
         int i = 0;
@@ -631,8 +634,7 @@ public abstract class Widget {
 
     public boolean hasTooltip() {
         checkTooltip();
-        return !this.mainTooltip.isEmpty()
-                || !this.additionalTooltip.isEmpty()
+        return !this.mainTooltip.isEmpty() || !this.additionalTooltip.isEmpty()
                 || !this.mainTooltipShift.isEmpty()
                 || !this.additionalTooltipShift.isEmpty()
                 || hasNEITransferRect();
@@ -697,8 +699,7 @@ public abstract class Widget {
     }
 
     /**
-     * Changes enabled state dynamically.
-     * Note that function is called on every render tick.
+     * Changes enabled state dynamically. Note that function is called on every render tick.
      */
     public Widget setEnabled(Function<Widget, Boolean> enabled) {
         this.enabled = enabled;
@@ -833,8 +834,8 @@ public abstract class Widget {
     }
 
     /**
-     * Sets getter for dynamic tooltip that will be called on {@link #buildTooltip}.
-     * Result is cached, so you also need to call {@link #notifyTooltipChange} for update.
+     * Sets getter for dynamic tooltip that will be called on {@link #buildTooltip}. Result is cached, so you also need
+     * to call {@link #notifyTooltipChange} for update.
      */
     public Widget dynamicTooltip(Supplier<List<String>> dynamicTooltip) {
         this.dynamicTooltip = dynamicTooltip;
@@ -864,8 +865,7 @@ public abstract class Widget {
     }
 
     /**
-     * Sets getter for dynamic tooltip that will be shown while holding shift key
-     * and called on {@link #buildTooltip}.
+     * Sets getter for dynamic tooltip that will be shown while holding shift key and called on {@link #buildTooltip}.
      * Result is cached, so you also need to call {@link #notifyTooltipChange} for update.
      */
     public Widget dynamicTooltipShift(Supplier<List<String>> dynamicTooltipShift) {
@@ -886,8 +886,8 @@ public abstract class Widget {
     }
 
     /**
-     * By default, dynamic tooltip doesn't get updated unless {@link #notifyTooltipChange} is called.
-     * Passing true to this method will force tooltip to update on every render tick.
+     * By default, dynamic tooltip doesn't get updated unless {@link #notifyTooltipChange} is called. Passing true to
+     * this method will force tooltip to update on every render tick.
      */
     public Widget setUpdateTooltipEveryTick(boolean updateTooltipEveryTick) {
         this.updateTooltipEveryTick = updateTooltipEveryTick;
@@ -929,11 +929,12 @@ public abstract class Widget {
     }
 
     /**
-     * Effect is the same as when you store this widget in a variable,
-     * set {@link FakeSyncWidget#setOnClientUpdate(Consumer)}, and add syncer to builder.
-     * @param syncer To attach to this widget
+     * Effect is the same as when you store this widget in a variable, set
+     * {@link FakeSyncWidget#setOnClientUpdate(Consumer)}, and add syncer to builder.
+     * 
+     * @param syncer  To attach to this widget
      * @param builder To add syncer for window
-     * @param onSync Called when syncer receives packet from server
+     * @param onSync  Called when syncer receives packet from server
      */
     public <T> Widget attachSyncer(FakeSyncWidget<T> syncer, IWidgetBuilder<?> builder, BiConsumer<Widget, T> onSync) {
         builder.widget(syncer.setOnClientUpdate(val -> onSync.accept(this, val)));
@@ -945,9 +946,8 @@ public abstract class Widget {
     }
 
     /**
-     * Makes NEI respect this widget's area or not.
-     * This is used when the widget is outside its windows area and overlaps with NEI.
-     * This is enabled by default.
+     * Makes NEI respect this widget's area or not. This is used when the widget is outside its windows area and
+     * overlaps with NEI. This is enabled by default.
      */
     public Widget setRespectNEIArea(boolean doRespect) {
         this.respectNEIArea = doRespect;
@@ -964,7 +964,9 @@ public abstract class Widget {
 
     public Widget setNEITransferRect(String transferRectID, Object[] transferRectArgs) {
         return setNEITransferRect(
-                transferRectID, transferRectArgs, StatCollector.translateToLocal("nei.recipe.tooltip"));
+                transferRectID,
+                transferRectArgs,
+                StatCollector.translateToLocal("nei.recipe.tooltip"));
     }
 
     public Widget setNEITransferRect(String transferRectID, String transferRectTooltip) {
@@ -978,26 +980,29 @@ public abstract class Widget {
     // ==== Utility ====
 
     public interface SizeProvider {
+
         Size getSize(Size screenSize, ModularWindow window, IWidgetParent parent);
     }
 
     public interface PosProvider {
+
         Pos2d getPos(Size screenSize, ModularWindow window, IWidgetParent parent);
     }
 
     public static class ClickData {
+
         public final int mouseButton;
         public final boolean doubleClick;
         public final boolean shift;
         public final boolean ctrl;
-        //        public final boolean alt;
+        // public final boolean alt;
 
         public ClickData(int mouseButton, boolean doubleClick, boolean shift, boolean ctrl) {
             this.mouseButton = mouseButton;
             this.doubleClick = doubleClick;
             this.shift = shift;
             this.ctrl = ctrl;
-            //            this.alt = alt;
+            // this.alt = alt;
         }
 
         public void writeToPacket(PacketBuffer buffer) {

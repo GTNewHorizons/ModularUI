@@ -1,15 +1,18 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
+
+import net.minecraft.entity.player.EntityPlayer;
+
 import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.gtnewhorizons.modularui.api.widget.Widget;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Supplier;
-import javax.annotation.Nullable;
-import net.minecraft.entity.player.EntityPlayer;
 
 public class WidgetJsonRegistry {
 
@@ -42,6 +45,7 @@ public class WidgetJsonRegistry {
     }
 
     public interface WidgetFactory {
+
         Widget create(EntityPlayer player);
     }
 }

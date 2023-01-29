@@ -1,11 +1,5 @@
 package com.gtnewhorizons.modularui.common.widget.textfield;
 
-import com.gtnewhorizons.modularui.api.GlStateManager;
-import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
-import com.gtnewhorizons.modularui.api.math.MathExpression;
-import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
-import com.gtnewhorizons.modularui.api.widget.Interactable;
-import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import java.awt.*;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -14,8 +8,17 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+
 import net.minecraft.network.PacketBuffer;
+
 import org.jetbrains.annotations.NotNull;
+
+import com.gtnewhorizons.modularui.api.GlStateManager;
+import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
+import com.gtnewhorizons.modularui.api.math.MathExpression;
+import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
+import com.gtnewhorizons.modularui.api.widget.Interactable;
+import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 
 /**
  * Text input widget with one line only. Can be synced between client and server. Can handle text validation.
@@ -47,8 +50,8 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
     @Override
     public void draw(float partialTicks) {
         Point draggableTranslate = getDraggableTranslate();
-        GuiHelper.useScissor(
-                pos.x + draggableTranslate.x, pos.y + draggableTranslate.y, size.width, size.height, () -> {
+        GuiHelper
+                .useScissor(pos.x + draggableTranslate.x, pos.y + draggableTranslate.y, size.width, size.height, () -> {
                     GlStateManager.pushMatrix();
                     GlStateManager.translate(1 - scrollOffset, 1, 0);
                     renderer.setSimulate(false);
@@ -170,16 +173,14 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
     }
 
     /**
-     * @return if this widget should operate on the server side.
-     * For example detecting and sending changes to client.
+     * @return if this widget should operate on the server side. For example detecting and sending changes to client.
      */
     public boolean syncsToClient() {
         return syncsToClient;
     }
 
     /**
-     * @return if this widget should operate on the client side.
-     * For example, sending a changed value to the server.
+     * @return if this widget should operate on the client side. For example, sending a changed value to the server.
      */
     public boolean syncsToServer() {
         return syncsToServer;
@@ -324,8 +325,9 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
      * (current number, direction) -> new number
      */
     public TextFieldWidget setOnScrollNumbers(BiFunction<Integer, Integer, Integer> onScroll) {
-        return setOnScroll((text, direction) ->
-                format.format(onScroll.apply((int) MathExpression.parseMathExpression(text), direction)));
+        return setOnScroll(
+                (text, direction) -> format
+                        .format(onScroll.apply((int) MathExpression.parseMathExpression(text), direction)));
     }
 
     public TextFieldWidget setOnScrollNumbers(int baseStep, int ctrlStep, int shiftStep) {
@@ -345,16 +347,18 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
      * (current number, direction) -> new number
      */
     public TextFieldWidget setOnScrollNumbersDouble(BiFunction<Double, Integer, Double> onScroll) {
-        return setOnScroll((text, direction) ->
-                format.format(onScroll.apply(MathExpression.parseMathExpression(text), direction)));
+        return setOnScroll(
+                (text, direction) -> format
+                        .format(onScroll.apply(MathExpression.parseMathExpression(text), direction)));
     }
 
     /**
      * (current number, direction) -> new number
      */
     public TextFieldWidget setOnScrollNumbersLong(BiFunction<Long, Integer, Long> onScroll) {
-        return setOnScroll((text, direction) ->
-                format.format(onScroll.apply((long) MathExpression.parseMathExpression(text), direction)));
+        return setOnScroll(
+                (text, direction) -> format
+                        .format(onScroll.apply((long) MathExpression.parseMathExpression(text), direction)));
     }
 
     public TextFieldWidget setOnScrollNumbersLong(long baseStep, long ctrlStep, long shiftStep) {

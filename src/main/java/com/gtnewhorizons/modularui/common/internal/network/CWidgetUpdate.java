@@ -1,12 +1,14 @@
 package com.gtnewhorizons.modularui.common.internal.network;
 
-import com.gtnewhorizons.modularui.ModularUI;
-import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
-import com.gtnewhorizons.modularui.common.internal.wrapper.ModularUIContainer;
 import java.io.IOException;
+
 import net.minecraft.inventory.Container;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
+
+import com.gtnewhorizons.modularui.ModularUI;
+import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
+import com.gtnewhorizons.modularui.common.internal.wrapper.ModularUIContainer;
 
 public class CWidgetUpdate implements IPacket {
 

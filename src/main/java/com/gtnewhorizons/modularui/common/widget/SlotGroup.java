@@ -1,5 +1,16 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.fluids.IFluidTank;
+
 import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.forge.IItemHandlerModifiable;
@@ -9,19 +20,10 @@ import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.wrapper.BaseSlot;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fluids.IFluidTank;
 
 /**
- * Parent widget that contains multiple slots, like items or fluids.
- * Pass number of slots per row, and it will automatically place slots.
+ * Parent widget that contains multiple slots, like items or fluids. Pass number of slots per row, and it will
+ * automatically place slots.
  */
 public class SlotGroup extends MultiChildWidget {
 
@@ -57,16 +59,14 @@ public class SlotGroup extends MultiChildWidget {
     }
 
     /**
-     * Create SlotGroup from ItemHandler.
-     * You need to call {@link ItemGroupBuilder#build()} to retrieve actual widget.
+     * Create SlotGroup from ItemHandler. You need to call {@link ItemGroupBuilder#build()} to retrieve actual widget.
      */
     public static ItemGroupBuilder ofItemHandler(IItemHandlerModifiable itemHandler, int slotsPerRow) {
         return new ItemGroupBuilder(itemHandler, slotsPerRow);
     }
 
     /**
-     * Create SlotGroup from FluidTanks.
-     * You need to call {@link FluidGroupBuilder#build()} to retrieve actual widget.
+     * Create SlotGroup from FluidTanks. You need to call {@link FluidGroupBuilder#build()} to retrieve actual widget.
      */
     public static FluidGroupBuilder ofFluidTanks(List<IFluidTank> fluidTanks, int slotsPerRow) {
         return new FluidGroupBuilder(fluidTanks, slotsPerRow);
@@ -295,6 +295,7 @@ public class SlotGroup extends MultiChildWidget {
      * Builder but allows more complex slot placement.
      */
     public static class BuilderWithPattern {
+
         private final List<String> rows = new ArrayList<>();
         private final Map<Character, Function<Integer, Widget>> widgetCreatorMap = new HashMap<>();
         private Size cellSize = new Size(18, 18);
@@ -366,9 +367,8 @@ public class SlotGroup extends MultiChildWidget {
                         ModularUI.logger.warn("Key {} was not found in Slot group.", c);
                         continue;
                     }
-                    Widget widget = widgetCreator.apply(charCount
-                            .computeIfAbsent(c, key -> new AtomicInteger())
-                            .getAndIncrement());
+                    Widget widget = widgetCreator
+                            .apply(charCount.computeIfAbsent(c, key -> new AtomicInteger()).getAndIncrement());
                     if (widget != null) {
                         slotGroup.addChild(widget.setPos(offsetPos.add(j * cellSize.width, i * cellSize.height)));
                     }

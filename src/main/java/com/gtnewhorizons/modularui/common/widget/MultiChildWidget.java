@@ -1,13 +1,15 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+
 import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
 import com.gtnewhorizons.modularui.api.widget.Widget;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
 
 public class MultiChildWidget extends Widget implements IWidgetParent {
 
@@ -67,8 +69,7 @@ public class MultiChildWidget extends Widget implements IWidgetParent {
 
     public static boolean checkChild(Widget parent, Widget widget) {
         if (widget == null) {
-            ModularUI.logger.error(
-                    "Tried adding null widget to " + parent.getClass().getSimpleName());
+            ModularUI.logger.error("Tried adding null widget to " + parent.getClass().getSimpleName());
             return false;
         }
         if (widget == parent) {

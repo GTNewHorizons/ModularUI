@@ -1,5 +1,8 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import com.gtnewhorizons.modularui.api.animation.Eases;
 import com.gtnewhorizons.modularui.api.animation.Interpolator;
 import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
@@ -10,17 +13,15 @@ import com.gtnewhorizons.modularui.api.widget.IWidgetBuilder;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.Theme;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
- * Tab-styled widget that can contain multiple widget children
- * and toggle expanded/collapsed by clicking this.
+ * Tab-styled widget that can contain multiple widget children and toggle expanded/collapsed by clicking this.
  */
 public class ExpandTab extends MultiChildWidget implements Interactable, IWidgetBuilder<ExpandTab> {
 
@@ -41,26 +42,19 @@ public class ExpandTab extends MultiChildWidget implements Interactable, IWidget
 
     @Override
     public void onInit() {
-        this.openAnimator = new Interpolator(
-                0,
-                1,
-                this.animateDuration,
-                Eases.EaseQuadOut,
-                value -> {
-                    float val = (float) value;
-                    this.animateX = (this.expandedPos.x - this.normalPos.x) * val + this.normalPos.x;
-                    this.animateY = (this.expandedPos.y - this.normalPos.y) * val + this.normalPos.y;
-                    this.animateWidth = (this.expandedSize.width - this.normalSize.width) * val + this.normalSize.width;
-                    this.animateHeight =
-                            (this.expandedSize.height - this.normalSize.height) * val + this.normalSize.height;
-                },
-                val -> {
-                    this.animateX = this.expandedPos.x;
-                    this.animateY = this.expandedPos.y;
-                    this.animateWidth = this.expandedSize.width;
-                    this.animateHeight = this.expandedSize.height;
-                    this.animating = false;
-                });
+        this.openAnimator = new Interpolator(0, 1, this.animateDuration, Eases.EaseQuadOut, value -> {
+            float val = (float) value;
+            this.animateX = (this.expandedPos.x - this.normalPos.x) * val + this.normalPos.x;
+            this.animateY = (this.expandedPos.y - this.normalPos.y) * val + this.normalPos.y;
+            this.animateWidth = (this.expandedSize.width - this.normalSize.width) * val + this.normalSize.width;
+            this.animateHeight = (this.expandedSize.height - this.normalSize.height) * val + this.normalSize.height;
+        }, val -> {
+            this.animateX = this.expandedPos.x;
+            this.animateY = this.expandedPos.y;
+            this.animateWidth = this.expandedSize.width;
+            this.animateHeight = this.expandedSize.height;
+            this.animating = false;
+        });
         this.closeAnimator = this.openAnimator.getReversed(this.animateDuration, Eases.EaseQuadIn);
         this.closeAnimator.setCallback(val -> {
             this.animateX = this.normalPos.x;
@@ -120,7 +114,7 @@ public class ExpandTab extends MultiChildWidget implements Interactable, IWidget
     public void onFrameUpdate() {
         if (this.animating) {
             if (expanded) {
-                //                this.openAnimator.update(Minecraft.getMinecraft().getTickLength());
+                // this.openAnimator.update(Minecraft.getMinecraft().getTickLength());
                 this.openAnimator.update(ticktime);
             } else {
                 this.closeAnimator.update(ticktime);
@@ -139,7 +133,11 @@ public class ExpandTab extends MultiChildWidget implements Interactable, IWidget
                     drawable.applyThemeColor(themeColor);
                     IDrawable.applyTintColor(getWindow().getGuiTint());
                     drawable.draw(
-                            animateX - getPos().x, animateY - getPos().y, animateWidth, animateHeight, partialTicks);
+                            animateX - getPos().x,
+                            animateY - getPos().y,
+                            animateWidth,
+                            animateHeight,
+                            partialTicks);
                 }
             }
         }
@@ -167,9 +165,7 @@ public class ExpandTab extends MultiChildWidget implements Interactable, IWidget
                         (int) (parentPos.y + this.animateY),
                         (int) this.animateWidth,
                         (int) this.animateHeight,
-                        () -> {
-                            super.drawChildren(partialTicks);
-                        });
+                        () -> { super.drawChildren(partialTicks); });
             } else {
                 super.drawChildren(partialTicks);
             }

@@ -1,8 +1,10 @@
 package com.gtnewhorizons.modularui.config;
 
-import com.gtnewhorizons.modularui.ModularUI;
 import java.io.File;
+
 import net.minecraftforge.common.config.Configuration;
+
+import com.gtnewhorizons.modularui.ModularUI;
 
 public class Config {
 
@@ -30,9 +32,8 @@ public class Config {
 
     private static final String LANG_PREFIX = ModularUI.MODID + ".config.";
 
-    public static final String[] CATEGORIES = new String[] {
-        CATEGORY_ANIMATIONS, CATEGORY_RENDERING, CATEGORY_KEYBOARD, CATEGORY_DEBUG,
-    };
+    public static final String[] CATEGORIES = new String[] { CATEGORY_ANIMATIONS, CATEGORY_RENDERING, CATEGORY_KEYBOARD,
+            CATEGORY_DEBUG, };
 
     public static void init(File configFile) {
         config = new Configuration(configFile);
@@ -52,88 +53,81 @@ public class Config {
         // === Animations ===
 
         openCloseDurationMs = config.get(
-                        CATEGORY_ANIMATIONS,
-                        "openCloseDurationMs",
-                        200,
-                        "How many milliseconds will it take to draw open/close animation",
-                        0,
-                        3000)
-                .setLanguageKey(LANG_PREFIX + CATEGORY_ANIMATIONS + ".openCloseDurationMs")
-                .getInt();
+                CATEGORY_ANIMATIONS,
+                "openCloseDurationMs",
+                200,
+                "How many milliseconds will it take to draw open/close animation",
+                0,
+                3000).setLanguageKey(LANG_PREFIX + CATEGORY_ANIMATIONS + ".openCloseDurationMs").getInt();
 
-        openCloseFade = config.get(
+        openCloseFade = config
+                .get(
                         CATEGORY_ANIMATIONS,
                         "openCloseFade",
                         false,
                         "Whether to draw fade in/out animation on GUI open/close")
-                .setLanguageKey(LANG_PREFIX + CATEGORY_ANIMATIONS + ".openCloseFade")
-                .getBoolean();
+                .setLanguageKey(LANG_PREFIX + CATEGORY_ANIMATIONS + ".openCloseFade").getBoolean();
 
-        openCloseScale = config.get(
+        openCloseScale = config
+                .get(
                         CATEGORY_ANIMATIONS,
                         "openCloseScale",
                         false,
                         "Whether to draw scale in/out animation on GUI open/close")
-                .setLanguageKey(LANG_PREFIX + CATEGORY_ANIMATIONS + ".openCloseScale")
-                .getBoolean();
+                .setLanguageKey(LANG_PREFIX + CATEGORY_ANIMATIONS + ".openCloseScale").getBoolean();
 
-        openCloseTranslateFromBottom = config.get(
+        openCloseTranslateFromBottom = config
+                .get(
                         CATEGORY_ANIMATIONS,
                         "openCloseTranslateFromBottom",
                         false,
                         "Whether to draw GUI coming out of / going out to the bottom of the screen on GUI open/close")
-                .setLanguageKey(LANG_PREFIX + CATEGORY_ANIMATIONS + ".openCloseTranslateFromBottom")
-                .getBoolean();
+                .setLanguageKey(LANG_PREFIX + CATEGORY_ANIMATIONS + ".openCloseTranslateFromBottom").getBoolean();
 
-        openCloseRotateFast = config.get(
+        openCloseRotateFast = config
+                .get(
                         CATEGORY_ANIMATIONS,
                         "openCloseRotateFast",
                         false,
                         "Whether to draw GUI rotating fast on GUI open/close")
-                .setLanguageKey(LANG_PREFIX + CATEGORY_ANIMATIONS + ".openCloseRotateFast")
-                .getBoolean();
+                .setLanguageKey(LANG_PREFIX + CATEGORY_ANIMATIONS + ".openCloseRotateFast").getBoolean();
 
         // === Rendering ===
 
         smoothProgressbar = config.get(CATEGORY_RENDERING, "smoothProgressbar", true, "Draw progress bar smoothly")
-                .setLanguageKey(LANG_PREFIX + CATEGORY_RENDERING + ".smoothProgressbar")
-                .getBoolean();
+                .setLanguageKey(LANG_PREFIX + CATEGORY_RENDERING + ".smoothProgressbar").getBoolean();
 
-        textCursor = config.get(
-                        CATEGORY_RENDERING, "textCursor", "underscore", "Select: underscore, vertical", new String[] {
-                            "underscore", "vertical"
-                        })
-                .setLanguageKey(LANG_PREFIX + CATEGORY_RENDERING + ".textCursor")
-                .getString();
+        textCursor = config
+                .get(
+                        CATEGORY_RENDERING,
+                        "textCursor",
+                        "underscore",
+                        "Select: underscore, vertical",
+                        new String[] { "underscore", "vertical" })
+                .setLanguageKey(LANG_PREFIX + CATEGORY_RENDERING + ".textCursor").getString();
 
         // === Keyboard ===
 
-        escRestoreLastText = config.get(
+        escRestoreLastText = config
+                .get(
                         CATEGORY_KEYBOARD,
                         "escRestoreLastText",
                         false,
                         "Whether to restore last text if esc key is pressed in the text field")
-                .setLanguageKey(LANG_PREFIX + CATEGORY_KEYBOARD + ".escRestoreLastText")
-                .getBoolean();
+                .setLanguageKey(LANG_PREFIX + CATEGORY_KEYBOARD + ".escRestoreLastText").getBoolean();
 
-        closeWindowsAtOnce = config.get(
-                        CATEGORY_KEYBOARD,
-                        "closeWindowsAtOnce",
-                        false,
-                        "Whether to close all the opened windows at once")
-                .setLanguageKey(LANG_PREFIX + CATEGORY_KEYBOARD + ".closeWindowsAtOnce")
-                .getBoolean();
+        closeWindowsAtOnce = config
+                .get(CATEGORY_KEYBOARD, "closeWindowsAtOnce", false, "Whether to close all the opened windows at once")
+                .setLanguageKey(LANG_PREFIX + CATEGORY_KEYBOARD + ".closeWindowsAtOnce").getBoolean();
 
         // === Debug ===
 
         debug = config.get(CATEGORY_DEBUG, "debug", false, "Enable Debug information display")
-                .setLanguageKey(LANG_PREFIX + CATEGORY_DEBUG + ".debug")
-                .getBoolean();
+                .setLanguageKey(LANG_PREFIX + CATEGORY_DEBUG + ".debug").getBoolean();
 
-        forceEnableDebugBlock = config.get(
-                        CATEGORY_DEBUG, "forceEnableDebugBlock", false, "Add debug block even in non-dev env")
-                .setLanguageKey(LANG_PREFIX + CATEGORY_DEBUG + ".forceEnableDebugBlock")
-                .setRequiresMcRestart(true)
+        forceEnableDebugBlock = config
+                .get(CATEGORY_DEBUG, "forceEnableDebugBlock", false, "Add debug block even in non-dev env")
+                .setLanguageKey(LANG_PREFIX + CATEGORY_DEBUG + ".forceEnableDebugBlock").setRequiresMcRestart(true)
                 .getBoolean();
 
         if (config.hasChanged()) {

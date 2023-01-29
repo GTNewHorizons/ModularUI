@@ -1,6 +1,10 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import codechicken.lib.math.MathHelper;
+
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.shapes.Rectangle;
 import com.gtnewhorizons.modularui.api.math.Color;
@@ -11,14 +15,11 @@ import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.api.widget.scroll.IHorizontalScrollable;
 import com.gtnewhorizons.modularui.api.widget.scroll.IVerticalScrollable;
 import com.gtnewhorizons.modularui.api.widget.scroll.ScrollType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ScrollBar extends Widget implements Interactable {
 
     public static ScrollBar defaultTextScrollBar() {
-        return new ScrollBar()
-                .setBarTexture(new Rectangle().setColor(Color.WHITE.normal).setCornerRadius(1));
+        return new ScrollBar().setBarTexture(new Rectangle().setColor(Color.WHITE.normal).setCornerRadius(1));
     }
 
     private ScrollType scrollType;
@@ -28,9 +29,7 @@ public class ScrollBar extends Widget implements Interactable {
     private int handleClickOffset = -1;
     private int posOffset = 0;
 
-    public void setScrollType(
-            ScrollType scrollType,
-            @Nullable IHorizontalScrollable horizontalScrollable,
+    public void setScrollType(ScrollType scrollType, @Nullable IHorizontalScrollable horizontalScrollable,
             @Nullable IVerticalScrollable verticalScrollable) {
         this.scrollType = scrollType;
         this.verticalScrollable = verticalScrollable;
@@ -47,7 +46,8 @@ public class ScrollBar extends Widget implements Interactable {
             setSizeProvider((screenSize, window, parent) -> {
                 if (scrollType == ScrollType.HORIZONTAL) {
                     return new Size(
-                            horizontalScrollable.getVisibleWidth(), horizontalScrollable.getHorizontalBarHeight());
+                            horizontalScrollable.getVisibleWidth(),
+                            horizontalScrollable.getHorizontalBarHeight());
                 } else if (scrollType == ScrollType.VERTICAL) {
                     return new Size(verticalScrollable.getVerticalBarWidth(), verticalScrollable.getVisibleHeight());
                 }
@@ -58,7 +58,8 @@ public class ScrollBar extends Widget implements Interactable {
             setPosProvider((screenSize, window, parent) -> {
                 if (scrollType == ScrollType.HORIZONTAL) {
                     return new Pos2d(
-                            0, parent.getSize().height - horizontalScrollable.getHorizontalBarHeight() + posOffset);
+                            0,
+                            parent.getSize().height - horizontalScrollable.getHorizontalBarHeight() + posOffset);
                 } else if (scrollType == ScrollType.VERTICAL) {
                     return new Pos2d(parent.getSize().width - verticalScrollable.getVerticalBarWidth() + posOffset, 0);
                 }
@@ -114,8 +115,8 @@ public class ScrollBar extends Widget implements Interactable {
                         horizontalScrollable.getHorizontalBarHeight(),
                         partialTicks);
             } else if (scrollType == ScrollType.VERTICAL) {
-                float offset =
-                        verticalScrollable.getVerticalScrollOffset() / (float) (verticalScrollable.getActualHeight());
+                float offset = verticalScrollable.getVerticalScrollOffset()
+                        / (float) (verticalScrollable.getActualHeight());
                 this.barTexture.draw(
                         0,
                         verticalScrollable.getVisibleHeight() * offset,
@@ -177,25 +178,23 @@ public class ScrollBar extends Widget implements Interactable {
         int barSize = calculateMainAxisSize();
         int actualSize = getActualSize();
         if (scrollType == ScrollType.HORIZONTAL) {
-            float offset = horizontalScrollable.getHorizontalScrollOffset()
-                    / (float) (actualSize)
+            float offset = horizontalScrollable.getHorizontalScrollOffset() / (float) (actualSize)
                     * horizontalScrollable.getVisibleWidth();
             if (relative.x >= offset && relative.x <= offset + barSize) {
                 this.handleClickOffset = (int) (relative.x - offset);
             } else {
-                float newOffset =
-                        Math.max(0, (relative.x - barSize / 2f) / (float) horizontalScrollable.getVisibleWidth());
+                float newOffset = Math
+                        .max(0, (relative.x - barSize / 2f) / (float) horizontalScrollable.getVisibleWidth());
                 setScrollOffset((int) (newOffset * actualSize));
             }
         } else if (scrollType == ScrollType.VERTICAL) {
-            float offset = verticalScrollable.getVerticalScrollOffset()
-                    / (float) (actualSize)
+            float offset = verticalScrollable.getVerticalScrollOffset() / (float) (actualSize)
                     * verticalScrollable.getVisibleHeight();
             if (relative.y >= offset && relative.y <= offset + barSize) {
                 this.handleClickOffset = (int) (relative.y - offset);
             } else {
-                float newOffset =
-                        Math.max(0, (relative.y - barSize / 2f) / (float) verticalScrollable.getVisibleHeight());
+                float newOffset = Math
+                        .max(0, (relative.y - barSize / 2f) / (float) verticalScrollable.getVisibleHeight());
                 setScrollOffset((int) (newOffset * actualSize));
             }
         }

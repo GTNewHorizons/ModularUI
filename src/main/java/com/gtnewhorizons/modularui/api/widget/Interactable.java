@@ -1,18 +1,19 @@
 package com.gtnewhorizons.modularui.api.widget;
 
-import com.gtnewhorizons.modularui.api.KeyboardUtil;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.util.ResourceLocation;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.lwjgl.input.Keyboard;
 
+import com.gtnewhorizons.modularui.api.KeyboardUtil;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 /**
- * An interface that handles user interactions.
- * These methods get called on the client.
- * Can also be used as a listener.
+ * An interface that handles user interactions. These methods get called on the client. Can also be used as a listener.
  */
 public interface Interactable {
 
@@ -110,8 +111,7 @@ public interface Interactable {
      */
     @SideOnly(Side.CLIENT)
     static void playButtonClickSound() {
-        Minecraft.getMinecraft()
-                .getSoundHandler()
+        Minecraft.getMinecraft().getSoundHandler()
                 .playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
     }
 

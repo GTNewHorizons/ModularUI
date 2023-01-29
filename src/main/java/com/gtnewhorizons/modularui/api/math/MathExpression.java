@@ -1,10 +1,11 @@
 package com.gtnewhorizons.modularui.api.math;
 
-import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
 
 public class MathExpression {
 
@@ -220,12 +221,14 @@ public class MathExpression {
     }
 
     public enum Operator {
+
         PLUS("+"),
         MINUS("-"),
         MULTIPLY("*"),
         DIVIDE("/"),
         MOD("%"),
         POWER("^");
+
         public final String sign;
 
         Operator(String sign) {

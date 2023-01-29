@@ -4,8 +4,7 @@ import java.awt.*;
 import java.util.Objects;
 
 /**
- * Describes an area in a gui
- * Immutable!
+ * Describes an area in a gui Immutable!
  */
 public final class GuiArea {
 
@@ -34,8 +33,7 @@ public final class GuiArea {
     }
 
     /**
-     * Makes an area of the top left corner and width and height
-     * left - top - width - height
+     * Makes an area of the top left corner and width and height left - top - width - height
      */
     public static GuiArea ltwh(int x, int y, int width, int height) {
         return new GuiArea(x, x + width, y, y + height);

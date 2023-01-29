@@ -5,9 +5,11 @@ package com.gtnewhorizons.modularui.api.forge;
 //
 
 import javax.annotation.Nullable;
+
 import net.minecraft.item.ItemStack;
 
 public interface IItemHandler {
+
     int getSlots();
 
     ItemStack getStackInSlot(int var1);

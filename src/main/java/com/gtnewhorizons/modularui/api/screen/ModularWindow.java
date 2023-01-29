@@ -1,5 +1,14 @@
 package com.gtnewhorizons.modularui.api.screen;
 
+import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+
+import net.minecraft.entity.player.EntityPlayer;
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
@@ -21,26 +30,20 @@ import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.Theme;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.config.Config;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
-import net.minecraft.entity.player.EntityPlayer;
 
 /**
- * A window in a modular gui. Only the "main" window can exist on both, server and client.
- * All other only exist and needs to be opened on client.
+ * A window in a modular gui. Only the "main" window can exist on both, server and client. All other only exist and
+ * needs to be opened on client.
  */
 public class ModularWindow implements IWidgetParent {
 
     /**
-     * Build your ModularWindow from here. You can chain methods as you want
-     * and finally call {@link Builder#build()}.
-     * <br> See also: {@link ITileWithModularUI#createWindow(UIBuildContext)}
+     * Build your ModularWindow from here. You can chain methods as you want and finally call {@link Builder#build()}.
+     * <br>
+     * See also: {@link ITileWithModularUI#createWindow(UIBuildContext)}
      */
     public static Builder builder(int width, int height) {
         return new Builder(new Size(width, height));
@@ -124,11 +127,9 @@ public class ModularWindow implements IWidgetParent {
     }
 
     public static boolean anyAnimation() {
-        return Config.openCloseDurationMs > 0
-                && (Config.openCloseFade
-                        || Config.openCloseTranslateFromBottom
-                        || Config.openCloseScale
-                        || Config.openCloseRotateFast);
+        return Config.openCloseDurationMs > 0 && (Config.openCloseFade || Config.openCloseTranslateFromBottom
+                || Config.openCloseScale
+                || Config.openCloseRotateFast);
     }
 
     /**
@@ -137,33 +138,27 @@ public class ModularWindow implements IWidgetParent {
     public void onOpen() {
         if (openAnimation == null && anyAnimation()) {
             final int startY = context.getScaledScreenSize().height - pos.y;
-            openAnimation = new Interpolator(
-                    0,
-                    1,
-                    Config.openCloseDurationMs,
-                    Eases.EaseQuadOut,
-                    value -> {
-                        float val = (float) value;
-                        if (Config.openCloseFade) {
-                            alpha = (int) (val * Color.getAlpha(Theme.INSTANCE.getBackground()));
-                        }
-                        if (Config.openCloseTranslateFromBottom) {
-                            translateY = startY * (1 - val);
-                        }
-                        if (Config.openCloseScale) {
-                            scale = val;
-                        }
-                        if (Config.openCloseRotateFast) {
-                            rotation = val * 360;
-                        }
-                    },
-                    val -> {
-                        alpha = Color.getAlpha(Theme.INSTANCE.getBackground());
-                        translateX = 0;
-                        translateY = 0;
-                        scale = 1f;
-                        rotation = 360;
-                    });
+            openAnimation = new Interpolator(0, 1, Config.openCloseDurationMs, Eases.EaseQuadOut, value -> {
+                float val = (float) value;
+                if (Config.openCloseFade) {
+                    alpha = (int) (val * Color.getAlpha(Theme.INSTANCE.getBackground()));
+                }
+                if (Config.openCloseTranslateFromBottom) {
+                    translateY = startY * (1 - val);
+                }
+                if (Config.openCloseScale) {
+                    scale = val;
+                }
+                if (Config.openCloseRotateFast) {
+                    rotation = val * 360;
+                }
+            }, val -> {
+                alpha = Color.getAlpha(Theme.INSTANCE.getBackground());
+                translateX = 0;
+                translateY = 0;
+                scale = 1f;
+                rotation = 360;
+            });
             closeAnimation = openAnimation.getReversed(Config.openCloseDurationMs, Eases.EaseQuadIn);
             openAnimation.forward();
             closeAnimation.setCallback(val -> {
@@ -474,8 +469,7 @@ public class ModularWindow implements IWidgetParent {
         }
 
         /**
-         * Set background, but not limited to png files.
-         * See {@link ModularUITextures} for default examples.
+         * Set background, but not limited to png files. See {@link ModularUITextures} for default examples.
          */
         public Builder setBackground(IDrawable... background) {
             this.background = background;
@@ -492,11 +486,10 @@ public class ModularWindow implements IWidgetParent {
         }
 
         /**
-         * Set position of this Window displayed.
-         * {@link Alignment#getAlignedPos(Size, Size)} is useful for specifying rough location.
-         * Center is selected as default.
-         * @param pos BiFunction providing {@link Pos2d}
-         *            out of sizes of game screen and this window
+         * Set position of this Window displayed. {@link Alignment#getAlignedPos(Size, Size)} is useful for specifying
+         * rough location. Center is selected as default.
+         * 
+         * @param pos BiFunction providing {@link Pos2d} out of sizes of game screen and this window
          */
         public Builder setPos(PosProvider pos) {
             this.pos = pos;
@@ -510,7 +503,9 @@ public class ModularWindow implements IWidgetParent {
 
         public Builder bindPlayerInventory(EntityPlayer player, int marginBottom, IDrawable background) {
             return bindPlayerInventory(
-                    player, new Pos2d(size.width / 2 - 81, size.height - marginBottom - 76), background);
+                    player,
+                    new Pos2d(size.width / 2 - 81, size.height - marginBottom - 76),
+                    background);
         }
 
         /**
@@ -551,6 +546,7 @@ public class ModularWindow implements IWidgetParent {
     }
 
     public interface PosProvider {
+
         Pos2d getPos(Size screenSize, ModularWindow mainWindow);
     }
 }

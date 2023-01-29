@@ -1,14 +1,16 @@
 package com.gtnewhorizons.modularui.common.widget.textfield;
 
-import com.google.common.base.Joiner;
-import com.gtnewhorizons.modularui.common.widget.ScrollBar;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
+
 import org.jetbrains.annotations.Nullable;
+
+import com.google.common.base.Joiner;
+import com.gtnewhorizons.modularui.common.widget.ScrollBar;
 
 /**
  * Handles the text itself like inserting and deleting text. Also handles the cursor and marking text.
@@ -227,8 +229,7 @@ public class TextFieldHandler {
         if (this.text.size() == 0) {
             setMainCursor(0, 0);
         } else {
-            setMainCursor(
-                    this.text.size() - 1, this.text.get(this.text.size() - 1).length());
+            setMainCursor(this.text.size() - 1, this.text.get(this.text.size() - 1).length());
         }
     }
 
@@ -261,9 +262,8 @@ public class TextFieldHandler {
     }
 
     public boolean test(String text) {
-        return maxLines > 1
-                || ((pattern == null || pattern.matcher(text).matches())
-                        && (maxCharacters < 0 || maxCharacters >= text.length()));
+        return maxLines > 1 || ((pattern == null || pattern.matcher(text).matches())
+                && (maxCharacters < 0 || maxCharacters >= text.length()));
     }
 
     public void insert(String text) {

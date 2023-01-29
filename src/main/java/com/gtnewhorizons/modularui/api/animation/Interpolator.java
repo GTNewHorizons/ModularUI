@@ -18,8 +18,8 @@ public class Interpolator {
         this(from, to, duration, ease, interpolate, null);
     }
 
-    public Interpolator(
-            float from, float to, int duration, IEase ease, Consumer<Number> interpolate, Consumer<Number> callback) {
+    public Interpolator(float from, float to, int duration, IEase ease, Consumer<Number> interpolate,
+            Consumer<Number> callback) {
         this.from = from;
         this.to = to;
         this.duration = duration;

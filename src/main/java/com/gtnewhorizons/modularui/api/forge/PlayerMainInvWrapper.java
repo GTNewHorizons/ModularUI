@@ -5,10 +5,11 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 
 /**
- * Exposes the player inventory WITHOUT the armor inventory as IItemHandler.
- * Also takes core of inserting/extracting having the same logic as picking up items.
+ * Exposes the player inventory WITHOUT the armor inventory as IItemHandler. Also takes core of inserting/extracting
+ * having the same logic as picking up items.
  */
 public class PlayerMainInvWrapper extends RangedWrapper {
+
     private final InventoryPlayer inventoryPlayer;
 
     public PlayerMainInvWrapper(InventoryPlayer inv) {

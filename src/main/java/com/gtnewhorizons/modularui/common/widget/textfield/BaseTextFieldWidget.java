@@ -1,5 +1,21 @@
 package com.gtnewhorizons.modularui.common.widget.textfield;
 
+import java.awt.*;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Pattern;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.input.Keyboard;
+
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.KeyboardUtil;
 import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
@@ -15,19 +31,6 @@ import com.gtnewhorizons.modularui.api.widget.scroll.ScrollType;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.common.widget.ScrollBar;
 import com.gtnewhorizons.modularui.config.Config;
-import java.awt.*;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.regex.Pattern;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.input.Keyboard;
 
 /**
  * The base of a text input widget. Handles mouse/keyboard input and rendering.
@@ -107,8 +110,8 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
     @Override
     public void draw(float partialTicks) {
         Point draggableTranslate = getDraggableTranslate();
-        GuiHelper.useScissor(
-                pos.x + draggableTranslate.x, pos.y + draggableTranslate.y, size.width, size.height, () -> {
+        GuiHelper
+                .useScissor(pos.x + draggableTranslate.x, pos.y + draggableTranslate.y, size.width, size.height, () -> {
                     GlStateManager.pushMatrix();
                     GlStateManager.translate(1 - scrollOffset, 1, 0);
                     renderer.setSimulate(false);
@@ -126,7 +129,7 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
         Rectangle draggableArea = draggable.getArea();
 
         ret.translate(-getWindow().getPos().x, -getWindow().getPos().y);
-        //noinspection ConstantConditions
+        // noinspection ConstantConditions
         ret.translate(draggableArea.x, draggableArea.y);
         return ret;
     }
@@ -170,19 +173,21 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
         if (!isRightBelowMouse()) {
             return ClickResult.IGNORE;
         }
-        handler.setCursor(renderer.getCursorPos(
-                handler.getText(),
-                getContext().getCursor().getX() - pos.x + scrollOffset,
-                getContext().getCursor().getY() - pos.y));
+        handler.setCursor(
+                renderer.getCursorPos(
+                        handler.getText(),
+                        getContext().getCursor().getX() - pos.x + scrollOffset,
+                        getContext().getCursor().getY() - pos.y));
         return ClickResult.SUCCESS;
     }
 
     @Override
     public void onMouseDragged(int buttonId, long deltaTime) {
-        handler.setMainCursor(renderer.getCursorPos(
-                handler.getText(),
-                getContext().getCursor().getX() - pos.x + scrollOffset,
-                getContext().getCursor().getY() - pos.y));
+        handler.setMainCursor(
+                renderer.getCursorPos(
+                        handler.getText(),
+                        getContext().getCursor().getX() - pos.x + scrollOffset,
+                        getContext().getCursor().getY() - pos.y));
     }
 
     @Override

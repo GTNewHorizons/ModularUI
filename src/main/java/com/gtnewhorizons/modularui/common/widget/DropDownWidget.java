@@ -1,5 +1,12 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiFunction;
+
+import net.minecraft.network.PacketBuffer;
+
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
@@ -9,11 +16,6 @@ import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BiFunction;
-import net.minecraft.network.PacketBuffer;
 
 public class DropDownWidget extends ExpandTab implements ISyncedWidget {
 
@@ -25,8 +27,7 @@ public class DropDownWidget extends ExpandTab implements ISyncedWidget {
     private int expandedMaxHeight = 60;
     private final List<IDrawable> labels = new ArrayList<>();
     private int selected = -1;
-    private IDrawable textUnselected =
-            Text.localised("modularui.dropdown.select").withOffset(0, 1);
+    private IDrawable textUnselected = Text.localised("modularui.dropdown.select").withOffset(0, 1);
 
     private boolean syncsToServer = true;
     private boolean syncsToClient = true;
@@ -41,26 +42,24 @@ public class DropDownWidget extends ExpandTab implements ISyncedWidget {
         setBackground(ModularUITextures.BACKGROUND_BORDER_1PX);
 
         listContainer = new ListWidget();
-        addChild(listContainer
-                .setMaxHeight(expandedMaxHeight)
-                .setPosProvider((screenSize, window, parent) ->
-                        new Pos2d(0, direction == Direction.DOWN ? normalSize.height : -getActualExpandedHeight())));
+        addChild(
+                listContainer.setMaxHeight(expandedMaxHeight).setPosProvider(
+                        (screenSize, window, parent) -> new Pos2d(
+                                0,
+                                direction == Direction.DOWN ? normalSize.height : -getActualExpandedHeight())));
 
         selectedWidget = new DrawableWidget();
-        addChild(selectedWidget
-                .setDrawable(() -> {
-                    if (selected > -1 && selected < labels.size()) {
-                        return labels.get(selected);
-                    }
-                    return textUnselected;
-                })
-                .setSizeProvider((screenSize, window, parent) -> normalSize));
+        addChild(selectedWidget.setDrawable(() -> {
+            if (selected > -1 && selected < labels.size()) {
+                return labels.get(selected);
+            }
+            return textUnselected;
+        }).setSizeProvider((screenSize, window, parent) -> normalSize));
 
         arrowWidget = new DrawableWidget();
-        addChild(arrowWidget
-                .setDrawable(() -> getArrowTexture(isExpanded()))
-                .setSize(10, 10)
-                .setPosProvider((screenSize, window, parent) -> new Pos2d(getSize().width - 10, 0)));
+        addChild(
+                arrowWidget.setDrawable(() -> getArrowTexture(isExpanded())).setSize(10, 10)
+                        .setPosProvider((screenSize, window, parent) -> new Pos2d(getSize().width - 10, 0)));
     }
 
     @Override
@@ -155,15 +154,13 @@ public class DropDownWidget extends ExpandTab implements ISyncedWidget {
         return this;
     }
 
-    public DropDownWidget addDropDownItemsSimple(
-            List<String> labels, ApplyForEachButton applyForEachButton, boolean collapseOnSelect) {
+    public DropDownWidget addDropDownItemsSimple(List<String> labels, ApplyForEachButton applyForEachButton,
+            boolean collapseOnSelect) {
         return addDropDownItems(labels, (index, label) -> {
             IDrawable text = new Text(label).withOffset(0, 1);
             ButtonWidget buttonWidget = new ButtonWidget();
-            buttonWidget
-                    .setHoveredBackground(new Rectangle().setColor(Color.LIGHT_BLUE.bright(2)), text)
-                    .setBackground(text)
-                    .setSizeProvider((screenSize, window, parent) -> normalSize);
+            buttonWidget.setHoveredBackground(new Rectangle().setColor(Color.LIGHT_BLUE.bright(2)), text)
+                    .setBackground(text).setSizeProvider((screenSize, window, parent) -> normalSize);
             applyForEachButton.apply(buttonWidget, index, label, () -> {
                 setSelected(index);
                 if (collapseOnSelect) {
@@ -278,6 +275,7 @@ public class DropDownWidget extends ExpandTab implements ISyncedWidget {
 
     @FunctionalInterface
     public interface ApplyForEachButton {
+
         void apply(ButtonWidget buttonWidget, int index, String label, Runnable setSelected);
     }
 }

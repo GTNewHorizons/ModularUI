@@ -1,12 +1,13 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.gtnewhorizons.modularui.api.math.CrossAxisAlignment;
 import com.gtnewhorizons.modularui.api.math.MainAxisAlignment;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.IWidgetBuilder;
 import com.gtnewhorizons.modularui.api.widget.Widget;
-import org.jetbrains.annotations.NotNull;
 
 public class Row extends MultiChildWidget implements IWidgetBuilder<Row> {
 
@@ -96,8 +97,8 @@ public class Row extends MultiChildWidget implements IWidgetBuilder<Row> {
     }
 
     /**
-     * Specifies space between children. Use together with {@link MainAxisAlignment#SPACE_BETWEEN}.
-     * If you don't call this, this widget will automatically calculate space based on {@link #maxHeight}.
+     * Specifies space between children. Use together with {@link MainAxisAlignment#SPACE_BETWEEN}. If you don't call
+     * this, this widget will automatically calculate space based on {@link #maxHeight}.
      */
     public Row setSpace(int space) {
         this.space = space;

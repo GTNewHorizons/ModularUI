@@ -7,5 +7,6 @@ package com.gtnewhorizons.modularui.api.forge;
 import net.minecraft.item.ItemStack;
 
 public interface IItemHandlerModifiable extends IItemHandler {
+
     void setStackInSlot(int var1, ItemStack var2);
 }

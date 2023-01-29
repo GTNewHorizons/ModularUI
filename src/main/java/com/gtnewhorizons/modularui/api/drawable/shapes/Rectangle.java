@@ -1,10 +1,12 @@
 package com.gtnewhorizons.modularui.api.drawable.shapes;
 
+import net.minecraft.client.renderer.Tessellator;
+
+import org.lwjgl.opengl.GL11;
+
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.math.Color;
-import net.minecraft.client.renderer.Tessellator;
-import org.lwjgl.opengl.GL11;
 
 public class Rectangle implements IDrawable {
 
@@ -75,28 +77,49 @@ public class Rectangle implements IDrawable {
             tessellator.startDrawingQuads();
 
             tessellator.setColorRGBA(
-                    Color.getRed(colorTL), Color.getGreen(colorTL), Color.getBlue(colorTL), Color.getAlpha(colorTL));
+                    Color.getRed(colorTL),
+                    Color.getGreen(colorTL),
+                    Color.getBlue(colorTL),
+                    Color.getAlpha(colorTL));
             tessellator.addVertex(x0, y0, 0.0f);
             tessellator.setColorRGBA(
-                    Color.getRed(colorBL), Color.getGreen(colorBL), Color.getBlue(colorBL), Color.getAlpha(colorBL));
+                    Color.getRed(colorBL),
+                    Color.getGreen(colorBL),
+                    Color.getBlue(colorBL),
+                    Color.getAlpha(colorBL));
             tessellator.addVertex(x0, y1, 0.0f);
             tessellator.setColorRGBA(
-                    Color.getRed(colorBR), Color.getGreen(colorBR), Color.getBlue(colorBR), Color.getAlpha(colorBR));
+                    Color.getRed(colorBR),
+                    Color.getGreen(colorBR),
+                    Color.getBlue(colorBR),
+                    Color.getAlpha(colorBR));
             tessellator.addVertex(x1, y1, 0.0f);
             tessellator.setColorRGBA(
-                    Color.getRed(colorTR), Color.getGreen(colorTR), Color.getBlue(colorTR), Color.getAlpha(colorTR));
+                    Color.getRed(colorTR),
+                    Color.getGreen(colorTR),
+                    Color.getBlue(colorTR),
+                    Color.getAlpha(colorTR));
             tessellator.addVertex(x1, y0, 0.0f);
         } else {
             tessellator.startDrawing(GL11.GL_TRIANGLE_FAN);
             int color = Color.average(colorBL, colorBR, colorTR, colorTL);
             tessellator.setColorRGBA(
-                    Color.getRed(color), Color.getGreen(color), Color.getBlue(color), Color.getAlpha(color));
+                    Color.getRed(color),
+                    Color.getGreen(color),
+                    Color.getBlue(color),
+                    Color.getAlpha(color));
             tessellator.addVertex(x0 + width / 2, y0 + height / 2, 0.0f);
             tessellator.setColorRGBA(
-                    Color.getRed(colorTL), Color.getGreen(colorTL), Color.getBlue(colorTL), Color.getAlpha(colorTL));
+                    Color.getRed(colorTL),
+                    Color.getGreen(colorTL),
+                    Color.getBlue(colorTL),
+                    Color.getAlpha(colorTL));
             tessellator.addVertex(x0, y0 + cornerRadius, 0.0f);
             tessellator.setColorRGBA(
-                    Color.getRed(colorBL), Color.getGreen(colorBL), Color.getBlue(colorBL), Color.getAlpha(colorBL));
+                    Color.getRed(colorBL),
+                    Color.getGreen(colorBL),
+                    Color.getBlue(colorBL),
+                    Color.getAlpha(colorBL));
             tessellator.addVertex(x0, y1 - cornerRadius, 0.0f);
             int n = cornerSegments;
             for (int i = 1; i <= n; i++) {
@@ -110,7 +133,10 @@ public class Rectangle implements IDrawable {
                 tessellator.addVertex(x, y, 0.0f);
             }
             tessellator.setColorRGBA(
-                    Color.getRed(colorBR), Color.getGreen(colorBR), Color.getBlue(colorBR), Color.getAlpha(colorBR));
+                    Color.getRed(colorBR),
+                    Color.getGreen(colorBR),
+                    Color.getBlue(colorBR),
+                    Color.getAlpha(colorBR));
             tessellator.addVertex(x1 - cornerRadius, y1, 0.0f);
             for (int i = 1; i <= n; i++) {
                 float x = (float) (x1 - cornerRadius + Math.sin(PI_2 / n * i) * cornerRadius);
@@ -123,7 +149,10 @@ public class Rectangle implements IDrawable {
                 tessellator.addVertex(x, y, 0.0f);
             }
             tessellator.setColorRGBA(
-                    Color.getRed(colorTR), Color.getGreen(colorTR), Color.getBlue(colorTR), Color.getAlpha(colorTR));
+                    Color.getRed(colorTR),
+                    Color.getGreen(colorTR),
+                    Color.getBlue(colorTR),
+                    Color.getAlpha(colorTR));
             tessellator.addVertex(x1, y0 + cornerRadius, 0.0f);
             for (int i = 1; i <= n; i++) {
                 float x = (float) (x1 - cornerRadius + Math.cos(PI_2 / n * i) * cornerRadius);
@@ -136,7 +165,10 @@ public class Rectangle implements IDrawable {
                 tessellator.addVertex(x, y, 0.0f);
             }
             tessellator.setColorRGBA(
-                    Color.getRed(colorTL), Color.getGreen(colorTL), Color.getBlue(colorTL), Color.getAlpha(colorTL));
+                    Color.getRed(colorTL),
+                    Color.getGreen(colorTL),
+                    Color.getBlue(colorTL),
+                    Color.getAlpha(colorTL));
             tessellator.addVertex(x0 + cornerRadius, y0, 0.0f);
             for (int i = 1; i <= n; i++) {
                 float x = (float) (x0 + cornerRadius - Math.sin(PI_2 / n * i) * cornerRadius);
@@ -149,7 +181,10 @@ public class Rectangle implements IDrawable {
                 tessellator.addVertex(x, y, 0.0f);
             }
             tessellator.setColorRGBA(
-                    Color.getRed(colorTL), Color.getGreen(colorTL), Color.getBlue(colorTL), Color.getAlpha(colorTL));
+                    Color.getRed(colorTL),
+                    Color.getGreen(colorTL),
+                    Color.getBlue(colorTL),
+                    Color.getAlpha(colorTL));
             tessellator.addVertex(x0, y0 + cornerRadius, 0.0f);
         }
         tessellator.draw();

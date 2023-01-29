@@ -1,22 +1,27 @@
 package com.gtnewhorizons.modularui.api;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+
 import javax.annotation.Nullable;
+
 import net.minecraft.client.renderer.OpenGlHelper;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.util.vector.Quaternion;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Copied from forge 1.12.2-14.23.5.2847 net.minecraft.client.renderer.GlStateManager
  */
 @SideOnly(Side.CLIENT)
 public class GlStateManager {
+
     private static final FloatBuffer BUF_FLOAT_16 = BufferUtils.createFloatBuffer(16);
     private static final FloatBuffer BUF_FLOAT_4 = BufferUtils.createFloatBuffer(4);
     private static final AlphaState alphaState = new AlphaState();
@@ -156,14 +161,13 @@ public class GlStateManager {
         }
     }
 
-    public static void tryBlendFuncSeparate(
-            SourceFactor srcFactor, DestFactor dstFactor, SourceFactor srcFactorAlpha, DestFactor dstFactorAlpha) {
+    public static void tryBlendFuncSeparate(SourceFactor srcFactor, DestFactor dstFactor, SourceFactor srcFactorAlpha,
+            DestFactor dstFactorAlpha) {
         tryBlendFuncSeparate(srcFactor.factor, dstFactor.factor, srcFactorAlpha.factor, dstFactorAlpha.factor);
     }
 
     public static void tryBlendFuncSeparate(int srcFactor, int dstFactor, int srcFactorAlpha, int dstFactorAlpha) {
-        if (srcFactor != blendState.srcFactor
-                || dstFactor != blendState.dstFactor
+        if (srcFactor != blendState.srcFactor || dstFactor != blendState.dstFactor
                 || srcFactorAlpha != blendState.srcFactorAlpha
                 || dstFactorAlpha != blendState.dstFactorAlpha) {
             blendState.srcFactor = srcFactor;
@@ -405,34 +409,18 @@ public class GlStateManager {
         }
     }
 
-    public static void glTexImage2D(
-            int target,
-            int level,
-            int internalFormat,
-            int width,
-            int height,
-            int border,
-            int format,
-            int type,
-            @Nullable IntBuffer pixels) {
+    public static void glTexImage2D(int target, int level, int internalFormat, int width, int height, int border,
+            int format, int type, @Nullable IntBuffer pixels) {
         GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, type, pixels);
     }
 
-    public static void glTexSubImage2D(
-            int target,
-            int level,
-            int xOffset,
-            int yOffset,
-            int width,
-            int height,
-            int format,
-            int type,
-            IntBuffer pixels) {
+    public static void glTexSubImage2D(int target, int level, int xOffset, int yOffset, int width, int height,
+            int format, int type, IntBuffer pixels) {
         GL11.glTexSubImage2D(target, level, xOffset, yOffset, width, height, format, type, pixels);
     }
 
-    public static void glCopyTexSubImage2D(
-            int target, int level, int xOffset, int yOffset, int x, int y, int width, int height) {
+    public static void glCopyTexSubImage2D(int target, int level, int xOffset, int yOffset, int x, int y, int width,
+            int height) {
         GL11.glCopyTexSubImage2D(target, level, xOffset, yOffset, x, y, width, height);
     }
 
@@ -468,8 +456,7 @@ public class GlStateManager {
     }
 
     public static void colorMask(boolean red, boolean green, boolean blue, boolean alpha) {
-        if (red != colorMaskState.red
-                || green != colorMaskState.green
+        if (red != colorMaskState.red || green != colorMaskState.green
                 || blue != colorMaskState.blue
                 || alpha != colorMaskState.alpha) {
             colorMaskState.red = red;
@@ -488,8 +475,7 @@ public class GlStateManager {
     }
 
     public static void clearColor(float red, float green, float blue, float alpha) {
-        if (red != clearState.color.red
-                || green != clearState.color.green
+        if (red != clearState.color.red || green != clearState.color.green
                 || blue != clearState.color.blue
                 || alpha != clearState.color.alpha) {
             clearState.color.red = red;
@@ -588,8 +574,7 @@ public class GlStateManager {
     }
 
     public static void color(float colorRed, float colorGreen, float colorBlue, float colorAlpha) {
-        if (colorRed != colorState.red
-                || colorGreen != colorState.green
+        if (colorRed != colorState.red || colorGreen != colorState.green
                 || colorBlue != colorState.blue
                 || colorAlpha != colorState.alpha) {
             colorState.red = colorRed;
@@ -745,6 +730,7 @@ public class GlStateManager {
 
     @SideOnly(Side.CLIENT)
     static class AlphaState {
+
         public BooleanState alphaTest;
         public int func;
         public float ref;
@@ -758,6 +744,7 @@ public class GlStateManager {
 
     @SideOnly(Side.CLIENT)
     static class BlendState {
+
         public BooleanState blend;
         public int srcFactor;
         public int dstFactor;
@@ -775,6 +762,7 @@ public class GlStateManager {
 
     @SideOnly(Side.CLIENT)
     static class BooleanState {
+
         private final int capability;
         private boolean currentState;
 
@@ -805,6 +793,7 @@ public class GlStateManager {
 
     @SideOnly(Side.CLIENT)
     static class ClearState {
+
         public double depth;
         public Color color;
 
@@ -816,6 +805,7 @@ public class GlStateManager {
 
     @SideOnly(Side.CLIENT)
     static class Color {
+
         public float red;
         public float green;
         public float blue;
@@ -839,6 +829,7 @@ public class GlStateManager {
 
     @SideOnly(Side.CLIENT)
     static class ColorLogicState {
+
         public BooleanState colorLogicOp;
         public int opcode;
 
@@ -850,6 +841,7 @@ public class GlStateManager {
 
     @SideOnly(Side.CLIENT)
     static class ColorMask {
+
         public boolean red;
         public boolean green;
         public boolean blue;
@@ -865,6 +857,7 @@ public class GlStateManager {
 
     @SideOnly(Side.CLIENT)
     static class ColorMaterialState {
+
         public BooleanState colorMaterial;
         public int face;
         public int mode;
@@ -878,6 +871,7 @@ public class GlStateManager {
 
     @SideOnly(Side.CLIENT)
     public static enum CullFace {
+
         FRONT(1028),
         BACK(1029),
         FRONT_AND_BACK(1032);
@@ -891,6 +885,7 @@ public class GlStateManager {
 
     @SideOnly(Side.CLIENT)
     static class CullState {
+
         public BooleanState cullFace;
         public int mode;
 
@@ -902,6 +897,7 @@ public class GlStateManager {
 
     @SideOnly(Side.CLIENT)
     static class DepthState {
+
         public BooleanState depthTest;
         public boolean maskEnabled;
         public int depthFunc;
@@ -915,6 +911,7 @@ public class GlStateManager {
 
     @SideOnly(Side.CLIENT)
     public static enum DestFactor {
+
         CONSTANT_ALPHA(32771),
         CONSTANT_COLOR(32769),
         DST_ALPHA(772),
@@ -939,6 +936,7 @@ public class GlStateManager {
 
     @SideOnly(Side.CLIENT)
     public static enum FogMode {
+
         LINEAR(9729),
         EXP(2048),
         EXP2(2049);
@@ -953,6 +951,7 @@ public class GlStateManager {
 
     @SideOnly(Side.CLIENT)
     static class FogState {
+
         public BooleanState fog;
         public int mode;
         public float density;
@@ -969,6 +968,7 @@ public class GlStateManager {
 
     @SideOnly(Side.CLIENT)
     public static enum LogicOp {
+
         AND(5377),
         AND_INVERTED(5380),
         AND_REVERSE(5378),
@@ -995,6 +995,7 @@ public class GlStateManager {
 
     @SideOnly(Side.CLIENT)
     static class PolygonOffsetState {
+
         public BooleanState polygonOffsetFill;
         public BooleanState polygonOffsetLine;
         public float factor;
@@ -1008,6 +1009,7 @@ public class GlStateManager {
 
     @SideOnly(Side.CLIENT)
     public static enum SourceFactor {
+
         CONSTANT_ALPHA(32771),
         CONSTANT_COLOR(32769),
         DST_ALPHA(772),
@@ -1033,6 +1035,7 @@ public class GlStateManager {
 
     @SideOnly(Side.CLIENT)
     static class StencilFunc {
+
         public int func;
         public int mask;
 
@@ -1044,6 +1047,7 @@ public class GlStateManager {
 
     @SideOnly(Side.CLIENT)
     static class StencilState {
+
         public StencilFunc func;
         public int mask;
         public int fail;
@@ -1069,6 +1073,7 @@ public class GlStateManager {
 
     @SideOnly(Side.CLIENT)
     static class TexGenCoord {
+
         public BooleanState textureGen;
         public int coord;
         public int param = -1;
@@ -1081,6 +1086,7 @@ public class GlStateManager {
 
     @SideOnly(Side.CLIENT)
     static class TexGenState {
+
         public TexGenCoord s;
         public TexGenCoord t;
         public TexGenCoord r;
@@ -1096,6 +1102,7 @@ public class GlStateManager {
 
     @SideOnly(Side.CLIENT)
     static class TextureState {
+
         public BooleanState texture2DState;
         public int textureName;
 

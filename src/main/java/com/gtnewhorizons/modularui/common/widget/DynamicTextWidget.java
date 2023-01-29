@@ -1,16 +1,17 @@
 package com.gtnewhorizons.modularui.common.widget;
 
-import com.gtnewhorizons.modularui.api.drawable.Text;
-import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
-import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import java.io.IOException;
 import java.util.function.Supplier;
+
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumChatFormatting;
 
+import com.gtnewhorizons.modularui.api.drawable.Text;
+import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
+import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
+
 /**
- * Allows changing text dynamically.
- * Syncs text from server to client.
+ * Allows changing text dynamically. Syncs text from server to client.
  */
 public class DynamicTextWidget extends TextWidget implements ISyncedWidget {
 
@@ -71,8 +72,7 @@ public class DynamicTextWidget extends TextWidget implements ISyncedWidget {
     }
 
     /**
-     * @return if this widget should operate on the server side.
-     * For example detecting and sending changes to client.
+     * @return if this widget should operate on the server side. For example detecting and sending changes to client.
      */
     protected boolean syncsToClient() {
         return syncsToClient;
@@ -123,8 +123,7 @@ public class DynamicTextWidget extends TextWidget implements ISyncedWidget {
     private boolean needsSync(Text newText) {
         if (lastText == null && newText == null) return false;
         else if (lastText == null) return false;
-        return !lastText.getRawText().equals(newText.getRawText())
-                || lastText.getColor() != newText.getColor()
+        return !lastText.getRawText().equals(newText.getRawText()) || lastText.getColor() != newText.getColor()
                 || !lastText.getFormatting().equals(newText.getFormatting());
     }
 }

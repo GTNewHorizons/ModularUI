@@ -6,16 +6,8 @@ public class AdaptableUITexture extends UITexture {
 
     private final int imageWidth, imageHeight, borderWidthU, borderWidthV;
 
-    public AdaptableUITexture(
-            ResourceLocation location,
-            float u0,
-            float v0,
-            float u1,
-            float v1,
-            int imageWidth,
-            int imageHeight,
-            int borderWidthU,
-            int borderWidthV) {
+    public AdaptableUITexture(ResourceLocation location, float u0, float v0, float u1, float v1, int imageWidth,
+            int imageHeight, int borderWidthU, int borderWidthV) {
         super(location, u0, v0, u1, v1);
         this.imageWidth = imageWidth;
         this.imageHeight = imageHeight;
@@ -23,30 +15,38 @@ public class AdaptableUITexture extends UITexture {
         this.borderWidthV = borderWidthV;
     }
 
-    public AdaptableUITexture(
-            ResourceLocation location, int imageWidth, int imageHeight, int borderWidthU, int borderWidthV) {
+    public AdaptableUITexture(ResourceLocation location, int imageWidth, int imageHeight, int borderWidthU,
+            int borderWidthV) {
         this(location, 0, 0, 1, 1, imageWidth, imageHeight, borderWidthU, borderWidthV);
     }
 
-    public static AdaptableUITexture of(
-            ResourceLocation location, int imageWidth, int imageHeight, int borderWidthU, int borderWidthV) {
+    public static AdaptableUITexture of(ResourceLocation location, int imageWidth, int imageHeight, int borderWidthU,
+            int borderWidthV) {
         return new AdaptableUITexture(location, imageWidth, imageHeight, borderWidthU, borderWidthV);
     }
 
-    public static AdaptableUITexture of(
-            ResourceLocation location, int imageWidth, int imageHeight, int borderWidthPixel) {
+    public static AdaptableUITexture of(ResourceLocation location, int imageWidth, int imageHeight,
+            int borderWidthPixel) {
         return new AdaptableUITexture(location, imageWidth, imageHeight, borderWidthPixel, borderWidthPixel);
     }
 
     public static AdaptableUITexture of(String location, int imageWidth, int imageHeight, int borderWidthPixel) {
         return new AdaptableUITexture(
-                new ResourceLocation(location), imageWidth, imageHeight, borderWidthPixel, borderWidthPixel);
+                new ResourceLocation(location),
+                imageWidth,
+                imageHeight,
+                borderWidthPixel,
+                borderWidthPixel);
     }
 
-    public static AdaptableUITexture of(
-            String mod, String location, int imageWidth, int imageHeight, int borderWidthPixel) {
+    public static AdaptableUITexture of(String mod, String location, int imageWidth, int imageHeight,
+            int borderWidthPixel) {
         return new AdaptableUITexture(
-                new ResourceLocation(mod, location), imageWidth, imageHeight, borderWidthPixel, borderWidthPixel);
+                new ResourceLocation(mod, location),
+                imageWidth,
+                imageHeight,
+                borderWidthPixel,
+                borderWidthPixel);
     }
 
     @Override
@@ -78,26 +78,10 @@ public class AdaptableUITexture extends UITexture {
         float borderV = borderWidthV * 1f / imageHeight;
         // draw corners
         draw(location, x, y, borderWidthU, borderWidthV, u0, v0, u0 + borderU, v0 + borderV); // x0 y0
-        draw(
-                location,
-                x + width - borderWidthU,
-                y,
-                borderWidthU,
-                borderWidthV,
-                u1 - borderU,
-                v0,
-                u1,
-                v0 + borderV); // x1 y0
-        draw(
-                location,
-                x,
-                y + height - borderWidthV,
-                borderWidthU,
-                borderWidthV,
-                u0,
-                v1 - borderV,
-                u0 + borderU,
-                v1); // x0 y1
+        draw(location, x + width - borderWidthU, y, borderWidthU, borderWidthV, u1 - borderU, v0, u1, v0 + borderV); // x1
+                                                                                                                     // y0
+        draw(location, x, y + height - borderWidthV, borderWidthU, borderWidthV, u0, v1 - borderV, u0 + borderU, v1); // x0
+                                                                                                                      // y1
         draw(
                 location,
                 x + width - borderWidthU,

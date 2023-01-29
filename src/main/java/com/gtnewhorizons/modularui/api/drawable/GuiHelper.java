@@ -1,16 +1,10 @@
 package com.gtnewhorizons.modularui.api.drawable;
 
-import com.gtnewhorizons.modularui.api.GlStateManager;
-import com.gtnewhorizons.modularui.api.math.Alignment;
-import com.gtnewhorizons.modularui.api.math.Color;
-import com.gtnewhorizons.modularui.api.math.Pos2d;
-import com.gtnewhorizons.modularui.api.math.Size;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -23,9 +17,19 @@ import net.minecraft.util.IIcon;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+
+import com.gtnewhorizons.modularui.api.GlStateManager;
+import com.gtnewhorizons.modularui.api.math.Alignment;
+import com.gtnewhorizons.modularui.api.math.Color;
+import com.gtnewhorizons.modularui.api.math.Pos2d;
+import com.gtnewhorizons.modularui.api.math.Size;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiHelper {
@@ -66,15 +70,8 @@ public class GuiHelper {
 
     // ==== Tooltip helpers ====
 
-    public static void drawHoveringText(
-            List<Text> textLines,
-            Pos2d mousePos,
-            Size screenSize,
-            int maxWidth,
-            float scale,
-            boolean forceShadow,
-            Alignment alignment,
-            boolean tooltipHasSpaceAfterFirstLine) {
+    public static void drawHoveringText(List<Text> textLines, Pos2d mousePos, Size screenSize, int maxWidth,
+            float scale, boolean forceShadow, Alignment alignment, boolean tooltipHasSpaceAfterFirstLine) {
         if (textLines.isEmpty()) {
             return;
         }
@@ -94,18 +91,19 @@ public class GuiHelper {
 
     public static void drawHoveringTextFormatted(List<String> lines, Pos2d mousePos, Size screenSize, int maxWidth) {
         drawHoveringTextFormatted(
-                lines, Collections.emptyList(), mousePos, screenSize, maxWidth, 1f, false, Alignment.TopLeft, true);
+                lines,
+                Collections.emptyList(),
+                mousePos,
+                screenSize,
+                maxWidth,
+                1f,
+                false,
+                Alignment.TopLeft,
+                true);
     }
 
-    public static void drawHoveringTextFormatted(
-            List<String> lines,
-            List<Integer> colors,
-            Pos2d mousePos,
-            Size screenSize,
-            int maxWidth,
-            float scale,
-            boolean forceShadow,
-            Alignment alignment,
+    public static void drawHoveringTextFormatted(List<String> lines, List<Integer> colors, Pos2d mousePos,
+            Size screenSize, int maxWidth, float scale, boolean forceShadow, Alignment alignment,
             boolean hasSpaceAfterFirstLine) {
         if (lines.isEmpty()) {
             return;
@@ -245,8 +243,8 @@ public class GuiHelper {
 
     // ==== Draw helpers ====
 
-    public static void drawGradientRect(
-            float zLevel, float left, float top, float right, float bottom, int startColor, int endColor) {
+    public static void drawGradientRect(float zLevel, float left, float top, float right, float bottom, int startColor,
+            int endColor) {
         float startAlpha = (float) (startColor >> 24 & 255) / 255.0F;
         float startRed = (float) (startColor >> 16 & 255) / 255.0F;
         float startGreen = (float) (startColor >> 8 & 255) / 255.0F;
@@ -294,14 +292,10 @@ public class GuiHelper {
         GlStateManager.enableBlend();
         Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 
-        float u0 = fluidStill.getMinU(),
-                u1 = fluidStill.getMaxU(),
-                v0 = fluidStill.getMinV(),
+        float u0 = fluidStill.getMinU(), u1 = fluidStill.getMaxU(), v0 = fluidStill.getMinV(),
                 v1 = fluidStill.getMaxV();
         float x1 = x0 + width, y1 = y0 + height;
-        float r = Color.getRedF(fluidColor),
-                g = Color.getGreenF(fluidColor),
-                b = Color.getBlueF(fluidColor),
+        float r = Color.getRedF(fluidColor), g = Color.getGreenF(fluidColor), b = Color.getBlueF(fluidColor),
                 a = Color.getAlphaF(fluidColor);
         a = a == 0f ? 1f : a;
 
@@ -337,7 +331,7 @@ public class GuiHelper {
         int[] currentTopFrame = scissorFrameStack.isEmpty() ? null : scissorFrameStack.peek();
         if (currentTopFrame == null) {
             Minecraft minecraft = Minecraft.getMinecraft();
-            return new int[] {0, 0, minecraft.displayWidth, minecraft.displayHeight};
+            return new int[] { 0, 0, minecraft.displayWidth, minecraft.displayHeight };
         }
         return currentTopFrame;
     }
@@ -365,7 +359,7 @@ public class GuiHelper {
                 if (scissorFrameStack.isEmpty()) {
                     GL11.glEnable(GL11.GL_SCISSOR_TEST);
                 }
-                scissorFrameStack.push(new int[] {newX, newY, newWidth, newHeight});
+                scissorFrameStack.push(new int[] { newX, newY, newWidth, newHeight });
                 pushedFrame = true;
             }
         }
@@ -373,7 +367,7 @@ public class GuiHelper {
             if (scissorFrameStack.isEmpty()) {
                 GL11.glEnable(GL11.GL_SCISSOR_TEST);
             }
-            scissorFrameStack.push(new int[] {parentX, parentY, parentWidth, parentHeight});
+            scissorFrameStack.push(new int[] { parentX, parentY, parentWidth, parentHeight });
         }
     }
 

@@ -14,16 +14,10 @@ public class Alignment {
     public static final Alignment BottomCenter = new Alignment(0, 1);
     public static final Alignment BottomRight = new Alignment(1, 1);
 
-    public static final Alignment[] ALL = {
-        TopLeft, TopCenter, TopRight,
-        CenterLeft, Center, CenterRight,
-        BottomLeft, BottomCenter, BottomRight
-    };
+    public static final Alignment[] ALL = { TopLeft, TopCenter, TopRight, CenterLeft, Center, CenterRight, BottomLeft,
+            BottomCenter, BottomRight };
 
-    public static final Alignment[] CORNERS = {
-        TopLeft, TopRight,
-        BottomLeft, BottomRight
-    };
+    public static final Alignment[] CORNERS = { TopLeft, TopRight, BottomLeft, BottomRight };
 
     public Alignment(int x, int y) {
         this.x = x;

@@ -1,11 +1,5 @@
 package com.gtnewhorizons.modularui.common.internal.network;
 
-import com.google.common.base.Charsets;
-import com.gtnewhorizons.modularui.ModularUI;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,13 +14,23 @@ import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.FluidStack;
+
 import org.jetbrains.annotations.Nullable;
+
+import com.google.common.base.Charsets;
+import com.gtnewhorizons.modularui.ModularUI;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 public class NetworkUtils {
 
@@ -81,8 +85,8 @@ public class NetworkUtils {
     }
 
     /**
-     * No-exception and null-safe version of {@link PacketBuffer#writeStringToBuffer}.
-     * You must also use {@link #readStringSafe} to read packet if string can be null.
+     * No-exception and null-safe version of {@link PacketBuffer#writeStringToBuffer}. You must also use
+     * {@link #readStringSafe} to read packet if string can be null.
      */
     public static void writeStringSafe(PacketBuffer buffer, String string) {
         if (string == null) {
@@ -111,8 +115,7 @@ public class NetworkUtils {
         if (length > maxLength * 4) {
             ModularUI.logger.warn("Warning! Received string exceeds max length!");
         }
-        String string =
-                new String(buffer.readBytes(Math.min(length, maxLength * 4)).array(), Charsets.UTF_8);
+        String string = new String(buffer.readBytes(Math.min(length, maxLength * 4)).array(), Charsets.UTF_8);
         if (string.length() > maxLength) {
             return string.substring(0, maxLength);
         } else {
@@ -161,8 +164,8 @@ public class NetworkUtils {
 
     // modified version of CompressedStreamTools#func_152457_a
     private static NBTBase read(byte[] abyte, NBTSizeTracker accounter) throws IOException {
-        DataInputStream datainputstream =
-                new DataInputStream(new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(abyte))));
+        DataInputStream datainputstream = new DataInputStream(
+                new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(abyte))));
         NBTBase nbt;
         try {
             nbt = read(datainputstream, accounter);
@@ -187,11 +190,11 @@ public class NetworkUtils {
 
     static {
         try {
-            CompressedStreamTools$func_150663_a =
-                    CompressedStreamTools.class.getDeclaredMethod("func_150663_a", NBTBase.class, DataOutput.class);
+            CompressedStreamTools$func_150663_a = CompressedStreamTools.class
+                    .getDeclaredMethod("func_150663_a", NBTBase.class, DataOutput.class);
             CompressedStreamTools$func_150663_a.setAccessible(true);
-            CompressedStreamTools$func_152455_a = CompressedStreamTools.class.getDeclaredMethod(
-                    "func_152455_a", DataInput.class, int.class, NBTSizeTracker.class);
+            CompressedStreamTools$func_152455_a = CompressedStreamTools.class
+                    .getDeclaredMethod("func_152455_a", DataInput.class, int.class, NBTSizeTracker.class);
             CompressedStreamTools$func_152455_a.setAccessible(true);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);

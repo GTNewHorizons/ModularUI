@@ -1,19 +1,23 @@
 package com.gtnewhorizons.modularui.api.drawable;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.lwjgl.opengl.GL11;
+
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.common.internal.Theme;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.opengl.GL11;
 
 public class TextRenderer {
 
@@ -73,8 +77,8 @@ public class TextRenderer {
         drawMeasuredLines(measuredLines, Collections.emptyList(), false);
     }
 
-    protected void drawMeasuredLines(
-            List<Pair<String, Float>> measuredLines, List<Integer> colors, boolean hasSpaceAfterFirstLine) {
+    protected void drawMeasuredLines(List<Pair<String, Float>> measuredLines, List<Integer> colors,
+            boolean hasSpaceAfterFirstLine) {
         float maxW = 0;
         int y0 = getStartY(measuredLines.size());
         boolean addedExtraSpace = false;
@@ -93,8 +97,7 @@ public class TextRenderer {
             }
         }
         this.lastWidth = maxWidth > 0 ? Math.min(maxW, maxWidth) : maxW;
-        this.lastHeight = measuredLines.size() * getRenderHeight()
-                + (addedExtraSpace ? EXTRA_SPACE : 0)
+        this.lastHeight = measuredLines.size() * getRenderHeight() + (addedExtraSpace ? EXTRA_SPACE : 0)
                 - getRenderYToSubtractAfterLastLineDraw();
         this.lastWidth = Math.max(0, this.lastWidth - scale);
         this.lastHeight = Math.max(0, this.lastHeight - scale);
@@ -112,8 +115,7 @@ public class TextRenderer {
     }
 
     public List<String> wrapLine(String line) {
-        return maxWidth > 0
-                ? getFontRenderer().listFormattedStringToWidth(line, (int) (maxWidth / scale))
+        return maxWidth > 0 ? getFontRenderer().listFormattedStringToWidth(line, (int) (maxWidth / scale))
                 : Collections.singletonList(line);
     }
 
@@ -145,7 +147,7 @@ public class TextRenderer {
 
     protected int getStartY(int lines) {
         if (alignment.y >= 0 && maxHeight > 0) {
-            //noinspection PointlessArithmeticExpression
+            // noinspection PointlessArithmeticExpression
             float height = lines * getFontHeight() + Math.max(lines - 1, 0) * 1 - scale;
             if (alignment.y > 0) {
                 return (int) (y + maxHeight - height);

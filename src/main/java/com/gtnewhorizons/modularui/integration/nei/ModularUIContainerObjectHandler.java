@@ -1,11 +1,13 @@
 package com.gtnewhorizons.modularui.integration.nei;
 
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.item.ItemStack;
+
 import codechicken.nei.guihook.IContainerObjectHandler;
+
 import com.gtnewhorizons.modularui.api.widget.IHasStackUnderMouse;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.item.ItemStack;
 
 public class ModularUIContainerObjectHandler implements IContainerObjectHandler {
 

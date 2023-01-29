@@ -1,11 +1,13 @@
 package com.gtnewhorizons.modularui.api.screen;
 
+import java.awt.*;
+
+import org.jetbrains.annotations.Nullable;
+
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.widget.IDraggable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
-import java.awt.*;
-import org.jetbrains.annotations.Nullable;
 
 public class DraggableWindowWrapper implements IDraggable {
 

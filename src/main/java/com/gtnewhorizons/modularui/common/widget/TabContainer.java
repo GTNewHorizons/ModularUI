@@ -1,16 +1,15 @@
 package com.gtnewhorizons.modularui.common.widget;
 
-import com.gtnewhorizons.modularui.api.math.Size;
-import com.gtnewhorizons.modularui.api.widget.Widget;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.gtnewhorizons.modularui.api.math.Size;
+import com.gtnewhorizons.modularui.api.widget.Widget;
+
 /**
- * Widget holding a list of {@link TabButton}.
- * Add tab buttons with {@link #addTabButton(Widget)} and add pages
- * with {@link #addPage(Widget)} in corresponding order.
- * At least one child is required.
- * Number of {@link TabButton}s and pages should match.
+ * Widget holding a list of {@link TabButton}. Add tab buttons with {@link #addTabButton(Widget)} and add pages with
+ * {@link #addPage(Widget)} in corresponding order. At least one child is required. Number of {@link TabButton}s and
+ * pages should match.
  */
 public class TabContainer extends PageControlWidget {
 
@@ -31,9 +30,11 @@ public class TabContainer extends PageControlWidget {
         for (TabButton tabButton : tabButtons) {
             tabButton.setTabController(this);
             if (tabButton.getPage() < 0 || tabButton.getPage() >= getPages().size()) {
-                throw new IndexOutOfBoundsException(String.format(
-                        "TabButton page is %s, but must be 0 - %s",
-                        tabButton.getPage(), getPages().size() - 1));
+                throw new IndexOutOfBoundsException(
+                        String.format(
+                                "TabButton page is %s, but must be 0 - %s",
+                                tabButton.getPage(),
+                                getPages().size() - 1));
             }
             if (buttonSize != null && tabButton.isAutoSized()) {
                 tabButton.setSize(buttonSize);

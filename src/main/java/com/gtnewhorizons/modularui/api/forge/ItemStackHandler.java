@@ -6,11 +6,13 @@ package com.gtnewhorizons.modularui.api.forge;
 
 import java.util.Arrays;
 import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
 public class ItemStackHandler implements IItemHandlerModifiable, INBTSerializable<NBTTagCompound> {
+
     protected List<ItemStack> stacks;
 
     public ItemStackHandler() {
@@ -111,7 +113,8 @@ public class ItemStackHandler implements IItemHandlerModifiable, INBTSerializabl
                 } else {
                     if (!simulate) {
                         this.stacks.set(
-                                slot, ItemHandlerHelper.copyStackWithSize(existing, existing.stackSize - toExtract));
+                                slot,
+                                ItemHandlerHelper.copyStackWithSize(existing, existing.stackSize - toExtract));
                         this.onContentsChanged(slot);
                     }
 

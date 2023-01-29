@@ -1,11 +1,13 @@
 package com.gtnewhorizons.modularui.api.drawable.shapes;
 
+import net.minecraft.client.renderer.Tessellator;
+
+import org.jetbrains.annotations.Contract;
+import org.lwjgl.opengl.GL11;
+
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.math.Color;
-import net.minecraft.client.renderer.Tessellator;
-import org.jetbrains.annotations.Contract;
-import org.lwjgl.opengl.GL11;
 
 public class Circle implements IDrawable {
 

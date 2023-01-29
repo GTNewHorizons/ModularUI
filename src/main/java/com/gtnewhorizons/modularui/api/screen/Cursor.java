@@ -1,21 +1,25 @@
 package com.gtnewhorizons.modularui.api.screen;
 
-import com.gtnewhorizons.modularui.api.math.Pos2d;
-import com.gtnewhorizons.modularui.api.widget.IDraggable;
-import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
-import com.gtnewhorizons.modularui.api.widget.Widget;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+
+import com.gtnewhorizons.modularui.api.math.Pos2d;
+import com.gtnewhorizons.modularui.api.widget.IDraggable;
+import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
+import com.gtnewhorizons.modularui.api.widget.Widget;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class Cursor {
 
@@ -128,7 +132,10 @@ public class Cursor {
             uiContext.getPlayer().inventory.setItemStack(stack);
             if (sync && !uiContext.isClient()) {
                 uiContext.sendServerPacket(
-                        ModularUIContext.DataCodes.SYNC_CURSOR_STACK, null, uiContext.getMainWindow(), buffer -> {
+                        ModularUIContext.DataCodes.SYNC_CURSOR_STACK,
+                        null,
+                        uiContext.getMainWindow(),
+                        buffer -> {
                             try {
                                 buffer.writeItemStackToBuffer(stack);
                             } catch (IOException e) {
@@ -170,9 +177,9 @@ public class Cursor {
     @ApiStatus.Internal
     public void onScreenUpdate() {
         if (this.hovered != null) {
-            //            if (hovered instanceof IVanillaSlot) {
-            //                uiContext.getScreen().getAccessor().setHoveredSlot(((IVanillaSlot) hovered).getMcSlot());
-            //            }
+            // if (hovered instanceof IVanillaSlot) {
+            // uiContext.getScreen().getAccessor().setHoveredSlot(((IVanillaSlot) hovered).getMcSlot());
+            // }
             this.timeHovered++;
         }
         if (this.cursorDraggable != null && getItemStack() != null) {
@@ -221,7 +228,8 @@ public class Cursor {
                 draggable = (IDraggable) hovered;
             } else if (hovered instanceof ModularWindow && ((ModularWindow) hovered).isDraggable()) {
                 draggable = new DraggableWindowWrapper(
-                        (ModularWindow) hovered, getPos().subtract(((ModularWindow) hovered).getPos()));
+                        (ModularWindow) hovered,
+                        getPos().subtract(((ModularWindow) hovered).getPos()));
             } else {
                 return false;
             }
@@ -254,8 +262,7 @@ public class Cursor {
             AtomicReference<Widget> hovered = new AtomicReference<>();
             IWidgetParent.forEachByLayer(window, true, widget -> {
                 if (widget instanceof IDraggable
-                        && (hovered.get() == null
-                                || widget.getLayer() > hovered.get().getLayer())
+                        && (hovered.get() == null || widget.getLayer() > hovered.get().getLayer())
                         && isAbove(widget)
                         && widget.canHover()) {
                     hovered.set(widget);
@@ -292,8 +299,7 @@ public class Cursor {
     public Widget findHoveredWidget(ModularWindow window, boolean forDebug) {
         AtomicReference<Widget> hovered = new AtomicReference<>();
         IWidgetParent.forEachByLayer(window, widget -> {
-            if ((hovered.get() == null || widget.getLayer() > hovered.get().getLayer())
-                    && widget.isEnabled()
+            if ((hovered.get() == null || widget.getLayer() > hovered.get().getLayer()) && widget.isEnabled()
                     && isAbove(widget)
                     && (forDebug || widget.canHover())) {
                 hovered.set(widget);

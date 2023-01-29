@@ -4,6 +4,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 public class InvWrapper implements IItemHandlerModifiable {
+
     private final IInventory inv;
 
     public InvWrapper(IInventory inv) {

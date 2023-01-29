@@ -1,6 +1,7 @@
 package com.gtnewhorizons.modularui.api.animation;
 
 public enum Eases implements IEase {
+
     EaseLinear(input -> input),
     EaseQuadIn(input -> input * input),
     EaseQuadInOut(input -> {

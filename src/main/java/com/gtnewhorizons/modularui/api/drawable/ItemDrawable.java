@@ -1,17 +1,20 @@
 package com.gtnewhorizons.modularui.api.drawable;
 
-import com.gtnewhorizons.modularui.api.GlStateManager;
-import com.gtnewhorizons.modularui.api.widget.Widget;
-import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
+
 import org.jetbrains.annotations.NotNull;
+
+import com.gtnewhorizons.modularui.api.GlStateManager;
+import com.gtnewhorizons.modularui.api.widget.Widget;
+import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
+import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 
 /**
  * Draws item. Can also be used for {@link com.gtnewhorizons.modularui.api.widget.Widget}
@@ -44,13 +47,12 @@ public class ItemDrawable implements IDrawable {
         RenderHelper.enableGUIStandardItemLighting();
         GlStateManager.enableDepth();
         GlStateManager.scale(width / 16, height / 16, 1);
-        ModularGui.getItemRenderer()
-                .renderItemAndEffectIntoGUI(
-                        item.getItem().getFontRenderer(item),
-                        Minecraft.getMinecraft().getTextureManager(),
-                        item,
-                        (int) x,
-                        (int) y);
+        ModularGui.getItemRenderer().renderItemAndEffectIntoGUI(
+                item.getItem().getFontRenderer(item),
+                Minecraft.getMinecraft().getTextureManager(),
+                item,
+                (int) x,
+                (int) y);
         GuiHelper.afterRenderItemAndEffectIntoGUI(item);
 
         GlStateManager.disableDepth();

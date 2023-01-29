@@ -1,5 +1,13 @@
 package com.gtnewhorizons.modularui;
 
+import java.util.function.Function;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.launchwrapper.Launch;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.gtnewhorizons.modularui.api.UIInfos;
 import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
@@ -9,6 +17,7 @@ import com.gtnewhorizons.modularui.common.internal.network.NetworkHandler;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularUIContainer;
 import com.gtnewhorizons.modularui.common.widget.WidgetJsonRegistry;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
@@ -18,11 +27,6 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.util.function.Function;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.launchwrapper.Launch;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @Mod(
         modid = ModularUI.MODID,
@@ -35,7 +39,8 @@ public class ModularUI {
 
     public static final String MODID = "modularui";
     public static final String DEPENDENCIES = "required-after:gtnhmixins@[2.0.1,); "
-            + "required-after:NotEnoughItems@[2.3.20-GTNH,);" + "before:gregtech";
+            + "required-after:NotEnoughItems@[2.3.20-GTNH,);"
+            + "before:gregtech";
     public static final String GUI_FACTORY = Tags.GROUPNAME + ".config.GuiFactory";
 
     public static final Logger logger = LogManager.getLogger(Tags.MODID);
@@ -76,16 +81,16 @@ public class ModularUI {
         proxy.postInit();
     }
 
-    public static ModularUIContainer createContainer(
-            EntityPlayer player, Function<UIBuildContext, ModularWindow> windowCreator, Runnable onWidgetUpdate) {
+    public static ModularUIContainer createContainer(EntityPlayer player,
+            Function<UIBuildContext, ModularWindow> windowCreator, Runnable onWidgetUpdate) {
         UIBuildContext buildContext = new UIBuildContext(player);
         ModularWindow window = windowCreator.apply(buildContext);
         return new ModularUIContainer(new ModularUIContext(buildContext, onWidgetUpdate), window);
     }
 
     @SideOnly(Side.CLIENT)
-    public static ModularGui createGuiScreen(
-            EntityPlayer player, Function<UIBuildContext, ModularWindow> windowCreator) {
+    public static ModularGui createGuiScreen(EntityPlayer player,
+            Function<UIBuildContext, ModularWindow> windowCreator) {
         return new ModularGui(createContainer(player, windowCreator, null));
     }
 }

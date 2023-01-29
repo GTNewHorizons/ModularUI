@@ -1,16 +1,20 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import java.io.IOException;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import net.minecraft.network.PacketBuffer;
+
 import codechicken.lib.math.MathHelper;
+
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.io.IOException;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-import net.minecraft.network.PacketBuffer;
 
 public class SliderWidget extends SyncedWidget implements Interactable {
 
@@ -54,7 +58,8 @@ public class SliderWidget extends SyncedWidget implements Interactable {
     @Override
     public void onRebuild() {
         this.handleSize = new Size(
-                handleSize.width > 0 ? handleSize.width : 8, handleSize.height > 0 ? handleSize.height : size.height);
+                handleSize.width > 0 ? handleSize.width : 8,
+                handleSize.height > 0 ? handleSize.height : size.height);
     }
 
     @Override

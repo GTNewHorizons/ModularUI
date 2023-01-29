@@ -1,7 +1,9 @@
 package com.gtnewhorizons.modularui.api.forge;
 
 import javax.annotation.Nullable;
+
 import net.minecraft.item.ItemStack;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -66,6 +68,7 @@ public class ListItemHandler implements IItemHandlerModifiable {
 
     /**
      * Searches all item handlers and find one matching handler that contains specified slot index
+     * 
      * @param slot Index to search
      * @return Pair of item handler and actual index for it
      */

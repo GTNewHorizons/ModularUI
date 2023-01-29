@@ -1,5 +1,11 @@
 package com.gtnewhorizons.modularui.api.drawable;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
+import org.lwjgl.opengl.GL11;
+
 import com.google.gson.JsonObject;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.math.Color;
@@ -7,12 +13,9 @@ import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.common.internal.JsonHelper;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-import org.lwjgl.opengl.GL11;
 
 @FunctionalInterface
 public interface IDrawable {
@@ -43,8 +46,8 @@ public interface IDrawable {
 
     @SideOnly(Side.CLIENT)
     default void applyThemeColor(int color) {
-        GlStateManager.color(
-                Color.getRedF(color), Color.getGreenF(color), Color.getBlueF(color), Color.getAlphaF(color));
+        GlStateManager
+                .color(Color.getRedF(color), Color.getGreenF(color), Color.getBlueF(color), Color.getAlphaF(color));
     }
 
     @SideOnly(Side.CLIENT)
@@ -65,13 +68,13 @@ public interface IDrawable {
     }
 
     /**
-     * This drawable with an offset pos.
-     * Useful if the background of a widget should be larger than the widget itself.
+     * This drawable with an offset pos. Useful if the background of a widget should be larger than the widget itself.
      *
      * @param offsetX      offset in x
      * @param offsetY      offset in y
      * @param widthOffset  offset width (added to the width passed in {@link #draw(float, float, float, float, float)})
-     * @param heightOffset offset height (added to the height passed in {@link #draw(float, float, float, float, float)})
+     * @param heightOffset offset height (added to the height passed in
+     *                     {@link #draw(float, float, float, float, float)})
      * @return this drawable with offset
      */
     default IDrawable withOffset(float offsetX, float offsetY, float widthOffset, float heightOffset) {
@@ -104,8 +107,7 @@ public interface IDrawable {
     static IDrawable ofJson(JsonObject json) {
         IDrawable drawable = EMPTY;
         if (json.has("type")) {
-            Function<JsonObject, IDrawable> function =
-                    JSON_DRAWABLE_MAP.get(json.get("type").getAsString());
+            Function<JsonObject, IDrawable> function = JSON_DRAWABLE_MAP.get(json.get("type").getAsString());
             if (function != null) {
                 drawable = function.apply(json);
             }

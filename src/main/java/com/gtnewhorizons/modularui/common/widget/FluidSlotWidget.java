@@ -2,7 +2,30 @@ package com.gtnewhorizons.modularui.common.widget;
 
 import static com.gtnewhorizons.modularui.ModularUI.isGT5ULoaded;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.function.Consumer;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.IFluidTank;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.opengl.GL11;
+
 import codechicken.nei.recipe.StackInfo;
+
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.NumberFormat;
@@ -21,27 +44,9 @@ import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.Theme;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
+
 import gregtech.api.util.GT_Utility;
 import gregtech.common.items.GT_FluidDisplayItem;
-import java.io.IOException;
-import java.util.List;
-import java.util.function.Consumer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidTank;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.opengl.GL11;
 
 @SuppressWarnings("unused")
 public class FluidSlotWidget extends SyncedWidget implements Interactable, IDragAndDropHandler, IHasStackUnderMouse {
@@ -176,8 +181,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
             }
         }
         if (Minecraft.getMinecraft().gameSettings.advancedItemTooltips) {
-            tooltip.add(
-                    Text.localised("modularui.fluid.registry", fluid.getFluid().getName()));
+            tooltip.add(Text.localised("modularui.fluid.registry", fluid.getFluid().getName()));
         }
     }
 
@@ -189,13 +193,12 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
      */
     public void addAdditionalFluidInfo(List<Text> tooltipContainer, @NotNull FluidStack fluid) {
         if (Interactable.hasShiftDown()) {
-            tooltipContainer.add(Text.localised(
-                    "modularui.fluid.temperature", fluid.getFluid().getTemperature(fluid)));
-            tooltipContainer.add(Text.localised(
-                    "modularui.fluid.state",
-                    fluid.getFluid().isGaseous(fluid)
-                            ? StatCollector.translateToLocal("modularui.fluid.gas")
-                            : StatCollector.translateToLocal("modularui.fluid.liquid")));
+            tooltipContainer.add(Text.localised("modularui.fluid.temperature", fluid.getFluid().getTemperature(fluid)));
+            tooltipContainer.add(
+                    Text.localised(
+                            "modularui.fluid.state",
+                            fluid.getFluid().isGaseous(fluid) ? StatCollector.translateToLocal("modularui.fluid.gas")
+                                    : StatCollector.translateToLocal("modularui.fluid.liquid")));
         }
     }
 
@@ -339,8 +342,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
         ItemStack serverVerifyToken = tryClickContainer(clickData);
         // similar to what NetHandlerPlayServer#processClickWindow does
         if (!ItemStack.areItemStacksEqual(clientVerifyToken, serverVerifyToken)) {
-            ((EntityPlayerMP) getContext().getPlayer())
-                    .sendContainerToPlayer(getContext().getContainer());
+            ((EntityPlayerMP) getContext().getPlayer()).sendContainerToPlayer(getContext().getContainer());
         }
     }
 
@@ -415,12 +417,10 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
             fluidTank.drain(filledAmount, true);
             if (processFullStack) {
                 /*
-                 Work out how many more items we can fill.
-                 One cell is already used, so account for that.
-                 The round down behavior will leave over a fraction of a cell worth of fluid.
-                 The user then get to decide what to do with it.
-                 It will not be too fancy if it spills out partially filled cells.
-                */
+                 * Work out how many more items we can fill. One cell is already used, so account for that. The round
+                 * down behavior will leave over a fraction of a cell worth of fluid. The user then get to decide what
+                 * to do with it. It will not be too fancy if it spills out partially filled cells.
+                 */
                 int additionalParallel = Math.min(heldItem.stackSize - 1, currentFluid.amount / filledAmount);
                 fluidTank.drain(filledAmount * additionalParallel, true);
                 filledContainer.stackSize += additionalParallel;
@@ -574,8 +574,8 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
     }
 
     /**
-     * In 1.7.10 placing water or lava does not play sound, so we do nothing here.
-     * Override if you want to play something.
+     * In 1.7.10 placing water or lava does not play sound, so we do nothing here. Override if you want to play
+     * something.
      */
     protected void playSound(FluidStack fluid, boolean fill) {}
 

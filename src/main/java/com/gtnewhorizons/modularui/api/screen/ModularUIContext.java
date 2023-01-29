@@ -1,5 +1,16 @@
 package com.gtnewhorizons.modularui.api.screen;
 
+import java.io.IOException;
+import java.util.*;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.PacketBuffer;
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
@@ -15,18 +26,10 @@ import com.gtnewhorizons.modularui.common.internal.network.SWidgetUpdate;
 import com.gtnewhorizons.modularui.common.internal.wrapper.BaseSlot;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularUIContainer;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.Unpooled;
-import java.io.IOException;
-import java.util.*;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.PacketBuffer;
 
 /**
  * Holds meta info around {@link ModularUIContainer}.
@@ -77,9 +80,8 @@ public class ModularUIContext {
     }
 
     /**
-     * Iterates over {@link #windows} from bottom (main window) to top.
-     * This method is protected against ConcurrentModificationException caused by forEach method
-     * triggering window closing.
+     * Iterates over {@link #windows} from bottom (main window) to top. This method is protected against
+     * ConcurrentModificationException caused by forEach method triggering window closing.
      */
     public void forEachWindowBottomToTop(Consumer<ModularWindow> forEach) {
         for (ModularWindow window : Lists.newArrayList(getOpenWindowsReversed())) {
@@ -88,9 +90,8 @@ public class ModularUIContext {
     }
 
     /**
-     * Iterates over {@link #windows} from top to bottom (main window).
-     * This method is protected against ConcurrentModificationException caused by forEach method
-     * triggering window closing.
+     * Iterates over {@link #windows} from top to bottom (main window). This method is protected against
+     * ConcurrentModificationException caused by forEach method triggering window closing.
      */
     public void forEachWindowTopToBottom(Consumer<ModularWindow> forEach) {
         for (ModularWindow window : Lists.newArrayList(getOpenWindows())) {
@@ -400,16 +401,12 @@ public class ModularUIContext {
     }
 
     @SideOnly(Side.CLIENT)
-    public void sendClientPacket(
-            int discriminator,
-            ISyncedWidget syncedWidget,
-            ModularWindow window,
+    public void sendClientPacket(int discriminator, ISyncedWidget syncedWidget, ModularWindow window,
             Consumer<PacketBuffer> bufferConsumer) {
         if (isClient() && !isClientOnly()) {
             if (!syncedWindows.containsValue(window)) {
                 ModularUI.logger.error("Window is not synced!");
-                ModularUI.logger.warn(
-                        "stacktrace: " + Arrays.toString(Thread.currentThread().getStackTrace()));
+                ModularUI.logger.warn("stacktrace: " + Arrays.toString(Thread.currentThread().getStackTrace()));
                 return;
             }
             int syncId = syncedWidget == null ? DataCodes.INTERNAL_SYNC : window.getSyncedWidgetId(syncedWidget);
@@ -422,16 +419,12 @@ public class ModularUIContext {
         }
     }
 
-    public void sendServerPacket(
-            int discriminator,
-            ISyncedWidget syncedWidget,
-            ModularWindow window,
+    public void sendServerPacket(int discriminator, ISyncedWidget syncedWidget, ModularWindow window,
             Consumer<PacketBuffer> bufferConsumer) {
         if (!isClient()) {
             if (!syncedWindows.containsValue(window)) {
                 ModularUI.logger.error("Window is not synced!");
-                ModularUI.logger.warn(
-                        "stacktrace: " + Arrays.toString(Thread.currentThread().getStackTrace()));
+                ModularUI.logger.warn("stacktrace: " + Arrays.toString(Thread.currentThread().getStackTrace()));
                 return;
             }
             int syncId = syncedWidget == null ? DataCodes.INTERNAL_SYNC : window.getSyncedWidgetId(syncedWidget);
@@ -445,6 +438,7 @@ public class ModularUIContext {
     }
 
     public static class DataCodes {
+
         public static final int INTERNAL_SYNC = -1;
         public static final int SYNC_CURSOR_STACK = 1;
         public static final int SYNC_INIT = 2;

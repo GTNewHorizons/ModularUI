@@ -1,5 +1,11 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import java.util.function.Supplier;
+
+import net.minecraft.util.EnumChatFormatting;
+
+import org.jetbrains.annotations.NotNull;
+
 import com.google.gson.JsonObject;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.drawable.TextRenderer;
@@ -7,13 +13,9 @@ import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.Theme;
-import java.util.function.Supplier;
-import net.minecraft.util.EnumChatFormatting;
-import org.jetbrains.annotations.NotNull;
 
 /**
- * Draws text. Accepts some text formatting rules.
- * See also {@link Text}
+ * Draws text. Accepts some text formatting rules. See also {@link Text}
  */
 public class TextWidget extends Widget {
 
@@ -37,9 +39,9 @@ public class TextWidget extends Widget {
         this(new Text(text));
     }
 
-    /*public TextWidget(ITextComponent text) {
-        this(new TextSpan().addText(text));
-    }*/
+    /*
+     * public TextWidget(ITextComponent text) { this(new TextSpan().addText(text)); }
+     */
 
     public static DynamicTextWidget dynamicText(Supplier<Text> supplier) {
         return new DynamicTextWidget(supplier);
@@ -49,9 +51,10 @@ public class TextWidget extends Widget {
         return new DynamicTextWidget(() -> new Text(supplier.get()));
     }
 
-    /*public static DynamicTextWidget dynamicTextComponent(Supplier<ITextComponent> supplier) {
-        return new DynamicTextWidget(() -> new TextSpan().addText(supplier.get()));
-    }*/
+    /*
+     * public static DynamicTextWidget dynamicTextComponent(Supplier<ITextComponent> supplier) { return new
+     * DynamicTextWidget(() -> new TextSpan().addText(supplier.get())); }
+     */
 
     @Override
     public void readJson(JsonObject json, String type) {

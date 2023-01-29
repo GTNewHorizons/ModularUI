@@ -1,15 +1,18 @@
 package com.gtnewhorizons.modularui.api.widget;
 
-import com.gtnewhorizons.modularui.api.math.Pos2d;
-import com.gtnewhorizons.modularui.api.math.Size;
-import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+
 import org.jetbrains.annotations.Unmodifiable;
+
+import com.gtnewhorizons.modularui.api.math.Pos2d;
+import com.gtnewhorizons.modularui.api.math.Size;
+import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * "Parent" widget that can contain another widgets as children.
@@ -28,13 +31,13 @@ public interface IWidgetParent {
     ModularUIContext getContext();
 
     /**
-     * Called right after the ui is created and right before synced widgets are registered. Last chance to add sub widgets
+     * Called right after the ui is created and right before synced widgets are registered. Last chance to add sub
+     * widgets
      */
     default void initChildren() {}
 
     /**
-     * Called during rebuild.
-     * {@link Widget#isAutoPositioned()} must be checked for each child!!!
+     * Called during rebuild. {@link Widget#isAutoPositioned()} must be checked for each child!!!
      */
     default void layoutChildren(int maxWidth, int maxHeight) {}
 
@@ -68,11 +71,8 @@ public interface IWidgetParent {
         return forEachByLayer(parent, onlyEnabled, widget -> false, consumer);
     }
 
-    static boolean forEachByLayer(
-            IWidgetParent parent,
-            boolean onlyEnabled,
-            Function<Widget, Boolean> skipChildrenSearch,
-            Function<Widget, Boolean> consumer) {
+    static boolean forEachByLayer(IWidgetParent parent, boolean onlyEnabled,
+            Function<Widget, Boolean> skipChildrenSearch, Function<Widget, Boolean> consumer) {
         LinkedList<IWidgetParent> stack = new LinkedList<>();
         stack.addLast(parent);
         while (!stack.isEmpty()) {
@@ -122,6 +122,7 @@ public interface IWidgetParent {
     }
 
     class Wrapper implements IWidgetParent {
+
         private final List<Widget> children;
 
         public Wrapper(List<Widget> children) {

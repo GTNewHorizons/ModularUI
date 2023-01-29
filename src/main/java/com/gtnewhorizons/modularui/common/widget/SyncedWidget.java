@@ -23,16 +23,14 @@ public abstract class SyncedWidget extends Widget implements ISyncedWidget {
     }
 
     /**
-     * @return if this widget should operate on the server side.
-     * For example detecting and sending changes to client.
+     * @return if this widget should operate on the server side. For example detecting and sending changes to client.
      */
     public boolean syncsToClient() {
         return syncsToClient;
     }
 
     /**
-     * @return if this widget should operate on the client side.
-     * For example, sending a changed value to the server.
+     * @return if this widget should operate on the client side. For example, sending a changed value to the server.
      */
     public boolean syncsToServer() {
         return syncsToServer;

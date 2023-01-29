@@ -1,5 +1,12 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import java.util.function.BiConsumer;
+
+import net.minecraft.network.PacketBuffer;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
@@ -7,10 +14,6 @@ import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.Theme;
-import java.util.function.BiConsumer;
-import net.minecraft.network.PacketBuffer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Clickable button widget.
@@ -21,21 +24,17 @@ public class ButtonWidget extends SyncedWidget implements Interactable {
 
     public static ButtonWidget openSyncedWindowButton(int id) {
         return (ButtonWidget) new ButtonWidget()
-                .setOnClick((clickData, widget) -> {
-                    if (!widget.isClient()) widget.getContext().openSyncedWindow(id);
-                })
+                .setOnClick(
+                        (clickData, widget) -> { if (!widget.isClient()) widget.getContext().openSyncedWindow(id); })
                 .setBackground(ModularUITextures.VANILLA_BACKGROUND, new Text("Window"));
     }
 
     public static ButtonWidget closeWindowButton(boolean syncedWindow) {
-        return (ButtonWidget) new ButtonWidget()
-                .setOnClick((clickData, widget) -> {
-                    if (!syncedWindow || !widget.isClient()) {
-                        widget.getWindow().closeWindow();
-                    }
-                })
-                .setBackground(ModularUITextures.VANILLA_BACKGROUND, new Text("x"))
-                .setSize(12, 12);
+        return (ButtonWidget) new ButtonWidget().setOnClick((clickData, widget) -> {
+            if (!syncedWindow || !widget.isClient()) {
+                widget.getWindow().closeWindow();
+            }
+        }).setBackground(ModularUITextures.VANILLA_BACKGROUND, new Text("x")).setSize(12, 12);
     }
 
     private BiConsumer<ClickData, Widget> clickAction;

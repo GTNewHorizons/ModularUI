@@ -1,13 +1,16 @@
 package com.gtnewhorizons.modularui.config;
 
-import com.gtnewhorizons.modularui.ModularUI;
-import cpw.mods.fml.client.config.GuiConfig;
-import cpw.mods.fml.client.config.IConfigElement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
+
+import com.gtnewhorizons.modularui.ModularUI;
+
+import cpw.mods.fml.client.config.GuiConfig;
+import cpw.mods.fml.client.config.IConfigElement;
 
 @SuppressWarnings("rawtypes")
 public class ModularUIGuiConfig extends GuiConfig {

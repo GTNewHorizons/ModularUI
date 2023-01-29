@@ -1,5 +1,13 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
@@ -8,12 +16,6 @@ import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.api.widget.scroll.IVerticalScrollable;
 import com.gtnewhorizons.modularui.api.widget.scroll.ScrollType;
 import com.gtnewhorizons.modularui.common.internal.wrapper.MultiList;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ListWidget extends MultiChildWidget implements Interactable, IVerticalScrollable {
 
@@ -31,7 +33,8 @@ public class ListWidget extends MultiChildWidget implements Interactable, IVerti
         int i = 0;
         for (T t : list) {
             Widget widget = Objects.requireNonNull(
-                    widgetCreator.apply(t, i++), "ListWidget creator produced a null child! This is forbidden!");
+                    widgetCreator.apply(t, i++),
+                    "ListWidget creator produced a null child! This is forbidden!");
             listWidget.addChild(widget);
         }
         return listWidget;
@@ -41,7 +44,8 @@ public class ListWidget extends MultiChildWidget implements Interactable, IVerti
         ListWidget listWidget = new ListWidget();
         for (int i = 0; i < size; i++) {
             Widget widget = Objects.requireNonNull(
-                    widgetCreator.apply(i), "ListWidget creator produced a null child! This is forbidden!");
+                    widgetCreator.apply(i),
+                    "ListWidget creator produced a null child! This is forbidden!");
             listWidget.addChild(widget);
         }
         return listWidget;

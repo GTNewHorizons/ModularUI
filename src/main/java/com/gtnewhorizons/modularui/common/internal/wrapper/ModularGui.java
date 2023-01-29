@@ -2,6 +2,31 @@ package com.gtnewhorizons.modularui.common.internal.wrapper;
 
 import static codechicken.lib.render.FontUtils.fontRenderer;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiLabel;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.ItemPanels;
 import codechicken.nei.NEIClientUtils;
@@ -13,6 +38,7 @@ import codechicken.nei.guihook.IContainerDrawHandler;
 import codechicken.nei.guihook.IContainerInputHandler;
 import codechicken.nei.guihook.IContainerObjectHandler;
 import codechicken.nei.guihook.IContainerTooltipHandler;
+
 import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
@@ -33,31 +59,10 @@ import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.config.Config;
 import com.gtnewhorizons.modularui.mixins.GuiContainerAccessor;
+
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Function;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiLabel;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 @Optional.Interface(modid = "NotEnoughItems", iface = "codechicken.nei.api.INEIGuiHandler")
@@ -95,11 +100,11 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         return mousePos;
     }
 
-    //    @Override
-    //    public void onResize(@NotNull Minecraft mc, int w, int h) {
-    //        super.onResize(mc, w, h);
-    //        context.resize(new Size(w, h));
-    //    }
+    // @Override
+    // public void onResize(@NotNull Minecraft mc, int w, int h) {
+    // super.onResize(mc, w, h);
+    // context.resize(new Size(w, h));
+    // }
 
     public void setMainWindowArea(Pos2d pos, Size size) {
         this.guiLeft = pos.x;
@@ -170,8 +175,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         GlStateManager.popMatrix();
 
         InventoryPlayer inventoryplayer = this.mc.thePlayer.inventory;
-        ItemStack itemstack = getAccessor().getDraggedStack() == null
-                ? inventoryplayer.getItemStack()
+        ItemStack itemstack = getAccessor().getDraggedStack() == null ? inventoryplayer.getItemStack()
                 : getAccessor().getDraggedStack();
         GlStateManager.translate((float) i, (float) j, 0.0F);
         if (itemstack != null) {
@@ -201,10 +205,8 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                 getAccessor().setReturningStack(null);
             }
 
-            int l2 = getAccessor().getReturningStackDestSlot().xDisplayPosition
-                    - getAccessor().getTouchUpX();
-            int i3 = getAccessor().getReturningStackDestSlot().yDisplayPosition
-                    - getAccessor().getTouchUpY();
+            int l2 = getAccessor().getReturningStackDestSlot().xDisplayPosition - getAccessor().getTouchUpX();
+            int i3 = getAccessor().getReturningStackDestSlot().yDisplayPosition - getAccessor().getTouchUpY();
             int l1 = getAccessor().getTouchUpX() + (int) ((float) l2 * f);
             int i2 = getAccessor().getTouchUpY() + (int) ((float) i3 * f);
             this.drawItemStack(getAccessor().getReturningStack(), l1, i2, null);
@@ -234,7 +236,12 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         if (font == null) font = fontRenderer;
         itemRender.renderItemAndEffectIntoGUI(font, mc.getTextureManager(), stack, x, y);
         itemRender.renderItemOverlayIntoGUI(
-                font, mc.getTextureManager(), stack, x, y - (getDragSlots() != null ? 0 : 8), altText);
+                font,
+                mc.getTextureManager(),
+                stack,
+                x,
+                y - (getDragSlots() != null ? 0 : 8),
+                altText);
         GuiHelper.afterRenderItemAndEffectIntoGUI(stack);
         this.zLevel = 0.0F;
         itemRender.zLevel = 0.0F;
@@ -283,8 +290,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
 
         Widget hovered = context.getCursor().getHovered();
         if (shouldRenderOurTooltip()) {
-            if (hovered instanceof IVanillaSlot
-                    && ((IVanillaSlot) hovered).getMcSlot().getHasStack()
+            if (hovered instanceof IVanillaSlot && ((IVanillaSlot) hovered).getMcSlot().getHasStack()
                     && !context.getCursor().isHoldingSomething()) {
                 renderToolTip(
                         ((IVanillaSlot) hovered).getMcSlot().getStack(),
@@ -337,8 +343,8 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         // taken from GuiContainerManager#getStackMouseOver but don't check #getSlotMouseOver
         // as it sees our slot even if it's disabled
         for (IContainerObjectHandler objectHandler : GuiContainerManager.objectHandlers) {
-            ItemStack item = objectHandler.getStackUnderMouse(
-                    this, context.getCursor().getPos().x, context.getCursor().getPos().y);
+            ItemStack item = objectHandler
+                    .getStackUnderMouse(this, context.getCursor().getPos().x, context.getCursor().getPos().y);
             if (item != null) return true;
         }
         return false;
@@ -389,8 +395,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                 lineY -= 11;
                 drawText(
                         "Shift-Click Priority: "
-                                + (slot.getShiftClickPriority() != Integer.MIN_VALUE
-                                        ? slot.getShiftClickPriority()
+                                + (slot.getShiftClickPriority() != Integer.MIN_VALUE ? slot.getShiftClickPriority()
                                         : "DISABLED"),
                         5,
                         lineY,
@@ -410,11 +415,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         drawRect(mousePos.x, mousePos.y, mousePos.x + 1, mousePos.y + 1, Color.withAlpha(Color.GREEN.normal, 0.8f));
     }
 
-    protected void renderToolTip(
-            ItemStack stack,
-            int x,
-            int y,
-            List<String> extraLines,
+    protected void renderToolTip(ItemStack stack, int x, int y, List<String> extraLines,
             Function<List<String>, List<String>> overwriteItemStackTooltip) {
         FontRenderer font = null;
         List<String> lines = new ArrayList<>();
@@ -434,7 +435,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
     }
 
     public List<String> getItemTooltip(ItemStack stack) {
-        //noinspection unchecked
+        // noinspection unchecked
         List<String> tooltips = stack.getTooltip(context.getPlayer(), this.mc.gameSettings.advancedItemTooltips);
         for (int i = 0; i < tooltips.size(); i++) {
             if (i == 0) {
@@ -455,8 +456,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         if (GuiContainerManager.getManager() == null) return;
         if (GuiContainerManager.shouldShowTooltip(this)) {
             for (IContainerTooltipHandler handler : GuiContainerManager.getManager().instanceTooltipHandlers)
-                tooltip = handler.handleItemTooltip(
-                        this, stack, getCursor().getX(), getCursor().getY(), tooltip);
+                tooltip = handler.handleItemTooltip(this, stack, getCursor().getX(), getCursor().getY(), tooltip);
         }
     }
 
@@ -509,8 +509,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         boolean wasSuccess = false;
         boolean wasReject = false;
         doubleClick = isDoubleClick(lastFocusedClick, time);
-        loop:
-        for (Object hovered : getCursor().getAllHovered()) {
+        loop: for (Object hovered : getCursor().getAllHovered()) {
             if (shouldSkipClick(hovered)) break;
             if (context.getCursor().onHoveredClick(mouseButton, hovered)) {
                 probablyClicked = hovered;
@@ -536,8 +535,8 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
             }
             if (hovered instanceof Interactable) {
                 Interactable interactable = (Interactable) hovered;
-                Interactable.ClickResult result =
-                        interactable.onClick(mouseButton, doubleClick && lastClicked == interactable);
+                Interactable.ClickResult result = interactable
+                        .onClick(mouseButton, doubleClick && lastClicked == interactable);
                 switch (result) {
                     case IGNORE:
                         continue;
@@ -596,10 +595,8 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         for (Interactable interactable : context.getCurrentWindow().getInteractionListeners()) {
             interactable.onClickReleased(mouseButton);
         }
-        if (!context.getCursor().onMouseReleased(mouseButton)
-                && (lastClicked == null
-                        || (lastClicked instanceof Interactable
-                                && !((Interactable) lastClicked).onClickReleased(mouseButton)))
+        if (!context.getCursor().onMouseReleased(mouseButton) && (lastClicked == null
+                || (lastClicked instanceof Interactable && !((Interactable) lastClicked).onClickReleased(mouseButton)))
                 && !(lastClicked instanceof ModularWindow)) {
             super.mouseMovedOrUp(mouseX, mouseY, mouseButton);
         }
@@ -631,8 +628,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
             return;
         }
         for (Object hovered : getCursor().getAllHovered()) {
-            if (focused != hovered
-                    && hovered instanceof Interactable
+            if (focused != hovered && hovered instanceof Interactable
                     && ((Interactable) hovered).onKeyPressed(typedChar, keyCode)) {
                 return;
             }
@@ -645,7 +641,10 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                 for (ModularWindow window : this.context.getOpenWindows()) {
                     if (!window.isClientOnly()) {
                         this.context.sendClientPacket(
-                                ModularUIContext.DataCodes.CLOSE_WINDOW, null, window, NetworkUtils.EMPTY_PACKET);
+                                ModularUIContext.DataCodes.CLOSE_WINDOW,
+                                null,
+                                window,
+                                NetworkUtils.EMPTY_PACKET);
                     }
                     window.tryClose();
                     break;
@@ -670,8 +669,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                 // if floating window is scrolled, widgets/slots below should not be interacted
                 return true;
             }
-            if (focused != hovered
-                    && hovered instanceof Interactable
+            if (focused != hovered && hovered instanceof Interactable
                     && ((Interactable) hovered).onMouseScroll(direction)) {
                 return true;
             }
@@ -681,7 +679,8 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
     }
 
     /**
-     * This version of mouseScrolled is passive and will be called on every input handler before mouseScrolled is processed.
+     * This version of mouseScrolled is passive and will be called on every input handler before mouseScrolled is
+     * processed.
      */
     public void onMouseScrolled(int direction) {
         for (Interactable interactable : context.getCurrentWindow().getInteractionListeners()) {
@@ -690,8 +689,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
     }
 
     /**
-     * This somehow overrides {@link GuiContainer#getSlotAtPosition}
-     * // todo: maybe this doesn't work in deobf env?
+     * This somehow overrides {@link GuiContainer#getSlotAtPosition} // todo: maybe this doesn't work in deobf env?
      */
     @SuppressWarnings("unused")
     public Slot getSlotAtPosition(int x, int y) {
@@ -790,7 +788,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                 GlStateManager.DestFactor.ZERO);
         GlStateManager.color(r, g, b, a);
         tessellator.startDrawingQuads();
-        //        bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
+        // bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
         tessellator.addVertex(left, bottom, 0.0D);
         tessellator.addVertex(right, bottom, 0.0D);
         tessellator.addVertex(right, top, 0.0D);

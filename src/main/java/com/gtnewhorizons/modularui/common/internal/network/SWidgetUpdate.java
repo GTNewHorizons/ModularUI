@@ -1,13 +1,15 @@
 package com.gtnewhorizons.modularui.common.internal.network;
 
-import com.gtnewhorizons.modularui.ModularUI;
-import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
-import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 import java.io.IOException;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.PacketBuffer;
+
+import com.gtnewhorizons.modularui.ModularUI;
+import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
+import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 
 public class SWidgetUpdate implements IPacket {
 

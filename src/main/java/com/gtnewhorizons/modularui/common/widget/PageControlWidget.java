@@ -1,18 +1,19 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+
 import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
 import com.gtnewhorizons.modularui.api.widget.Widget;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
 
 /**
- * Parent widget that can contain children and switch them with pagination.
- * At least one child is required.
- * Number of children and pages should match.
+ * Parent widget that can contain children and switch them with pagination. At least one child is required. Number of
+ * children and pages should match.
  */
 public class PageControlWidget extends Widget implements IWidgetParent {
 

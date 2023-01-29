@@ -1,5 +1,16 @@
 package com.gtnewhorizons.modularui.api.drawable;
 
+import java.util.Objects;
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
+
+import net.minecraft.client.resources.I18n;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
+
+import org.jetbrains.annotations.ApiStatus;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.gtnewhorizons.modularui.api.math.Alignment;
@@ -7,13 +18,6 @@ import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.common.internal.JsonHelper;
 import com.gtnewhorizons.modularui.common.internal.Theme;
 import cpw.mods.fml.common.FMLCommonHandler;
-import java.util.Objects;
-import java.util.function.Supplier;
-import javax.annotation.Nullable;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
-import org.jetbrains.annotations.ApiStatus;
 
 public class Text implements IDrawable {
 

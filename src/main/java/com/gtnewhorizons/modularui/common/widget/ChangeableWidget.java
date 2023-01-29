@@ -1,19 +1,22 @@
 package com.gtnewhorizons.modularui.common.widget;
 
-import com.gtnewhorizons.modularui.api.math.Size;
-import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
-import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
-import com.gtnewhorizons.modularui.api.widget.Widget;
-import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+
 import net.minecraft.network.PacketBuffer;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import com.gtnewhorizons.modularui.api.math.Size;
+import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
+import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
+import com.gtnewhorizons.modularui.api.widget.Widget;
+import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 
 @ApiStatus.Experimental
 public class ChangeableWidget extends Widget implements ISyncedWidget, IWidgetParent {
@@ -30,8 +33,8 @@ public class ChangeableWidget extends Widget implements ISyncedWidget, IWidgetPa
     private boolean firstTick = true;
 
     /**
-     * Creates a widget which child can be changed dynamically.
-     * Call {@link #notifyChangeServer()} to notify the widget for a change.
+     * Creates a widget which child can be changed dynamically. Call {@link #notifyChangeServer()} to notify the widget
+     * for a change.
      *
      * @param widgetSupplier widget to supply. Can return null
      */
@@ -48,8 +51,8 @@ public class ChangeableWidget extends Widget implements ISyncedWidget, IWidgetPa
     }
 
     /**
-     * Notifies the widget that the child probably changed.
-     * Only executed on server and synced to client. This method is preferred!
+     * Notifies the widget that the child probably changed. Only executed on server and synced to client. This method is
+     * preferred!
      */
     public void notifyChangeServer() {
         if (!isClient()) {

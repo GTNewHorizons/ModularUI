@@ -1,5 +1,11 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
+
 import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
 import com.gtnewhorizons.modularui.api.drawable.shapes.Rectangle;
 import com.gtnewhorizons.modularui.api.math.Color;
@@ -11,10 +17,6 @@ import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.api.widget.scroll.IHorizontalScrollable;
 import com.gtnewhorizons.modularui.api.widget.scroll.IVerticalScrollable;
 import com.gtnewhorizons.modularui.api.widget.scroll.ScrollType;
-import java.util.ArrayList;
-import java.util.List;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 public class Scrollable extends Widget
         implements IWidgetBuilder<Scrollable>, IWidgetParent, Interactable, IHorizontalScrollable, IVerticalScrollable {
@@ -130,9 +132,12 @@ public class Scrollable extends Widget
 
     @Override
     public void drawChildren(float partialTicks) {
-        GuiHelper.useScissor(pos.x, pos.y, size.width, size.height, () -> {
-            IWidgetParent.super.drawChildren(partialTicks);
-        });
+        GuiHelper.useScissor(
+                pos.x,
+                pos.y,
+                size.width,
+                size.height,
+                () -> { IWidgetParent.super.drawChildren(partialTicks); });
     }
 
     @Override
@@ -194,8 +199,8 @@ public class Scrollable extends Widget
     }
 
     public Scrollable setHorizontalScroll() {
-        return setHorizontalScroll(new ScrollBar()
-                .setBarTexture(new Rectangle().setColor(Color.WHITE.normal).setCornerRadius(1)));
+        return setHorizontalScroll(
+                new ScrollBar().setBarTexture(new Rectangle().setColor(Color.WHITE.normal).setCornerRadius(1)));
     }
 
     public Scrollable setVerticalScroll(@Nullable ScrollBar scrollBar) {
@@ -207,7 +212,7 @@ public class Scrollable extends Widget
     }
 
     public Scrollable setVerticalScroll() {
-        return setVerticalScroll(new ScrollBar()
-                .setBarTexture(new Rectangle().setColor(Color.WHITE.normal).setCornerRadius(1)));
+        return setVerticalScroll(
+                new ScrollBar().setBarTexture(new Rectangle().setColor(Color.WHITE.normal).setCornerRadius(1)));
     }
 }

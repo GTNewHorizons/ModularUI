@@ -1,7 +1,5 @@
 package com.gtnewhorizons.modularui.api.forge;
 
-import com.gtnewhorizons.modularui.ModularUI;
-import cpw.mods.fml.common.ModContainer;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -13,20 +11,20 @@ import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+
 import net.minecraft.item.crafting.CraftingManager;
+
 import org.apache.commons.io.IOUtils;
+
+import com.gtnewhorizons.modularui.ModularUI;
+import cpw.mods.fml.common.ModContainer;
 
 public class CraftingHelper {
 
     private static final boolean DEBUG_LOAD_MINECRAFT = false;
 
-    public static boolean findFiles(
-            ModContainer mod,
-            String base,
-            Function<Path, Boolean> preprocessor,
-            BiFunction<Path, Path, Boolean> processor,
-            boolean defaultUnfoundRoot,
-            boolean visitAllFiles) {
+    public static boolean findFiles(ModContainer mod, String base, Function<Path, Boolean> preprocessor,
+            BiFunction<Path, Path, Boolean> processor, boolean defaultUnfoundRoot, boolean visitAllFiles) {
 
         File source = mod.getSource();
 
@@ -34,9 +32,7 @@ public class CraftingHelper {
             if (!DEBUG_LOAD_MINECRAFT) return true;
 
             try {
-                URI tmp = CraftingManager.class
-                        .getResource("/assets/.mcassetsroot")
-                        .toURI();
+                URI tmp = CraftingManager.class.getResource("/assets/.mcassetsroot").toURI();
                 source = new File(tmp.resolve("..").getPath());
             } catch (URISyntaxException e) {
                 ModularUI.logger.error("Error finding Minecraft jar: ", e);

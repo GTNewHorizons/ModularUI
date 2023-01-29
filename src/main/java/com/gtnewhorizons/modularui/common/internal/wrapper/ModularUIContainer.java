@@ -1,16 +1,18 @@
 package com.gtnewhorizons.modularui.common.internal.wrapper;
 
-import com.gtnewhorizons.modularui.api.forge.ItemHandlerHelper;
-import com.gtnewhorizons.modularui.api.forge.PlayerMainInvWrapper;
-import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import java.util.*;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import com.gtnewhorizons.modularui.api.forge.ItemHandlerHelper;
+import com.gtnewhorizons.modularui.api.forge.PlayerMainInvWrapper;
+import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
+import com.gtnewhorizons.modularui.api.screen.ModularWindow;
+import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 
 public class ModularUIContainer extends Container {
 
@@ -181,7 +183,8 @@ public class ModularUIContainer extends Container {
         int lastPriority = Integer.MAX_VALUE;
         for (BaseSlot slot : this.sortedShiftClickSlots) {
             if (fromSlot.getShiftClickPriority() == slot.getShiftClickPriority()
-                    && fromSlot.getItemHandler() == slot.getItemHandler()) continue;
+                    && fromSlot.getItemHandler() == slot.getItemHandler())
+                continue;
             if (!slot.canInsert || !slot.isItemValidPhantom(fromStack) || !slot.isEnabled()) continue;
             if (lastPriority != slot.getShiftClickPriority() && !tmpSlots.isEmpty()) {
                 priorityList.add(tmpSlots);

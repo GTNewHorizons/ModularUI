@@ -1,7 +1,5 @@
 package com.gtnewhorizons.modularui.common.widget;
 
-import com.gtnewhorizons.modularui.api.math.Size;
-import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -11,15 +9,19 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.FluidStack;
+
 import org.jetbrains.annotations.NotNull;
 
+import com.gtnewhorizons.modularui.api.math.Size;
+import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
+
 /**
- * Util widget for syncing specific values from server to client.
- * Replacement of updateProgressBar workaround!
- * Does not draw anything.
+ * Util widget for syncing specific values from server to client. Replacement of updateProgressBar workaround! Does not
+ * draw anything.
  */
 @SuppressWarnings("unused")
 public class FakeSyncWidget<T> extends SyncedWidget {
@@ -35,10 +37,7 @@ public class FakeSyncWidget<T> extends SyncedWidget {
 
     private static final int MAX_PACKET_LENGTH = Short.MAX_VALUE;
 
-    public FakeSyncWidget(
-            Supplier<T> getter,
-            Consumer<T> setter,
-            BiConsumer<PacketBuffer, T> writeToBuffer,
+    public FakeSyncWidget(Supplier<T> getter, Consumer<T> setter, BiConsumer<PacketBuffer, T> writeToBuffer,
             Function<PacketBuffer, T> readFromBuffer) {
         this.getter = getter;
         this.setter = setter;
@@ -77,8 +76,8 @@ public class FakeSyncWidget<T> extends SyncedWidget {
         return Size.ZERO;
     }
 
-    public static <E> void writeListToBuffer(
-            PacketBuffer buffer, List<E> toWrite, BiConsumer<PacketBuffer, E> writeElementToBuffer) {
+    public static <E> void writeListToBuffer(PacketBuffer buffer, List<E> toWrite,
+            BiConsumer<PacketBuffer, E> writeElementToBuffer) {
         buffer.writeVarIntToBuffer(toWrite.size());
         for (E element : toWrite) {
             writeElementToBuffer.accept(buffer, element);
@@ -100,36 +99,42 @@ public class FakeSyncWidget<T> extends SyncedWidget {
     }
 
     public static class BooleanSyncer extends FakeSyncWidget<Boolean> {
+
         public BooleanSyncer(Supplier<Boolean> getter, Consumer<Boolean> setter) {
             super(getter, setter, PacketBuffer::writeBoolean, PacketBuffer::readBoolean);
         }
     }
 
     public static class ByteSyncer extends FakeSyncWidget<Byte> {
+
         public ByteSyncer(Supplier<Byte> getter, Consumer<Byte> setter) {
             super(getter, setter, PacketBuffer::writeByte, PacketBuffer::readByte);
         }
     }
 
     public static class ShortSyncer extends FakeSyncWidget<Short> {
+
         public ShortSyncer(Supplier<Short> getter, Consumer<Short> setter) {
             super(getter, setter, PacketBuffer::writeShort, PacketBuffer::readShort);
         }
     }
 
     public static class IntegerSyncer extends FakeSyncWidget<Integer> {
+
         public IntegerSyncer(Supplier<Integer> getter, Consumer<Integer> setter) {
             super(getter, setter, PacketBuffer::writeVarIntToBuffer, PacketBuffer::readVarIntFromBuffer);
         }
     }
 
     public static class LongSyncer extends FakeSyncWidget<Long> {
+
         public LongSyncer(Supplier<Long> getter, Consumer<Long> setter) {
             super(getter, setter, PacketBuffer::writeLong, PacketBuffer::readLong);
         }
     }
 
     public static class BigIntegerSyncer extends FakeSyncWidget<BigInteger> {
+
         public BigIntegerSyncer(Supplier<BigInteger> getter, Consumer<BigInteger> setter) {
             super(
                     getter,
@@ -140,47 +145,48 @@ public class FakeSyncWidget<T> extends SyncedWidget {
     }
 
     public static class FloatSyncer extends FakeSyncWidget<Float> {
+
         public FloatSyncer(Supplier<Float> getter, Consumer<Float> setter) {
             super(getter, setter, PacketBuffer::writeFloat, PacketBuffer::readFloat);
         }
     }
 
     public static class DoubleSyncer extends FakeSyncWidget<Double> {
+
         public DoubleSyncer(Supplier<Double> getter, Consumer<Double> setter) {
             super(getter, setter, PacketBuffer::writeDouble, PacketBuffer::readDouble);
         }
     }
 
     public static class StringSyncer extends FakeSyncWidget<String> {
+
         public StringSyncer(Supplier<String> getter, Consumer<String> setter) {
             super(getter, setter, NetworkUtils::writeStringSafe, NetworkUtils::readStringSafe);
         }
     }
 
     public static class ItemStackSyncer extends FakeSyncWidget<ItemStack> {
+
         public ItemStackSyncer(Supplier<ItemStack> getter, Consumer<ItemStack> setter) {
-            super(
-                    getter,
-                    setter,
-                    (buffer, stack) -> {
-                        try {
-                            buffer.writeItemStackToBuffer(stack);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    },
-                    buffer -> {
-                        try {
-                            return buffer.readItemStackFromBuffer();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            return null;
-                        }
-                    });
+            super(getter, setter, (buffer, stack) -> {
+                try {
+                    buffer.writeItemStackToBuffer(stack);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }, buffer -> {
+                try {
+                    return buffer.readItemStackFromBuffer();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            });
         }
     }
 
     public static class FluidStackSyncer extends FakeSyncWidget<FluidStack> {
+
         public FluidStackSyncer(Supplier<FluidStack> getter, Consumer<FluidStack> setter) {
             super(getter, setter, NetworkUtils::writeFluidStack, buffer -> {
                 try {
@@ -194,11 +200,9 @@ public class FakeSyncWidget<T> extends SyncedWidget {
     }
 
     public static class ListSyncer<U> extends FakeSyncWidget<List<U>> {
-        public ListSyncer(
-                Supplier<List<U>> getter,
-                Consumer<List<U>> setter,
-                BiConsumer<PacketBuffer, U> writeElementToBuffer,
-                Function<PacketBuffer, U> readElementFromBuffer) {
+
+        public ListSyncer(Supplier<List<U>> getter, Consumer<List<U>> setter,
+                BiConsumer<PacketBuffer, U> writeElementToBuffer, Function<PacketBuffer, U> readElementFromBuffer) {
             super(
                     getter,
                     setter,

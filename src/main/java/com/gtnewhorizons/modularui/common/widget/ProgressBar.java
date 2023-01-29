@@ -1,14 +1,18 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import java.io.IOException;
+import java.util.function.Supplier;
+
+import net.minecraft.network.PacketBuffer;
+
+import org.jetbrains.annotations.NotNull;
+
 import codechicken.lib.math.MathHelper;
+
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.config.Config;
-import java.io.IOException;
-import java.util.function.Supplier;
-import net.minecraft.network.PacketBuffer;
-import org.jetbrains.annotations.NotNull;
 
 public class ProgressBar extends SyncedWidget {
 
@@ -88,12 +92,10 @@ public class ProgressBar extends SyncedWidget {
     }
 
     private void drawCircular(float progress) {
-        float[] subAreas = {
-            getProgressUV((float) MathHelper.clip(progress / 0.25f, 0, 1)),
-            getProgressUV((float) MathHelper.clip((progress - 0.25f) / 0.25f, 0, 1)),
-            getProgressUV((float) MathHelper.clip((progress - 0.5f) / 0.25f, 0, 1)),
-            getProgressUV((float) MathHelper.clip((progress - 0.75f) / 0.25f, 0, 1))
-        };
+        float[] subAreas = { getProgressUV((float) MathHelper.clip(progress / 0.25f, 0, 1)),
+                getProgressUV((float) MathHelper.clip((progress - 0.25f) / 0.25f, 0, 1)),
+                getProgressUV((float) MathHelper.clip((progress - 0.5f) / 0.25f, 0, 1)),
+                getProgressUV((float) MathHelper.clip((progress - 0.75f) / 0.25f, 0, 1)) };
         float halfWidth = size.width / 2f;
         float halfHeight = size.height / 2f;
 
@@ -109,19 +111,15 @@ public class ProgressBar extends SyncedWidget {
                 1.0f); // BL, draw UP
 
         progressScaled = subAreas[1] * halfWidth;
-        fullTexture[1].drawSubArea(
-                0, 0, progressScaled, halfHeight, 0.0f, 0.0f, progressScaled / (halfWidth), 1.0f); // TL, draw RIGHT
+        fullTexture[1].drawSubArea(0, 0, progressScaled, halfHeight, 0.0f, 0.0f, progressScaled / (halfWidth), 1.0f); // TL,
+                                                                                                                      // draw
+                                                                                                                      // RIGHT
 
         progressScaled = subAreas[2] * halfHeight;
-        fullTexture[2].drawSubArea(
-                halfWidth,
-                0,
-                halfWidth,
-                progressScaled,
-                0.0f,
-                0.0f,
-                1.0f,
-                progressScaled / halfHeight); // TR, draw DOWN
+        fullTexture[2]
+                .drawSubArea(halfWidth, 0, halfWidth, progressScaled, 0.0f, 0.0f, 1.0f, progressScaled / halfHeight); // TR,
+                                                                                                                      // draw
+                                                                                                                      // DOWN
 
         progressScaled = subAreas[3] * halfWidth;
         fullTexture[3].drawSubArea(

@@ -5,6 +5,7 @@ package com.gtnewhorizons.modularui.api.forge;
 //
 
 import javax.annotation.Nullable;
+
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

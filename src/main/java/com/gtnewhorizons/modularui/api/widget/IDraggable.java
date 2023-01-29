@@ -1,6 +1,7 @@
 package com.gtnewhorizons.modularui.api.widget;
 
 import java.awt.*;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -8,8 +9,7 @@ import org.jetbrains.annotations.Nullable;
 public interface IDraggable {
 
     /**
-     * Get's called from the cursor
-     * Usually you just call {@link Widget#drawInternal(float)}
+     * Get's called from the cursor Usually you just call {@link Widget#drawInternal(float)}
      *
      * @param partialTicks difference from last from
      */

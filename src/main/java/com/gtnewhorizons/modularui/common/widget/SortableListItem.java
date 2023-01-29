@@ -1,5 +1,11 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
@@ -9,10 +15,6 @@ import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.widget.IDraggable;
 import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
 import com.gtnewhorizons.modularui.api.widget.Widget;
-import java.util.ArrayList;
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class SortableListItem<T> extends Widget implements IWidgetParent, IDraggable {
 
@@ -32,16 +34,13 @@ public class SortableListItem<T> extends Widget implements IWidgetParent, IDragg
         this.value = value;
         this.upButton = new ButtonWidget()
                 .setOnClick((clickData, widget) -> listWidget.moveElementUp(this.currentIndex))
-                .setBackground(ModularUITextures.BASE_BUTTON, ModularUITextures.ARROW_UP)
-                .setSize(10, 10);
+                .setBackground(ModularUITextures.BASE_BUTTON, ModularUITextures.ARROW_UP).setSize(10, 10);
         this.downButton = new ButtonWidget()
                 .setOnClick((clickData, widget) -> listWidget.moveElementDown(this.currentIndex))
-                .setBackground(ModularUITextures.BASE_BUTTON, ModularUITextures.ARROW_DOWN)
-                .setSize(10, 10);
+                .setBackground(ModularUITextures.BASE_BUTTON, ModularUITextures.ARROW_DOWN).setSize(10, 10);
         this.removeButton = new ButtonWidget()
                 .setOnClick((clickData, widget) -> listWidget.removeElement(this.currentIndex))
-                .setBackground(ModularUITextures.BASE_BUTTON, ModularUITextures.CROSS)
-                .setSize(10, 20);
+                .setBackground(ModularUITextures.BASE_BUTTON, ModularUITextures.CROSS).setSize(10, 20);
     }
 
     protected void init(SortableListWidget<T> listWidget) {

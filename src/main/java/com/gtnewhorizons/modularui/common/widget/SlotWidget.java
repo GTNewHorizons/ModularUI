@@ -3,8 +3,32 @@ package com.gtnewhorizons.modularui.common.widget;
 import static codechicken.lib.gui.GuiDraw.drawRect;
 import static codechicken.nei.NEIClientConfig.getSearchExpression;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.EnumChatFormatting;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
 import codechicken.nei.LayoutManager;
 import codechicken.nei.SearchField;
+
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.NumberFormat;
@@ -25,28 +49,9 @@ import com.gtnewhorizons.modularui.common.internal.Theme;
 import com.gtnewhorizons.modularui.common.internal.wrapper.BaseSlot;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 import com.gtnewhorizons.modularui.mixins.GuiContainerAccessor;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.EnumChatFormatting;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 public class SlotWidget extends Widget implements IVanillaSlot, Interactable, ISyncedWidget, IDragAndDropHandler {
 
@@ -140,8 +145,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
 
     @Override
     public void onRebuild() {
-        Pos2d pos =
-                getAbsolutePos().subtract(getContext().getMainWindow().getPos()).add(1, 1);
+        Pos2d pos = getAbsolutePos().subtract(getContext().getMainWindow().getPos()).add(1, 1);
         if (this.slot.xDisplayPosition != pos.x || this.slot.yDisplayPosition != pos.y) {
             this.slot.xDisplayPosition = pos.x;
             this.slot.yDisplayPosition = pos.y;
@@ -219,8 +223,8 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     }
 
     /**
-     * Disables slot click, shift insert, and mouse scroll.
-     * Does not prevent NEI recipe view or bookmark, but does block drag-and-drop.
+     * Disables slot click, shift insert, and mouse scroll. Does not prevent NEI recipe view or bookmark, but does block
+     * drag-and-drop.
      */
     public SlotWidget disableInteraction() {
         this.interactionDisabled = true;
@@ -477,15 +481,13 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         int y = slotIn.yDisplayPosition;
         ItemStack itemstack = slotIn.getStack();
         boolean flag = false;
-        boolean flag1 = slotIn == getGuiAccessor().getClickedSlot()
-                && getGuiAccessor().getDraggedStack() != null
+        boolean flag1 = slotIn == getGuiAccessor().getClickedSlot() && getGuiAccessor().getDraggedStack() != null
                 && !getGuiAccessor().getIsRightMouseClick();
         ItemStack itemstack1 = getContext().getPlayer().inventory.getItemStack();
         int amount = -1;
         String format = null;
 
-        if (slotIn == this.getGuiAccessor().getClickedSlot()
-                && getGuiAccessor().getDraggedStack() != null
+        if (slotIn == this.getGuiAccessor().getClickedSlot() && getGuiAccessor().getDraggedStack() != null
                 && getGuiAccessor().getIsRightMouseClick()
                 && itemstack != null) {
             itemstack = itemstack.copy();
@@ -537,13 +539,12 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
                 // so that item z levels are properly ordered
                 GlStateManager.translate(0, 0, 150 * getWindowLayer());
                 // render the item itself
-                ModularGui.getItemRenderer()
-                        .renderItemAndEffectIntoGUI(
-                                getScreen().getFontRenderer(),
-                                Minecraft.getMinecraft().getTextureManager(),
-                                itemstack,
-                                1,
-                                1);
+                ModularGui.getItemRenderer().renderItemAndEffectIntoGUI(
+                        getScreen().getFontRenderer(),
+                        Minecraft.getMinecraft().getTextureManager(),
+                        itemstack,
+                        1,
+                        1);
                 GuiHelper.afterRenderItemAndEffectIntoGUI(itemstack);
                 GL11.glDisable(GL12.GL_RESCALE_NORMAL);
                 GlStateManager.popMatrix();
@@ -584,14 +585,13 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
                 int cachedCount = itemstack.stackSize;
                 itemstack.stackSize = 1; // required to not render the amount overlay
                 // render other overlays like durability bar
-                ModularGui.getItemRenderer()
-                        .renderItemOverlayIntoGUI(
-                                getScreen().getFontRenderer(),
-                                Minecraft.getMinecraft().getTextureManager(),
-                                itemstack,
-                                1,
-                                1,
-                                null);
+                ModularGui.getItemRenderer().renderItemOverlayIntoGUI(
+                        getScreen().getFontRenderer(),
+                        Minecraft.getMinecraft().getTextureManager(),
+                        itemstack,
+                        1,
+                        1,
+                        null);
                 itemstack.stackSize = cachedCount;
                 GlStateManager.disableDepth();
             }
@@ -609,10 +609,8 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
      */
     protected void renderSlotOverlayNEI() {
         ItemStack item = slot.getStack();
-        if (SearchField.searchInventories()
-                && (item == null
-                        ? !getSearchExpression().equals("")
-                        : !LayoutManager.searchField.getFilter().matches(item))) {
+        if (SearchField.searchInventories() && (item == null ? !getSearchExpression().equals("")
+                : !LayoutManager.searchField.getFilter().matches(item))) {
             GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glDisable(GL11.GL_DEPTH_TEST);
             GL11.glTranslatef(0, 0, 150);

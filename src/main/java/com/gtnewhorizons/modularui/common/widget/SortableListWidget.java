@@ -1,11 +1,12 @@
 package com.gtnewhorizons.modularui.common.widget;
 
-import com.gtnewhorizons.modularui.ModularUI;
-import com.gtnewhorizons.modularui.api.widget.Widget;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import com.gtnewhorizons.modularui.ModularUI;
+import com.gtnewhorizons.modularui.api.widget.Widget;
 
 public class SortableListWidget<T> extends ListWidget {
 
@@ -68,8 +69,7 @@ public class SortableListWidget<T> extends ListWidget {
     }
 
     public List<T> createElements() {
-        return this.children.stream()
-                .map(widget -> ((SortableListItem<T>) widget).getValue())
+        return this.children.stream().map(widget -> ((SortableListItem<T>) widget).getValue())
                 .collect(Collectors.toList());
     }
 
