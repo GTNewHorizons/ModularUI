@@ -61,6 +61,15 @@ public interface IDrawable {
     }
 
     /**
+     * Called by {@link RotatedDrawable} right before delegated drawable is drawn
+     */
+    default void rotate(float rotation, float width, float height) {
+        GlStateManager.translate(width / 2, height / 2, 0);
+        GlStateManager.rotate(rotation, 0, 0, 1);
+        GlStateManager.translate(-width / 2, -height / 2, 0);
+    }
+
+    /**
      * @return a drawable that can be used in guis as a widget
      */
     default DrawableWidget asWidget() {
@@ -100,6 +109,18 @@ public interface IDrawable {
 
     default IDrawable withFixedSize(float fixedWidth, float fixedHeight) {
         return new SizedDrawable(this, fixedWidth, fixedHeight);
+    }
+
+    default IDrawable withRotationDegree(float rotation) {
+        return new RotatedDrawable(this).setRotationDegree(rotation);
+    }
+
+    default IDrawable withRotationRadian(float rotation) {
+        return new RotatedDrawable(this).setRotationRadian(rotation);
+    }
+
+    default IDrawable withRotationRadian(double rotation) {
+        return withRotationRadian((float) rotation);
     }
 
     static final Map<String, Function<JsonObject, IDrawable>> JSON_DRAWABLE_MAP = new HashMap<>();
