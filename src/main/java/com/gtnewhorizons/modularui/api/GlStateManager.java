@@ -3,6 +3,7 @@ package com.gtnewhorizons.modularui.api;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.Stack;
 
 import javax.annotation.Nullable;
 
@@ -44,6 +45,7 @@ public class GlStateManager {
     private static final BooleanState rescaleNormalState;
     private static final ColorMask colorMaskState;
     private static final Color colorState;
+    private static final Stack<double[]> translations = new Stack<>();
 
     /**
      * Do not use (see MinecraftForge issue #1637)
@@ -500,10 +502,12 @@ public class GlStateManager {
 
     public static void pushMatrix() {
         GL11.glPushMatrix();
+        translations.push(new double[3]);
     }
 
     public static void popMatrix() {
         GL11.glPopMatrix();
+        translations.pop();
     }
 
     public static void getFloat(int pname, FloatBuffer params) {
@@ -528,10 +532,28 @@ public class GlStateManager {
 
     public static void translate(float x, float y, float z) {
         GL11.glTranslatef(x, y, z);
+        double[] translation = translations.peek();
+        translation[0] += x;
+        translation[1] += y;
+        translation[2] += z;
     }
 
     public static void translate(double x, double y, double z) {
         GL11.glTranslated(x, y, z);
+        double[] translation = translations.peek();
+        translation[0] += x;
+        translation[1] += y;
+        translation[2] += z;
+    }
+
+    public static double[] getTranslation() {
+        double[] ret = new double[3];
+        for (double[] translation : translations) {
+            ret[0] += translation[0];
+            ret[1] += translation[1];
+            ret[2] += translation[2];
+        }
+        return ret;
     }
 
     public static void multMatrix(FloatBuffer matrix) {
