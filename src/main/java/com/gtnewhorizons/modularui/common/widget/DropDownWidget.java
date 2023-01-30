@@ -17,6 +17,7 @@ import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 
+@SuppressWarnings({ "unused", "UnusedReturnValue" })
 public class DropDownWidget extends ExpandTab implements ISyncedWidget {
 
     private final ListWidget listContainer;
@@ -175,6 +176,14 @@ public class DropDownWidget extends ExpandTab implements ISyncedWidget {
         return selected;
     }
 
+    public List<IDrawable> getLabels() {
+        return labels;
+    }
+
+    public ListWidget getListContainer() {
+        return listContainer;
+    }
+
     public boolean syncsToClient() {
         return syncsToClient;
     }
@@ -245,6 +254,16 @@ public class DropDownWidget extends ExpandTab implements ISyncedWidget {
 
     public DropDownWidget setTextUnselected(String textUnselected) {
         return setTextUnselected(new Text(textUnselected).withOffset(0, 1));
+    }
+
+    public DropDownWidget setLabel(int index, IDrawable label) {
+        labels.set(index, label);
+        listContainer.getChildren().get(index).setBackground(label);
+        return this;
+    }
+
+    public DropDownWidget setLabel(int index, String label) {
+        return setLabel(index, new Text(label));
     }
 
     public DropDownWidget setSynced(boolean syncsToClient, boolean syncsToServer) {
