@@ -3,6 +3,7 @@ package com.gtnewhorizons.modularui.api.drawable;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.math.Size;
 
+@SuppressWarnings("unused")
 public class RepeatingDrawable implements IDrawable {
 
     private IDrawable drawable;
@@ -31,6 +32,13 @@ public class RepeatingDrawable implements IDrawable {
     public RepeatingDrawable setSpaceY(int spaceY) {
         this.spaceY = spaceY;
         return this;
+    }
+
+    @Override
+    public void applyThemeColor(int color) {
+        if (drawable != null) {
+            drawable.applyThemeColor(color);
+        }
     }
 
     @Override

@@ -22,6 +22,11 @@ public class OffsetDrawable implements IDrawable {
     }
 
     @Override
+    public void applyThemeColor(int color) {
+        drawable.applyThemeColor(color);
+    }
+
+    @Override
     public void draw(float x, float y, float width, float height, float partialTicks) {
         drawable.draw(x + offsetX, y + offsetY, width + widthOffset, height + heightOffset, partialTicks);
     }
