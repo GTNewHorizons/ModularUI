@@ -39,7 +39,6 @@ import codechicken.nei.guihook.IContainerInputHandler;
 import codechicken.nei.guihook.IContainerObjectHandler;
 import codechicken.nei.guihook.IContainerTooltipHandler;
 
-import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
 import com.gtnewhorizons.modularui.api.drawable.Text;
@@ -60,12 +59,10 @@ import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.config.Config;
 import com.gtnewhorizons.modularui.mixins.GuiContainerAccessor;
 
-import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-@Optional.Interface(modid = "NotEnoughItems", iface = "codechicken.nei.api.INEIGuiHandler")
 public class ModularGui extends GuiContainer implements INEIGuiHandler {
 
     private final ModularUIContext context;
@@ -805,7 +802,6 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
     // === NEI ===
 
     @Override
-    @Optional.Method(modid = ModularUI.MODID_NEI)
     public boolean handleDragNDrop(GuiContainer gui, int mousex, int mousey, ItemStack draggedStack, int button) {
         if (!(gui instanceof ModularGui) || NEIClientUtils.getHeldItem() != null) return false;
         Widget hovered = getContext().getCursor().getHovered();
@@ -816,7 +812,6 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
     }
 
     @Override
-    @Optional.Method(modid = ModularUI.MODID_NEI)
     public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h) {
         if (!(gui instanceof ModularGui)) return false;
         Rectangle neiSlotRectangle = new Rectangle(x, y, w, h);
@@ -856,19 +851,16 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
     }
 
     @Override
-    @Optional.Method(modid = ModularUI.MODID_NEI)
     public VisiblityData modifyVisiblity(GuiContainer gui, VisiblityData currentVisibility) {
         return currentVisibility;
     }
 
     @Override
-    @Optional.Method(modid = ModularUI.MODID_NEI)
     public Iterable<Integer> getItemSpawnSlots(GuiContainer gui, ItemStack item) {
         return Collections.emptyList();
     }
 
     @Override
-    @Optional.Method(modid = ModularUI.MODID_NEI)
     public List<TaggedInventoryArea> getInventoryAreas(GuiContainer gui) {
         return null;
     }
