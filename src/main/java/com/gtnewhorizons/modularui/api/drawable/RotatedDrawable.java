@@ -13,7 +13,7 @@ public class RotatedDrawable implements IDrawable {
     }
 
     /**
-     * @param rotation 0° - 360°, counter-clockwise
+     * @param rotation 0° - 360°, clockwise
      */
     public RotatedDrawable setRotationDegree(float rotation) {
         this.rotation = rotation;
@@ -21,14 +21,14 @@ public class RotatedDrawable implements IDrawable {
     }
 
     /**
-     * @param rotation 0 rad - 2π rad, counter-clockwise
+     * @param rotation 0 rad - 2π rad, clockwise
      */
     public RotatedDrawable setRotationRadian(float rotation) {
         return setRotationDegree(180f / (float) Math.PI * rotation);
     }
 
     /**
-     * @param rotation 0 rad - 2π rad, counter-clockwise
+     * @param rotation 0 rad - 2π rad, clockwise
      */
     public RotatedDrawable setRotationRadian(double rotation) {
         return setRotationRadian((float) rotation);
