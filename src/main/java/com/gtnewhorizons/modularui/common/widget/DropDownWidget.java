@@ -258,7 +258,7 @@ public class DropDownWidget extends ExpandTab implements ISyncedWidget {
 
     public DropDownWidget setLabel(int index, IDrawable label) {
         labels.set(index, label);
-        listContainer.getChildren().get(index).setBackground(label);
+        listContainer.children.get(index).setBackground(label);
         return this;
     }
 
