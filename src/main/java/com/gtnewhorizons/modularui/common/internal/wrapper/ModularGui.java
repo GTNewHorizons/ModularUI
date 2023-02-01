@@ -686,7 +686,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
     }
 
     /**
-     * This somehow overrides {@link GuiContainer#getSlotAtPosition} // todo: maybe this doesn't work in deobf env?
+     * This somehow overrides {@link GuiContainer#getSlotAtPosition}
      */
     @SuppressWarnings("unused")
     public Slot getSlotAtPosition(int x, int y) {
@@ -696,6 +696,16 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
             }
         }
         return null;
+    }
+
+    @Override
+    protected boolean checkHotbarKeys(int keyCode) {
+        Widget hovered = getCursor().getHovered();
+        if (hovered instanceof SlotWidget
+                && ((SlotWidget) hovered).getMcSlot().getParentWidget().getWindow().isClientOnly()) {
+            return false;
+        }
+        return super.checkHotbarKeys(keyCode);
     }
 
     @Override
