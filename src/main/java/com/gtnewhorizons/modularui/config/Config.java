@@ -22,18 +22,21 @@ public class Config {
     public static boolean escRestoreLastText = false;
     public static boolean closeWindowsAtOnce = false;
 
+    public static boolean useJson = false;
+
     public static boolean debug = false;
     public static boolean forceEnableDebugBlock = false;
 
     public static final String CATEGORY_ANIMATIONS = "animations";
     public static final String CATEGORY_RENDERING = "rendering";
     public static final String CATEGORY_KEYBOARD = "keyboard";
+    public static final String CATEGORY_JSON = "json";
     public static final String CATEGORY_DEBUG = "debug";
 
     private static final String LANG_PREFIX = ModularUI.MODID + ".config.";
 
     public static final String[] CATEGORIES = new String[] { CATEGORY_ANIMATIONS, CATEGORY_RENDERING, CATEGORY_KEYBOARD,
-            CATEGORY_DEBUG, };
+            CATEGORY_JSON, CATEGORY_DEBUG, };
 
     public static void init(File configFile) {
         config = new Configuration(configFile);
@@ -47,6 +50,8 @@ public class Config {
         config.setCategoryLanguageKey(CATEGORY_RENDERING, LANG_PREFIX + CATEGORY_RENDERING);
         config.setCategoryComment(CATEGORY_KEYBOARD, "Keyboard");
         config.setCategoryLanguageKey(CATEGORY_KEYBOARD, LANG_PREFIX + CATEGORY_KEYBOARD);
+        config.setCategoryComment(CATEGORY_JSON, "Json");
+        config.setCategoryLanguageKey(CATEGORY_JSON, LANG_PREFIX + CATEGORY_JSON);
         config.setCategoryComment(CATEGORY_DEBUG, "Debug");
         config.setCategoryLanguageKey(CATEGORY_DEBUG, LANG_PREFIX + CATEGORY_DEBUG);
 
@@ -119,6 +124,16 @@ public class Config {
         closeWindowsAtOnce = config
                 .get(CATEGORY_KEYBOARD, "closeWindowsAtOnce", false, "Whether to close all the opened windows at once")
                 .setLanguageKey(LANG_PREFIX + CATEGORY_KEYBOARD + ".closeWindowsAtOnce").getBoolean();
+
+        // === Json ===
+
+        useJson = config
+                .get(
+                        CATEGORY_JSON,
+                        "useJson",
+                        false,
+                        "Whether to enable Json. Enabling this will increase loading time.")
+                .setLanguageKey(LANG_PREFIX + CATEGORY_JSON + ".useJson").getBoolean();
 
         // === Debug ===
 

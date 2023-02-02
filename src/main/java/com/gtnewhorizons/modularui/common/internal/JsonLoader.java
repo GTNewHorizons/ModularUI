@@ -15,6 +15,7 @@ import net.minecraft.util.ResourceLocation;
 import com.google.gson.*;
 import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.forge.CraftingHelper;
+import com.gtnewhorizons.modularui.config.Config;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
@@ -26,6 +27,7 @@ public class JsonLoader {
     public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public static void loadJson() {
+        if (!Config.useJson) return;
         GUIS.clear();
         List<ModContainer> mods = Loader.instance().getActiveModList();
         mods.forEach((mod) -> {
