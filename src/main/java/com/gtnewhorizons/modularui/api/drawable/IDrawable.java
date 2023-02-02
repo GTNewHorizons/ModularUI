@@ -111,14 +111,23 @@ public interface IDrawable {
         return new SizedDrawable(this, fixedWidth, fixedHeight);
     }
 
+    /**
+     * @param rotation 0° - 360°, clockwise
+     */
     default IDrawable withRotationDegree(float rotation) {
         return new RotatedDrawable(this).setRotationDegree(rotation);
     }
 
+    /**
+     * @param rotation 0 rad - 2π rad, clockwise
+     */
     default IDrawable withRotationRadian(float rotation) {
         return new RotatedDrawable(this).setRotationRadian(rotation);
     }
 
+    /**
+     * @param rotation 0 rad - 2π rad, clockwise
+     */
     default IDrawable withRotationRadian(double rotation) {
         return withRotationRadian((float) rotation);
     }
