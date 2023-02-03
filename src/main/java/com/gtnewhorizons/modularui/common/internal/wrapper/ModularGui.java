@@ -613,7 +613,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
     @Override
     protected void keyTyped(char typedChar, int keyCode) {
         // debug mode C + CTRL + SHIFT
-        if (keyCode == 46 && isCtrlKeyDown() && isShiftKeyDown()) {
+        if (keyCode == Keyboard.KEY_C && isCtrlKeyDown() && isShiftKeyDown()) {
             Config.debug = !Config.debug;
         }
         for (Interactable interactable : context.getCurrentWindow().getInteractionListeners()) {
