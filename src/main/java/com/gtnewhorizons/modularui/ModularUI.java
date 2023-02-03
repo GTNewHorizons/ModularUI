@@ -39,7 +39,7 @@ public class ModularUI {
 
     public static final String MODID = "modularui";
     public static final String DEPENDENCIES = "required-after:gtnhmixins@[2.0.1,); "
-            + "required-after:NotEnoughItems@[2.3.20-GTNH,);"
+            + "required-after:NotEnoughItems@[2.3.27-GTNH,);"
             + "before:gregtech";
     public static final String GUI_FACTORY = Tags.GROUPNAME + ".config.GuiFactory";
 

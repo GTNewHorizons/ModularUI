@@ -428,7 +428,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         FontRenderer fontToUse = font == null ? fontRenderer : font;
         applyNEITooltipHandler(lines, stack);
         // see GuiContainerManager#renderToolTips for these magic numbers
-        GuiDraw.drawMultilineTip(fontToUse, x + 12, y - 12, lines);
+        GuiContainerManager.drawPagedTooltip(fontToUse, x + 12, y - 12, lines);
     }
 
     public List<String> getItemTooltip(ItemStack stack) {
