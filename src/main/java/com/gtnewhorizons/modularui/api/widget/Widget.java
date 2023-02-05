@@ -70,6 +70,7 @@ public abstract class Widget {
     private int layer = -1;
     private boolean tooltipDirty = true;
     private boolean firstRebuild = true;
+    private String internalName;
 
     // visuals
     @NotNull
@@ -515,6 +516,10 @@ public abstract class Widget {
 
     public ModularWindow getWindow() {
         return window;
+    }
+
+    public String getInternalName() {
+        return internalName;
     }
 
     /**
@@ -975,6 +980,11 @@ public abstract class Widget {
 
     public Widget setNEITransferRect(String transferRectID) {
         return setNEITransferRect(transferRectID, new Object[0]);
+    }
+
+    public Widget setInternalName(String internalName) {
+        this.internalName = internalName;
+        return this;
     }
 
     // ==== Utility ====
