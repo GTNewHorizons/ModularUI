@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidTank;
 
 import org.jetbrains.annotations.NotNull;
@@ -53,6 +54,7 @@ import com.gtnewhorizons.modularui.common.widget.SortableListWidget;
 import com.gtnewhorizons.modularui.common.widget.TabButton;
 import com.gtnewhorizons.modularui.common.widget.TabContainer;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.gtnewhorizons.modularui.common.widget.TranslatedVanillaButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
 
 public class TestTile extends TileEntity implements ITileWithModularUI {
@@ -170,6 +172,18 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
                                                         true).setExpandedMaxHeight(60)
                                                         .setDirection(DropDownWidget.Direction.DOWN).setPos(90, 30)
                                                         .setSize(60, 11))
+                                        .addChild(
+                                                new TranslatedVanillaButtonWidget("debug").setDisplayString(
+                                                        StatCollector.translateToLocal("modularui.config.debug"))
+                                                        .setOnClick((clickData, widget) -> {
+                                                            if (!widget.isClient()) {
+                                                                widget.getContext().getPlayer().addChatMessage(
+                                                                        new ChatComponentText(
+                                                                                "Internal Name: "
+                                                                                        + ((TranslatedVanillaButtonWidget) widget)
+                                                                                                .getInternalName()));
+                                                            }
+                                                        }).setPos(70, 80).setSize(32, 16))
                                         .setPos(10, 10).setDebugLabel("Page1"))
                         .addPage(
                                 new MultiChildWidget()
