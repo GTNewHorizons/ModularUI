@@ -13,6 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidTank;
 
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.drawable.AdaptableUITexture;
+import com.gtnewhorizons.modularui.api.drawable.FluidDrawable;
 import com.gtnewhorizons.modularui.api.drawable.ItemDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
@@ -183,6 +185,11 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
                                                                                         + widget.getInternalName()));
                                                             }
                                                         }).setPos(70, 80).setSize(32, 16).setInternalName("debug"))
+                                        .addChild(
+                                                new DrawableWidget().setDrawable(
+                                                        new FluidDrawable().setFluid(FluidRegistry.LAVA)
+                                                                .withFixedSize(32, 16))
+                                                        .setPos(70, 100))
                                         .setPos(10, 10).setDebugLabel("Page1"))
                         .addPage(
                                 new MultiChildWidget()
