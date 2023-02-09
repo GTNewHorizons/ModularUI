@@ -4,6 +4,9 @@ package com.gtnewhorizons.modularui.api.forge;
 // (powered by FernFlower decompiler)
 //
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
@@ -24,5 +27,13 @@ public interface IItemHandler {
 
     default boolean isItemValid(int slot, ItemStack stack) {
         return true;
+    }
+
+    default List<ItemStack> getStacks() {
+        List<ItemStack> ret = new ArrayList<>();
+        for (int i = 0; i < getSlots(); i++) {
+            ret.add(getStackInSlot(i));
+        }
+        return ret;
     }
 }
