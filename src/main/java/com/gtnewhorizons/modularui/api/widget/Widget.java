@@ -66,7 +66,8 @@ public abstract class Widget {
     private boolean autoPositioned = true;
 
     // flags and stuff
-    private Function<Widget, Boolean> enabled = widget -> true;
+    private Function<Widget, Boolean> enabledDynamic = widget -> true;
+    private boolean enabledStatic = true;
     private int layer = -1;
     private boolean tooltipDirty = true;
     private boolean firstRebuild = true;
@@ -556,7 +557,7 @@ public abstract class Widget {
     }
 
     public boolean isEnabled() {
-        return enabled.apply(this);
+        return enabledStatic && enabledDynamic.apply(this);
     }
 
     public int getLayer() {
@@ -695,19 +696,21 @@ public abstract class Widget {
     // ==== Setter/Builder ====
 
     /**
-     * If widgets are NOT enabled, they won't be rendered and they can not be interacted with.
+     * If widgets are NOT enabled, they won't be rendered and cannot be interacted with. When used together with
+     * {@link #setEnabled(Function)}, this widget is recognized to be enabled only when both requirements are met.
      *
      * @param enabled if this widget should be enabled
      */
     public Widget setEnabled(boolean enabled) {
-        return setEnabled(widget -> enabled);
+        this.enabledStatic = enabled;
+        return this;
     }
 
     /**
      * Changes enabled state dynamically. Note that function is called on every render tick.
      */
     public Widget setEnabled(Function<Widget, Boolean> enabled) {
-        this.enabled = enabled;
+        this.enabledDynamic = enabled;
         return this;
     }
 
@@ -936,7 +939,7 @@ public abstract class Widget {
     /**
      * Effect is the same as when you store this widget in a variable, set
      * {@link FakeSyncWidget#setOnClientUpdate(Consumer)}, and add syncer to builder.
-     * 
+     *
      * @param syncer  To attach to this widget
      * @param builder To add syncer for window
      * @param onSync  Called when syncer receives packet from server
