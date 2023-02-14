@@ -59,7 +59,7 @@ public class Column extends MultiChildWidget implements IWidgetBuilder<Column> {
 
         for (Widget widget : getChildren()) {
             if (skipDisabledChild && !widget.isEnabled()) continue;
-            int x = 0;
+            int x = widget.getPos().x;
             if (caa == CrossAxisAlignment.CENTER) {
                 x = (int) (maxWidth / 2f - widget.getSize().width / 2f);
             } else if (caa == CrossAxisAlignment.END) {

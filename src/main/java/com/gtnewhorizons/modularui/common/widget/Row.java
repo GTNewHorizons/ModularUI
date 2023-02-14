@@ -59,7 +59,7 @@ public class Row extends MultiChildWidget implements IWidgetBuilder<Row> {
 
         for (Widget widget : getChildren()) {
             if (skipDisabledChild && !widget.isEnabled()) continue;
-            int y = 0;
+            int y = widget.getPos().y;
             if (caa == CrossAxisAlignment.CENTER) {
                 y = (int) (maxHeight / 2f - widget.getSize().height / 2f);
             } else if (caa == CrossAxisAlignment.END) {
