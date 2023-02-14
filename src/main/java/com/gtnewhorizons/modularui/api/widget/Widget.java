@@ -556,6 +556,13 @@ public abstract class Widget {
         return size;
     }
 
+    /**
+     * @return Rectangle used to check if this widget overlaps with NEI elements
+     */
+    public Rectangle getRenderAbsoluteRectangle() {
+        return new Rectangle(getAbsolutePos().x, getAbsolutePos().y, getSize().width, getSize().height);
+    }
+
     public boolean isEnabled() {
         return enabledStatic && enabledDynamic.apply(this);
     }

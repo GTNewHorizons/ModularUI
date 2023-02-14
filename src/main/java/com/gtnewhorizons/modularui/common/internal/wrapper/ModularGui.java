@@ -847,11 +847,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                     });
         }
         for (Widget widget : activeWidgets) {
-            Rectangle widgetAbsoluteRectangle = new Rectangle(
-                    widget.getAbsolutePos().x,
-                    widget.getAbsolutePos().y,
-                    widget.getSize().width,
-                    widget.getSize().height);
+            Rectangle widgetAbsoluteRectangle = widget.getRenderAbsoluteRectangle();
             if (widgetAbsoluteRectangle.intersects(neiSlotRectangle)) {
                 return true;
             }
