@@ -13,6 +13,7 @@ import com.gtnewhorizons.modularui.api.widget.IWidgetBuilder;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.Theme;
+import com.gtnewhorizons.modularui.config.Config;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -32,7 +33,7 @@ public class ExpandTab extends MultiChildWidget implements Interactable, IWidget
     protected Size normalSize;
     protected Pos2d expandedPos;
     protected Pos2d normalPos;
-    private int animateDuration = 250;
+    private int animateDuration = Config.openCloseDurationMs;
     private float animateX, animateY, animateWidth, animateHeight;
 
     @Nullable
