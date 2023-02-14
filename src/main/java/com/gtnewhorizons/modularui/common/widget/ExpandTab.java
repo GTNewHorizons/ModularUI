@@ -3,6 +3,7 @@ package com.gtnewhorizons.modularui.common.widget;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.animation.Eases;
 import com.gtnewhorizons.modularui.api.animation.Interpolator;
 import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
@@ -160,6 +161,8 @@ public class ExpandTab extends MultiChildWidget implements Interactable, IWidget
     public void drawChildren(float partialTicks) {
         if (isExpanded() || animating) {
             Pos2d parentPos = getParent().getAbsolutePos();
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(animateX - getPos().x, animateY - getPos().y, 0);
             if (animating) {
                 GuiHelper.useScissor(
                         (int) (parentPos.x + this.animateX),
@@ -170,6 +173,7 @@ public class ExpandTab extends MultiChildWidget implements Interactable, IWidget
             } else {
                 super.drawChildren(partialTicks);
             }
+            GlStateManager.popMatrix();
         } else {
             for (Widget child : getChildren()) {
                 if (shouldDrawChildWidgetWhenCollapsed(child)) {
@@ -198,12 +202,12 @@ public class ExpandTab extends MultiChildWidget implements Interactable, IWidget
                     widget.setEnabled(true);
                 }
                 openAnimator.forward();
-                this.size = expandedSize;
-                this.pos = expandedPos;
+                super.setSize(expandedSize);
+                super.setPos(expandedPos);
             } else {
                 closeAnimator.forward();
-                this.size = normalSize;
-                this.pos = normalPos;
+                super.setSize(normalSize);
+                super.setPos(normalPos);
             }
             checkNeedsRebuild();
         }
