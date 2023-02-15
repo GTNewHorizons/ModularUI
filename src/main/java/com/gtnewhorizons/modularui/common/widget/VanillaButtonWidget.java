@@ -23,9 +23,9 @@ public class VanillaButtonWidget extends ButtonWidget {
 
     @Override
     public @Nullable IDrawable[] getBackground() {
-        if (!isClickable()) return normalBackground;
+        if (!isClickable()) return disabledBackground;
         if (isHovering()) return hoveredBackground;
-        return disabledBackground;
+        return normalBackground;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class VanillaButtonWidget extends ButtonWidget {
             textRenderer.setPos(0, 0);
             textRenderer.setShadow(true);
             textRenderer.setAlignment(Alignment.Center, size.width, size.height);
-            textRenderer.setColor(!isClickable() ? 0xa0a0a0 : isHovering() ? 0xffffa0 : 0xe0e0e0);
+            textRenderer.setColor(!isClickable() ? 0xa0a0a0 : isHovering() ? 0xffffa0 : 0xffffff);
             textRenderer.draw(displayString);
         }
     }
