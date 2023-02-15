@@ -7,6 +7,7 @@ import com.gtnewhorizons.modularui.api.math.MainAxisAlignment;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.widget.IWidgetBuilder;
+import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 
 public class Row extends MultiChildWidget implements IWidgetBuilder<Row> {
@@ -26,7 +27,7 @@ public class Row extends MultiChildWidget implements IWidgetBuilder<Row> {
     @Override
     protected @NotNull Size determineSize(int maxWidth, int maxHeight) {
         if (maa == MainAxisAlignment.START) {
-            return getSizeOf(children);
+            return IWidgetParent.getSizeOf(children);
         }
         return new Size(this.maxWidth, this.maxHeight);
     }

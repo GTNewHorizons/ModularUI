@@ -109,7 +109,7 @@ public class Scrollable extends Widget
 
     @Override
     public void onRebuild() {
-        this.actualSize = MultiChildWidget.getSizeOf(children);
+        this.actualSize = IWidgetParent.getSizeOf(children);
         if (this.xScroll < 0 || this.yScroll == 0) {
             setHorizontalScrollOffset(0);
             setVerticalScrollOffset(0);

@@ -34,7 +34,7 @@ public class PageControlWidget extends Widget implements IWidgetParent {
 
     @Override
     protected @NotNull Size determineSize(int maxWidth, int maxHeight) {
-        return pages.isEmpty() ? super.determineSize(maxWidth, maxHeight) : MultiChildWidget.getSizeOf(pages);
+        return pages.isEmpty() ? super.determineSize(maxWidth, maxHeight) : IWidgetParent.getSizeOf(pages);
     }
 
     protected List<Widget> getPages() {
