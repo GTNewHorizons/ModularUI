@@ -721,6 +721,16 @@ public abstract class Widget {
         return this;
     }
 
+    /**
+     * {@link #setEnabled(boolean)} and {@link #setEnabled(Function)} works independently. This method overwrites both
+     * of behaviors.
+     */
+    public Widget setEnabledForce(boolean enabled) {
+        setEnabled(enabled);
+        setEnabled(widget -> enabled);
+        return this;
+    }
+
     public Widget setSize(int width, int height) {
         return setSize(new Size(width, height));
     }

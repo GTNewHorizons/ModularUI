@@ -69,7 +69,7 @@ public class DynamicPositionedRow extends Row implements ISyncedWidget {
             for (int i = 0; i < length && i < childrenEnabledFlags.size(); i++) {
                 boolean flag = buf.readBoolean();
                 childrenEnabledFlags.set(i, flag);
-                getChildren().get(i).setEnabled(flag);
+                getChildren().get(i).setEnabledForce(flag);
             }
             layoutChildren(getWindow().getSize().width, getWindow().getSize().height);
         }
