@@ -39,10 +39,6 @@ public class TextWidget extends Widget {
         this(new Text(text));
     }
 
-    /*
-     * public TextWidget(ITextComponent text) { this(new TextSpan().addText(text)); }
-     */
-
     public static DynamicTextWidget dynamicText(Supplier<Text> supplier) {
         return new DynamicTextWidget(supplier);
     }
@@ -51,15 +47,13 @@ public class TextWidget extends Widget {
         return new DynamicTextWidget(() -> new Text(supplier.get()));
     }
 
-    /*
-     * public static DynamicTextWidget dynamicTextComponent(Supplier<ITextComponent> supplier) { return new
-     * DynamicTextWidget(() -> new TextSpan().addText(supplier.get())); }
-     */
+    public static TextWidget localised(String key, Object... data) {
+        return new TextWidget(Text.localised(key, data));
+    }
 
     @Override
     public void readJson(JsonObject json, String type) {
         super.readJson(json, type);
-        // getText().readJson(json);
     }
 
     @Override
