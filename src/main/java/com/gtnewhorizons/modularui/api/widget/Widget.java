@@ -71,7 +71,7 @@ public abstract class Widget {
     private int layer = -1;
     private boolean tooltipDirty = true;
     private boolean firstRebuild = true;
-    private String internalName;
+    private Supplier<String> internalName = () -> null;
 
     // visuals
     @NotNull
@@ -520,7 +520,7 @@ public abstract class Widget {
     }
 
     public String getInternalName() {
-        return internalName;
+        return internalName.get();
     }
 
     /**
@@ -1003,7 +1003,11 @@ public abstract class Widget {
     }
 
     public Widget setInternalName(String internalName) {
-        this.internalName = internalName;
+        return setInternalName(() -> internalName);
+    }
+
+    public Widget setInternalName(Supplier<String> supplier) {
+        internalName = supplier;
         return this;
     }
 
