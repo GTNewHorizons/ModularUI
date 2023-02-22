@@ -124,7 +124,6 @@ public class ExpandTab extends MultiChildWidget implements Interactable, IWidget
     public void onFrameUpdate() {
         if (this.animating) {
             if (expanded) {
-                // this.openAnimator.update(Minecraft.getMinecraft().getTickLength());
                 this.openAnimator.update(ticktime);
             } else {
                 this.closeAnimator.update(ticktime);
@@ -170,7 +169,8 @@ public class ExpandTab extends MultiChildWidget implements Interactable, IWidget
         if (isExpanded() || animating) {
             Pos2d parentPos = getParent().getAbsolutePos();
             GlStateManager.pushMatrix();
-            GlStateManager.translate(animateX - getPos().x, animateY - getPos().y, 0);
+            Pos2d relativePos = isExpanded() ? expandedPos : normalPos;
+            GlStateManager.translate(animateX - relativePos.x, animateY - relativePos.y, 0);
             if (animating) {
                 GuiHelper.useScissor(
                         (int) (parentPos.x + this.animateX),

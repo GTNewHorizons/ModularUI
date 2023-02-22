@@ -45,9 +45,8 @@ public class DropDownWidget extends ExpandTab implements ISyncedWidget {
         listContainer = new ListWidget();
         addChild(
                 listContainer.setMaxHeight(expandedMaxHeight).setPosProvider(
-                        (screenSize, window, parent) -> new Pos2d(
-                                0,
-                                direction == Direction.DOWN ? normalSize.height : -getActualExpandedHeight())));
+                        (screenSize, window,
+                                parent) -> new Pos2d(0, direction == Direction.DOWN ? normalSize.height : 0)));
 
         selectedWidget = new DrawableWidget();
         addChild(selectedWidget.setDrawable(() -> {
@@ -55,12 +54,17 @@ public class DropDownWidget extends ExpandTab implements ISyncedWidget {
                 return labels.get(selected);
             }
             return textUnselected;
-        }).setSizeProvider((screenSize, window, parent) -> normalSize));
+        }).setSizeProvider((screenSize, window, parent) -> normalSize).setPosProvider(
+                (screenSize, window, parent) -> new Pos2d(
+                        0,
+                        (direction == Direction.UP && isExpanded()) ? getActualExpandedHeight() : 0)));
 
         arrowWidget = new DrawableWidget();
         addChild(
-                arrowWidget.setDrawable(() -> getArrowTexture(isExpanded())).setSize(10, 10)
-                        .setPosProvider((screenSize, window, parent) -> new Pos2d(getSize().width - 10, 0)));
+                arrowWidget.setDrawable(() -> getArrowTexture(isExpanded())).setSize(10, 10).setPosProvider(
+                        (screenSize, window, parent) -> new Pos2d(
+                                getSize().width - 10,
+                                (direction == Direction.UP && isExpanded()) ? getActualExpandedHeight() : 0)));
     }
 
     @Override
