@@ -76,7 +76,9 @@ public class ExpandTab extends MultiChildWidget implements Interactable, IWidget
             }
         }
 
-        FMLCommonHandler.instance().bus().register(this);
+        if (isClient()) {
+            FMLCommonHandler.instance().bus().register(this);
+        }
     }
 
     @Override
