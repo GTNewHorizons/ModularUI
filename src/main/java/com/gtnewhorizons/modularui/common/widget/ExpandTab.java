@@ -82,6 +82,12 @@ public class ExpandTab extends MultiChildWidget implements Interactable, IWidget
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        FMLCommonHandler.instance().bus().unregister(this);
+    }
+
+    @Override
     protected @NotNull Size determineSize(int maxWidth, int maxHeight) {
         return new Size(20, 20);
     }
