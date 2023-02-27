@@ -270,7 +270,7 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
             } else {
                 num = (long) MathExpression.parseMathExpression(val);
             }
-            return format.format(validator.apply(num));
+            return decimalFormat.format(validator.apply(num));
         });
         return this;
     }
@@ -284,7 +284,7 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
             } else {
                 num = (int) MathExpression.parseMathExpression(val);
             }
-            return format.format(validator.apply(num));
+            return decimalFormat.format(validator.apply(num));
         });
     }
 
@@ -297,7 +297,7 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
             } else {
                 num = MathExpression.parseMathExpression(val);
             }
-            return format.format(validator.apply(num));
+            return decimalFormat.format(validator.apply(num));
         });
     }
 
@@ -326,7 +326,7 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
      */
     public TextFieldWidget setOnScrollNumbers(BiFunction<Integer, Integer, Integer> onScroll) {
         return setOnScroll(
-                (text, direction) -> format
+                (text, direction) -> decimalFormat
                         .format(onScroll.apply((int) MathExpression.parseMathExpression(text), direction)));
     }
 
@@ -348,7 +348,7 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
      */
     public TextFieldWidget setOnScrollNumbersDouble(BiFunction<Double, Integer, Double> onScroll) {
         return setOnScroll(
-                (text, direction) -> format
+                (text, direction) -> decimalFormat
                         .format(onScroll.apply(MathExpression.parseMathExpression(text), direction)));
     }
 
@@ -357,7 +357,7 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
      */
     public TextFieldWidget setOnScrollNumbersLong(BiFunction<Long, Integer, Long> onScroll) {
         return setOnScroll(
-                (text, direction) -> format
+                (text, direction) -> decimalFormat
                         .format(onScroll.apply((long) MathExpression.parseMathExpression(text), direction)));
     }
 
