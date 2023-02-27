@@ -37,10 +37,16 @@ import com.gtnewhorizons.modularui.config.Config;
  */
 public class BaseTextFieldWidget extends Widget implements IWidgetParent, Interactable, IHorizontalScrollable {
 
+    /**
+     * @deprecated Has been replaced by non-static variable. Use {@link #getDecimalFormatter()} and
+     *             {@link #setDecimalFormatter(DecimalFormat)}
+     */
+    @Deprecated
     public static final DecimalFormat format = (DecimalFormat) NumberFormat.getInstance();
 
     static {
         format.setGroupingUsed(false);
+        format.setMaximumFractionDigits(8);
     }
 
     /**
@@ -72,11 +78,14 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
     protected float scale = 1f;
     protected int cursorTimer;
     protected boolean focusOnGuiOpen;
+    protected DecimalFormat decimalFormat;
 
     protected ScrollBar scrollBar;
 
     public BaseTextFieldWidget() {
         this.handler.setRenderer(renderer);
+        decimalFormat = new DecimalFormat();
+        decimalFormat.setGroupingUsed(true);
     }
 
     @Override
@@ -356,6 +365,20 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
     public BaseTextFieldWidget setFocusOnGuiOpen(boolean focused) {
         focusOnGuiOpen = focused;
         return this;
+    }
+
+    public BaseTextFieldWidget setMaximumFractionDigits(int digits) {
+        decimalFormat.setMaximumFractionDigits(digits);
+        return this;
+    }
+
+    public BaseTextFieldWidget setDecimalFormatter(@NotNull DecimalFormat decimalFormat) {
+        this.decimalFormat = decimalFormat;
+        return this;
+    }
+
+    public DecimalFormat getDecimalFormatter() {
+        return decimalFormat;
     }
 
     public static char getDecimalSeparator() {
