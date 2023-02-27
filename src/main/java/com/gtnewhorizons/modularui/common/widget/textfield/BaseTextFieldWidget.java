@@ -374,7 +374,7 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
         return this;
     }
 
-    public BaseTextFieldWidget setDecimalFormatter(DecimalFormat decimalFormat) {
+    public BaseTextFieldWidget setDecimalFormatter(@NotNull DecimalFormat decimalFormat) {
         this.decimalFormat = decimalFormat;
         return this;
     }
