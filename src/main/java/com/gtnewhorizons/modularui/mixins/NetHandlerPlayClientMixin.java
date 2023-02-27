@@ -29,7 +29,7 @@ public class NetHandlerPlayClientMixin {
                     target = "Lnet/minecraft/inventory/Container;putStackInSlot(ILnet/minecraft/item/ItemStack;)V",
                     ordinal = 1),
             cancellable = true)
-    public void handleSetSlot(S2FPacketSetSlot p_147266_1_, CallbackInfo ci) {
+    public void modularui$beforeHandleSetSlot(S2FPacketSetSlot p_147266_1_, CallbackInfo ci) {
         Container container = gameController.thePlayer.openContainer;
         if (container instanceof ModularUIContainer) {
             if (((ModularUIContainer) container).getContext().isClientOnly()) {

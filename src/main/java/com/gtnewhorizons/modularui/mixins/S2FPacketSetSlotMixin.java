@@ -17,17 +17,17 @@ public class S2FPacketSetSlotMixin {
     private ItemStack field_149178_c;
 
     /**
-     * @reason {@link PacketBuffer#writeItemStackToBuffer} cannot handle stack size larger than 127
+     * @reason Encoder {@link PacketBuffer#writeItemStackToBuffer} cannot handle stack size larger than 127
      */
     @Inject(method = "readPacketData", at = @At("TAIL"))
-    public void readPacketData(PacketBuffer buf, CallbackInfo ci) {
+    public void modularui$afterReadPacketData(PacketBuffer buf, CallbackInfo ci) {
         if (field_149178_c != null) {
             this.field_149178_c.stackSize = buf.readVarIntFromBuffer();
         }
     }
 
     @Inject(method = "writePacketData", at = @At("TAIL"))
-    public void writePacketData(PacketBuffer buf, CallbackInfo ci) {
+    public void modularui$afterWritePacketData(PacketBuffer buf, CallbackInfo ci) {
         if (field_149178_c != null) {
             buf.writeVarIntToBuffer(field_149178_c.stackSize);
         }

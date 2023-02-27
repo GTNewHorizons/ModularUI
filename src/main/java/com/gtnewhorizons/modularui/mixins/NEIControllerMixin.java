@@ -33,7 +33,7 @@ public class NEIControllerMixin {
             locals = LocalCapture.CAPTURE_FAILSOFT,
             cancellable = true,
             remap = false)
-    public void mouseScrolled(GuiContainer gui, int mousex, int mousey, int scrolled,
+    public void modularui$beforeMouseScrolled(GuiContainer gui, int mousex, int mousey, int scrolled,
             CallbackInfoReturnable<Boolean> ci, Point mousePos, Slot mouseover) {
         if (gui instanceof ModularGui) {
             Widget hovered = ((ModularGui) gui).getCursor().getHovered();
