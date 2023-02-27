@@ -41,6 +41,7 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
 
     static {
         format.setGroupingUsed(false);
+        format.setMaximumFractionDigits(8);
     }
 
     /**
