@@ -368,9 +368,7 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
     }
 
     public BaseTextFieldWidget setMaximumFractionDigits(int digits) {
-        if (decimalFormat != null) {
-            decimalFormat.setMaximumFractionDigits(digits);
-        }
+        decimalFormat.setMaximumFractionDigits(digits);
         return this;
     }
 
