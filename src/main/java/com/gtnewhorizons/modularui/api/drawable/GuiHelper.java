@@ -22,11 +22,13 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
+import com.mitchej123.hodgepodge.textures.IPatchedTextureAtlasSprite;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -289,6 +291,11 @@ public class GuiHelper {
         Fluid fluid = content.getFluid();
         IIcon fluidStill = fluid.getIcon(content);
         int fluidColor = fluid.getColor(content);
+
+        if (ModularUI.isHodgepodgeLoaded && fluidStill instanceof IPatchedTextureAtlasSprite) {
+            ((IPatchedTextureAtlasSprite) fluidStill).markNeedsAnimationUpdate();
+        }
+
         GlStateManager.enableBlend();
         Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 
