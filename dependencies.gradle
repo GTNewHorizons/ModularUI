@@ -1,11 +1,12 @@
 // Add your dependencies here
 
 dependencies {
-    compile 'org.jetbrains:annotations:23.0.0'
+    api("org.jetbrains:annotations:23.0.0")
 
-    compile("com.github.GTNewHorizons:NotEnoughItems:2.3.27-GTNH:dev")
+    api("com.github.GTNewHorizons:NotEnoughItems:2.3.32-GTNH:dev")
 
-    compileOnly("com.github.GTNewHorizons:GT5-Unofficial:5.09.41.261:dev") {
+    compileOnly("com.github.GTNewHorizons:GT5-Unofficial:5.09.41.289:dev") {
+        transitive = false
         exclude group:"com.github.GTNewHorizons", module:"ModularUI"
     }
 }
