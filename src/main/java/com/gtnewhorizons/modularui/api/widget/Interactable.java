@@ -115,6 +115,14 @@ public interface Interactable {
                 .playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
     }
 
+    /**
+     * Plays the input click sound
+     */
+    @SideOnly(Side.CLIENT)
+    static void playButtonClickSound(ResourceLocation soundResource) {
+        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(soundResource, 1.0F));
+    }
+
     enum ClickResult {
         /**
          * Nothing happened on this click
