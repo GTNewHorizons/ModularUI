@@ -85,7 +85,7 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
     public BaseTextFieldWidget() {
         this.handler.setRenderer(renderer);
         decimalFormat = new DecimalFormat();
-        decimalFormat.setGroupingUsed(true);
+        decimalFormat.setGroupingUsed(false);
     }
 
     @Override
