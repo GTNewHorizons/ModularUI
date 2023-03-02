@@ -57,15 +57,12 @@ public class ButtonWidget extends SyncedWidget implements Interactable {
     }
 
     public ButtonWidget setPlayClickSoundResource(ResourceLocation sound) {
-        this.playClickSound = true;
-        this.playClickSoundResource = () -> sound;
-        return this;
+        return setPlayClickSoundResource(() -> sound);
     }
 
     public ButtonWidget setPlayClickSoundResource(Supplier<ResourceLocation> soundSupplier) {
-        this.playClickSound = true;
         this.playClickSoundResource = soundSupplier;
-        return this;
+        return setPlayClickSound(true);
     }
 
     public ButtonWidget setHoveredBackground(IDrawable... hoveredBackground) {
