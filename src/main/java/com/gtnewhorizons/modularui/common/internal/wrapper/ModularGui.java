@@ -50,6 +50,7 @@ import com.gtnewhorizons.modularui.api.screen.Cursor;
 import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.widget.IDragAndDropHandler;
+import com.gtnewhorizons.modularui.api.widget.IHasStackUnderMouse;
 import com.gtnewhorizons.modularui.api.widget.IVanillaSlot;
 import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
@@ -624,10 +625,21 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         if (focused instanceof Interactable && ((Interactable) focused).onKeyPressed(typedChar, keyCode)) {
             return;
         }
+        boolean skipSuper = false;
         for (Object hovered : getCursor().getAllHovered()) {
+            if (hovered instanceof ModularWindow && hovered != getContext().getMainWindow()) {
+                // if popup window is present, widgets/slots below should not be interacted
+                skipSuper = true;
+                break;
+            }
             if (focused != hovered && hovered instanceof Interactable
                     && ((Interactable) hovered).onKeyPressed(typedChar, keyCode)) {
                 return;
+            }
+            if (hovered instanceof SlotWidget || hovered instanceof IHasStackUnderMouse) {
+                // delegate to NEI keybind
+                // todo: make onKeyPressed return enum and properly handle delegation
+                break;
             }
         }
 
@@ -647,7 +659,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                     break;
                 }
             }
-        } else {
+        } else if (!skipSuper) {
             super.keyTyped(typedChar, keyCode);
         }
     }
@@ -663,7 +675,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         boolean foundFirstElement = false;
         for (Object hovered : getCursor().getAllHovered()) {
             if (!foundFirstElement && hovered instanceof ModularWindow) {
-                // if floating window is scrolled, widgets/slots below should not be interacted
+                // if popup window is present, widgets/slots below should not be interacted
                 return true;
             }
             if (focused != hovered && hovered instanceof Interactable
