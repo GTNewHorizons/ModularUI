@@ -18,8 +18,8 @@ public enum Mixin {
 
     // Replace with your own mixins:
     GuiContainerAccessor("GuiContainerAccessor", Side.CLIENT, VANILLA),
-    S2FPacketSetSlotMixin("S2FPacketSetSlotMixin", Side.BOTH, VANILLA),
     NetHandlerPlayClientMixin("NetHandlerPlayClientMixin", Side.CLIENT, VANILLA),
+    PacketBufferMixin("PacketBufferMixin", Side.BOTH, VANILLA),
     NEIControllerMixin("NEIControllerMixin", Side.CLIENT, NOTENOUGHITEMS);
 
     public final String mixinClass;
