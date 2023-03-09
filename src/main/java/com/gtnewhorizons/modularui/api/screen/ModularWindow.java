@@ -3,17 +3,15 @@ package com.gtnewhorizons.modularui.api.screen;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import org.jetbrains.annotations.Nullable;
-
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
-import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.animation.Eases;
@@ -440,20 +438,18 @@ public class ModularWindow implements IWidgetParent {
         if (id == null) {
             id = dynamicSyncedWidgets.inverse().get(syncedWidget);
             if (id == null) {
-                ModularUI.logger.error("Cannot find id for ISyncedWidget " + syncedWidget);
-                return 0;
+                throw new NoSuchElementException("Can't find id for ISyncedWidget " + syncedWidget);
             }
         }
         return id;
     }
 
-    @Nullable
     public ISyncedWidget getSyncedWidget(int id) {
         ISyncedWidget syncedWidget = syncedWidgets.get(id);
         if (syncedWidget == null) {
             syncedWidget = dynamicSyncedWidgets.get(id);
             if (syncedWidget == null) {
-                ModularUI.logger.error("Cannot find ISyncedWidget for id " + id);
+                throw new NoSuchElementException("Can't find ISyncedWidget for id " + id);
             }
         }
         return syncedWidget;
@@ -492,7 +488,7 @@ public class ModularWindow implements IWidgetParent {
         /**
          * Set position of this Window displayed. {@link Alignment#getAlignedPos(Size, Size)} is useful for specifying
          * rough location. Center is selected as default.
-         *
+         * 
          * @param pos BiFunction providing {@link Pos2d} out of sizes of game screen and this window
          */
         public Builder setPos(PosProvider pos) {

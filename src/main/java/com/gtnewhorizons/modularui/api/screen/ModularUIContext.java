@@ -375,9 +375,7 @@ public class ModularUIContext {
             }
         } else if (window != null) {
             ISyncedWidget syncedWidget = window.getSyncedWidget(widgetId);
-            if (syncedWidget != null) {
-                syncedWidget.readOnServer(id, buf);
-            }
+            syncedWidget.readOnServer(id, buf);
         }
     }
 
@@ -398,9 +396,7 @@ public class ModularUIContext {
             }
         } else if (window != null) {
             ISyncedWidget syncedWidget = window.getSyncedWidget(widgetId);
-            if (syncedWidget != null) {
-                syncedWidget.readOnClient(id, buf);
-            }
+            syncedWidget.readOnClient(id, buf);
         }
     }
 
