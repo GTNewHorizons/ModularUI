@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import net.minecraft.network.PacketBuffer;
@@ -60,6 +61,21 @@ public class ChangeableWidget extends Widget implements ISyncedWidget, IWidgetPa
         }
     }
 
+    /**
+     * Notifies the widget that the child probably changed. Only executed on client and NOT synced to server.
+     */
+    public void notifyChangeClient() {
+        notifyChangeNoSync();
+    }
+
+    /**
+     * Notifies the widget that the child probably changed. Can execute on both sides and NOT synced.
+     */
+    public void notifyChangeNoSync() {
+        notifyChange(false);
+        initQueuedChild();
+    }
+
     private void notifyChange(boolean sync) {
         if (this.widgetSupplier == null || !isInitialised()) {
             return;
@@ -74,18 +90,21 @@ public class ChangeableWidget extends Widget implements ISyncedWidget, IWidgetPa
 
     private void initQueuedChild() {
         if (this.queuedChild != null) {
-            IWidgetParent.forEachByLayer(this.queuedChild, widget -> {
+            final Consumer<Widget> initChildrenWrapper = widget -> {
                 if (widget instanceof IWidgetParent) {
                     ((IWidgetParent) widget).initChildren();
                 }
-            });
+            };
+            initChildrenWrapper.accept(this.queuedChild);
+            IWidgetParent.forEachByLayer(this.queuedChild, initChildrenWrapper);
             AtomicInteger syncId = new AtomicInteger(1);
-            IWidgetParent.forEachByLayer(this.queuedChild, widget1 -> {
+            final Consumer<Widget> initSyncedWidgetWrapper = widget1 -> {
                 if (widget1 instanceof ISyncedWidget) {
                     getWindow().addDynamicSyncedWidget(syncId.getAndIncrement(), (ISyncedWidget) widget1, this);
                 }
-                return false;
-            });
+            };
+            if (queuedChild instanceof IWidgetParent) initSyncedWidgetWrapper.accept(queuedChild);
+            IWidgetParent.forEachByLayer(this.queuedChild, initSyncedWidgetWrapper);
             this.queuedChild.initialize(getWindow(), this, getLayer() + 1);
             this.child.add(this.queuedChild);
             this.initialised = true;
@@ -99,6 +118,10 @@ public class ChangeableWidget extends Widget implements ISyncedWidget, IWidgetPa
         if (!this.child.isEmpty()) {
             Widget widget = this.child.get(0);
             widget.setEnabled(false);
+            if (widget instanceof IWidgetParent) {
+                widget.onPause();
+                widget.onDestroy();
+            }
             IWidgetParent.forEachByLayer(widget, Widget::onPause);
             IWidgetParent.forEachByLayer(widget, Widget::onDestroy);
             this.child.clear();
@@ -111,11 +134,14 @@ public class ChangeableWidget extends Widget implements ISyncedWidget, IWidgetPa
             notifyChangeServer();
         }
         if (this.initialised && !this.child.isEmpty()) {
-            IWidgetParent.forEachByLayer(this.child.get(0), widget -> {
+            final Consumer<Widget> detectAndSendChangesWrapper = widget -> {
                 if (widget instanceof ISyncedWidget) {
                     ((ISyncedWidget) widget).detectAndSendChanges(firstTick);
                 }
-            });
+            };
+            Widget widget = this.child.get(0);
+            if (widget instanceof IWidgetParent) detectAndSendChangesWrapper.accept(widget);
+            IWidgetParent.forEachByLayer(widget, detectAndSendChangesWrapper);
             firstTick = false;
         }
     }
