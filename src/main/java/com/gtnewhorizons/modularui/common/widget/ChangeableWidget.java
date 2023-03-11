@@ -65,7 +65,14 @@ public class ChangeableWidget extends Widget implements ISyncedWidget, IWidgetPa
      * Notifies the widget that the child probably changed. Only executed on client and NOT synced to server.
      */
     public void notifyChangeClient() {
-        if (isClient()) notifyChange(false);
+        notifyChangeNoSync();
+    }
+
+    /**
+     * Notifies the widget that the child probably changed. Can execute on both sides and NOT synced.
+     */
+    public void notifyChangeNoSync() {
+        notifyChange(false);
     }
 
     private void notifyChange(boolean sync) {
