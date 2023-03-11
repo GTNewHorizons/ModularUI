@@ -156,7 +156,7 @@ public class ChangeableWidget extends Widget implements ISyncedWidget, IWidgetPa
 
     @Override
     public void readOnServer(int id, PacketBuffer packetBuffer) throws IOException {
-        if (id == 1) { // unused ?
+        if (id == 1) {
             initQueuedChild();
         }
     }
