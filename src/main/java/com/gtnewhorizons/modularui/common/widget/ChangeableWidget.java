@@ -73,6 +73,7 @@ public class ChangeableWidget extends Widget implements ISyncedWidget, IWidgetPa
      */
     public void notifyChangeNoSync() {
         notifyChange(false);
+        initQueuedChild();
     }
 
     private void notifyChange(boolean sync) {
