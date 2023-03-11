@@ -1,8 +1,10 @@
 package com.gtnewhorizons.modularui.common.widget;
 
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,6 +41,7 @@ public class ButtonWidget extends SyncedWidget implements Interactable {
 
     private BiConsumer<ClickData, Widget> clickAction;
     private boolean playClickSound = true;
+    private Supplier<ResourceLocation> playClickSoundResource;
 
     /**
      * Set callback that will be invoked when button is clicked.
@@ -51,6 +54,15 @@ public class ButtonWidget extends SyncedWidget implements Interactable {
     public ButtonWidget setPlayClickSound(boolean playClickSound) {
         this.playClickSound = playClickSound;
         return this;
+    }
+
+    public ButtonWidget setPlayClickSoundResource(ResourceLocation sound) {
+        return setPlayClickSoundResource(() -> sound);
+    }
+
+    public ButtonWidget setPlayClickSoundResource(Supplier<ResourceLocation> soundSupplier) {
+        this.playClickSoundResource = soundSupplier;
+        return setPlayClickSound(true);
     }
 
     public ButtonWidget setHoveredBackground(IDrawable... hoveredBackground) {
@@ -85,7 +97,11 @@ public class ButtonWidget extends SyncedWidget implements Interactable {
                 syncToServer(1, clickData::writeToPacket);
             }
             if (playClickSound) {
-                Interactable.playButtonClickSound();
+                if (playClickSoundResource != null && playClickSoundResource.get() != null) {
+                    Interactable.playButtonClickSound(playClickSoundResource.get());
+                } else {
+                    Interactable.playButtonClickSound();
+                }
             }
             return ClickResult.ACCEPT;
         }
