@@ -118,6 +118,13 @@ public class Scrollable extends Widget
     }
 
     @Override
+    public void onFirstRebuild() {
+        for (Widget widget : children) {
+            widget.setEnabled(intersects(widget));
+        }
+    }
+
+    @Override
     public void addWidgetInternal(Widget widget) {
         if (MultiChildWidget.checkChild(this, widget)) {
             this.children.add(widget);
