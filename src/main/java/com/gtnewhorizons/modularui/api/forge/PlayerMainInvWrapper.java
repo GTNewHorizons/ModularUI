@@ -2,10 +2,13 @@ package com.gtnewhorizons.modularui.api.forge;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
- * Exposes the player inventory WITHOUT the armor inventory as IItemHandler. Also takes core of inserting/extracting
+ * Exposes the player inventory WITHOUT the armor inventory as IItemHandler. Also takes care of inserting/extracting
  * having the same logic as picking up items.
  */
 public class PlayerMainInvWrapper extends RangedWrapper {
@@ -35,6 +38,12 @@ public class PlayerMainInvWrapper extends RangedWrapper {
     }
 
     public InventoryPlayer getInventoryPlayer() {
+        return inventoryPlayer;
+    }
+
+    @Nullable
+    @Override
+    public IInventory getSourceInventory() {
         return inventoryPlayer;
     }
 }

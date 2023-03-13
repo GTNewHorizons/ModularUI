@@ -3,6 +3,8 @@ package com.gtnewhorizons.modularui.api.forge;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
+import org.jetbrains.annotations.Nullable;
+
 public class InvWrapper implements IItemHandlerModifiable {
 
     private final IInventory inv;
@@ -141,6 +143,12 @@ public class InvWrapper implements IItemHandlerModifiable {
     }
 
     public IInventory getInv() {
+        return inv;
+    }
+
+    @Nullable
+    @Override
+    public IInventory getSourceInventory() {
         return inv;
     }
 }

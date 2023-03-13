@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 public interface IItemHandler {
@@ -35,5 +36,17 @@ public interface IItemHandler {
             ret.add(getStackInSlot(i));
         }
         return ret;
+    }
+
+    /**
+     * Get the inventory this slot originates from. Only supposed to be an identifier. Avoid callings methods on this
+     * inventory directly beyond comparing its identity.
+     * 
+     * @return the source inventory, or null if not from any {@link IInventory}, or the source inventory information has
+     *         been lost.
+     */
+    @Nullable
+    default IInventory getSourceInventory() {
+        return null;
     }
 }
