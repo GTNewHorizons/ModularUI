@@ -19,11 +19,16 @@ public class SlotItemHandler extends Slot {
     private final int index;
 
     public SlotItemHandler(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
-        super(emptyInventory, index, xPosition, yPosition);
+        super(
+                itemHandler.getSourceInventory() == null ? emptyInventory : itemHandler.getSourceInventory(),
+                index,
+                xPosition,
+                yPosition);
         this.itemHandler = itemHandler;
         this.index = index;
     }
 
+    @Override
     public boolean isItemValid(ItemStack stack) {
         if (stack != null && this.itemHandler.isItemValid(this.index, stack)) {
             IItemHandler handler = this.getItemHandler();
@@ -44,17 +49,21 @@ public class SlotItemHandler extends Slot {
         }
     }
 
+    @Override
     public ItemStack getStack() {
         return this.getItemHandler().getStackInSlot(this.index);
     }
 
+    @Override
     public void putStack(ItemStack stack) {
         ((IItemHandlerModifiable) this.getItemHandler()).setStackInSlot(this.index, stack);
         this.onSlotChanged();
     }
 
+    @Override
     public void onSlotChange(ItemStack p_75220_1_, ItemStack p_75220_2_) {}
 
+    @Override
     public int getSlotStackLimit() {
         return this.itemHandler.getSlotLimit(this.index);
     }
@@ -79,10 +88,14 @@ public class SlotItemHandler extends Slot {
         }
     }
 
+    @Override
     public boolean canTakeStack(EntityPlayer playerIn) {
-        return this.getItemHandler().extractItem(this.index, 1, true) != null;
+        // make a best effort guess at checking whether this handler allows extraction
+        return this.getItemHandler().getStackInSlot(this.index) == null
+                || this.getItemHandler().extractItem(this.index, 1, true) != null;
     }
 
+    @Override
     @Nullable
     public ItemStack decrStackSize(int amount) {
         return this.getItemHandler().extractItem(this.index, amount, false);
