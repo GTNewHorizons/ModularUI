@@ -1,16 +1,18 @@
 package com.gtnewhorizons.modularui.api.forge;
 
+import java.util.Objects;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public class InvWrapper implements IItemHandlerModifiable {
 
     private final IInventory inv;
 
     public InvWrapper(IInventory inv) {
-        this.inv = inv;
+        this.inv = Objects.requireNonNull(inv);
     }
 
     @Override
@@ -20,29 +22,29 @@ public class InvWrapper implements IItemHandlerModifiable {
 
         InvWrapper that = (InvWrapper) o;
 
-        return getInv().equals(that.getInv());
+        return getSourceInventory().equals(that.getSourceInventory());
     }
 
     @Override
     public int hashCode() {
-        return getInv().hashCode();
+        return getSourceInventory().hashCode();
     }
 
     @Override
     public int getSlots() {
-        return getInv().getSizeInventory();
+        return getSourceInventory().getSizeInventory();
     }
 
     @Override
     public ItemStack getStackInSlot(int slot) {
-        return getInv().getStackInSlot(slot);
+        return getSourceInventory().getStackInSlot(slot);
     }
 
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         if (stack == null) return null;
 
-        ItemStack stackInSlot = getInv().getStackInSlot(slot);
+        ItemStack stackInSlot = getSourceInventory().getStackInSlot(slot);
 
         int m;
         if (stackInSlot != null) {
@@ -50,7 +52,7 @@ public class InvWrapper implements IItemHandlerModifiable {
 
             if (!ItemHandlerHelper.canItemStacksStack(stack, stackInSlot)) return stack;
 
-            if (!getInv().isItemValidForSlot(slot, stack)) return stack;
+            if (!getSourceInventory().isItemValidForSlot(slot, stack)) return stack;
 
             m = Math.min(stack.getMaxStackSize(), getSlotLimit(slot)) - stackInSlot.stackSize;
 
@@ -58,8 +60,8 @@ public class InvWrapper implements IItemHandlerModifiable {
                 if (!simulate) {
                     ItemStack copy = stack.copy();
                     copy.stackSize += stackInSlot.stackSize;
-                    getInv().setInventorySlotContents(slot, copy);
-                    getInv().markDirty();
+                    getSourceInventory().setInventorySlotContents(slot, copy);
+                    getSourceInventory().markDirty();
                 }
 
                 return null;
@@ -69,33 +71,31 @@ public class InvWrapper implements IItemHandlerModifiable {
                 if (!simulate) {
                     ItemStack copy = stack.splitStack(m);
                     copy.stackSize += stackInSlot.stackSize;
-                    getInv().setInventorySlotContents(slot, copy);
-                    getInv().markDirty();
-                    return stack;
+                    getSourceInventory().setInventorySlotContents(slot, copy);
+                    getSourceInventory().markDirty();
                 } else {
                     stack.stackSize -= m;
-                    return stack;
                 }
+                return stack;
             }
         } else {
-            if (!getInv().isItemValidForSlot(slot, stack)) return stack;
+            if (!getSourceInventory().isItemValidForSlot(slot, stack)) return stack;
 
             m = Math.min(stack.getMaxStackSize(), getSlotLimit(slot));
             if (m < stack.stackSize) {
                 // copy the stack to not modify the original one
                 stack = stack.copy();
                 if (!simulate) {
-                    getInv().setInventorySlotContents(slot, stack.splitStack(m));
-                    getInv().markDirty();
-                    return stack;
+                    getSourceInventory().setInventorySlotContents(slot, stack.splitStack(m));
+                    getSourceInventory().markDirty();
                 } else {
                     stack.stackSize -= m;
-                    return stack;
                 }
+                return stack;
             } else {
                 if (!simulate) {
-                    getInv().setInventorySlotContents(slot, stack);
-                    getInv().markDirty();
+                    getSourceInventory().setInventorySlotContents(slot, stack);
+                    getSourceInventory().markDirty();
                 }
                 return null;
             }
@@ -106,7 +106,7 @@ public class InvWrapper implements IItemHandlerModifiable {
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (amount == 0) return null;
 
-        ItemStack stackInSlot = getInv().getStackInSlot(slot);
+        ItemStack stackInSlot = getSourceInventory().getStackInSlot(slot);
 
         if (stackInSlot == null) return null;
 
@@ -121,34 +121,35 @@ public class InvWrapper implements IItemHandlerModifiable {
         } else {
             int m = Math.min(stackInSlot.stackSize, amount);
 
-            ItemStack decrStackSize = getInv().decrStackSize(slot, m);
-            getInv().markDirty();
+            ItemStack decrStackSize = getSourceInventory().decrStackSize(slot, m);
+            getSourceInventory().markDirty();
             return decrStackSize;
         }
     }
 
     @Override
     public void setStackInSlot(int slot, ItemStack stack) {
-        getInv().setInventorySlotContents(slot, stack);
+        getSourceInventory().setInventorySlotContents(slot, stack);
     }
 
     @Override
     public int getSlotLimit(int slot) {
-        return getInv().getInventoryStackLimit();
+        return getSourceInventory().getInventoryStackLimit();
     }
 
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
-        return getInv().isItemValidForSlot(slot, stack);
+        return getSourceInventory().isItemValidForSlot(slot, stack);
     }
 
-    public IInventory getInv() {
+    @NotNull
+    @Override
+    public IInventory getSourceInventory() {
         return inv;
     }
 
-    @Nullable
-    @Override
-    public IInventory getSourceInventory() {
+    @Deprecated
+    public IInventory getInv() {
         return inv;
     }
 }

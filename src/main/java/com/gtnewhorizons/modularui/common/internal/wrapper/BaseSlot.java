@@ -173,7 +173,7 @@ public class BaseSlot extends SlotItemHandler {
         if (getItemHandler() instanceof RangedWrapper) {
             IItemHandlerModifiable itemHandler = ((RangedWrapper) getItemHandler()).getCompose();
             if (itemHandler instanceof InvWrapper) {
-                return ((InvWrapper) itemHandler).getInv() == inventory && index == getSlotIndex();
+                return ((InvWrapper) itemHandler).getSourceInventory() == inventory && index == getSlotIndex();
             }
         }
         return super.isSlotInInventory(inventory, index);
