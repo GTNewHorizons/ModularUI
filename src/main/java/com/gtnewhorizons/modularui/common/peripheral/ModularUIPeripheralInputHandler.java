@@ -2,9 +2,9 @@ package com.gtnewhorizons.modularui.common.peripheral;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 
-import codechicken.nei.guihook.IContainerInputHandler;
-
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
+
+import codechicken.nei.guihook.IContainerInputHandler;
 
 public class ModularUIPeripheralInputHandler implements IContainerInputHandler {
 

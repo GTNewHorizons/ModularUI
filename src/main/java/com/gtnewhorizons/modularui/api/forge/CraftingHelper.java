@@ -17,6 +17,7 @@ import net.minecraft.item.crafting.CraftingManager;
 import org.apache.commons.io.IOUtils;
 
 import com.gtnewhorizons.modularui.ModularUI;
+
 import cpw.mods.fml.common.ModContainer;
 
 public class CraftingHelper {

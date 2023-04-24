@@ -7,12 +7,12 @@ import net.minecraft.network.PacketBuffer;
 
 import org.jetbrains.annotations.NotNull;
 
-import codechicken.lib.math.MathHelper;
-
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.config.Config;
+
+import codechicken.lib.math.MathHelper;
 
 public class ProgressBar extends SyncedWidget {
 

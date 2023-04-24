@@ -12,6 +12,7 @@ import com.gtnewhorizons.modularui.api.screen.IContainerCreator;
 import com.gtnewhorizons.modularui.api.screen.IGuiCreator;
 import com.gtnewhorizons.modularui.common.internal.InternalUIMapper;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
+
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 
 /**

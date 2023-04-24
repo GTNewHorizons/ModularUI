@@ -17,6 +17,7 @@ import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.common.internal.JsonHelper;
 import com.gtnewhorizons.modularui.common.internal.Theme;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class Text implements IDrawable {
