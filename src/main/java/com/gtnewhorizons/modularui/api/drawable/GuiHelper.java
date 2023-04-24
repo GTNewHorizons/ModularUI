@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -394,9 +393,12 @@ public class GuiHelper {
     // applies scissor with gui-space coordinates and sizes
     private static void applyScissor(int x, int y, int w, int h) {
         // translate upper-left to bottom-left
-        ScaledResolution r = ((GuiIngameForge) Minecraft.getMinecraft().ingameGUI).getResolution();
-        int s = r == null ? 1 : r.getScaleFactor();
-        int translatedY = r == null ? 0 : (r.getScaledHeight() - y - h);
+        ScaledResolution r = new ScaledResolution(
+                Minecraft.getMinecraft(),
+                Minecraft.getMinecraft().displayWidth,
+                Minecraft.getMinecraft().displayHeight);
+        int s = r.getScaleFactor();
+        int translatedY = r.getScaledHeight() - y - h;
         GL11.glScissor(x * s, translatedY * s, w * s, h * s);
     }
 
