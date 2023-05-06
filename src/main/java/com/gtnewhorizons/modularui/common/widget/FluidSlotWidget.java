@@ -380,11 +380,20 @@ public class FluidSlotWidget extends SyncedWidget
         heldItemSizedOne.stackSize = 1;
         FluidStack currentFluid = fluidTank.getFluid();
         if (currentFluid == null) return null;
+        // We want to see how much fluid is drained without modifying original fluidstack.
+        currentFluid = currentFluid.copy();
 
         int originalFluidAmount = currentFluid.amount;
         ItemStack filledContainer = fillFluidContainer(currentFluid, heldItemSizedOne);
         if (filledContainer != null) {
             int filledAmount = originalFluidAmount - currentFluid.amount;
+            if (filledAmount < 1) {
+                ModularUI.logger.warn(
+                        "Item {} returned filled item {}, but no fluid was actually drained.",
+                        heldItemSizedOne.getDisplayName(),
+                        filledContainer.getDisplayName());
+                return null;
+            }
             fluidTank.drain(filledAmount, true);
             if (processFullStack) {
                 /*
@@ -402,7 +411,7 @@ public class FluidSlotWidget extends SyncedWidget
         return filledContainer;
     }
 
-    protected ItemStack fillFluid(FluidStack heldFluid, boolean processFullStack) {
+    protected ItemStack fillFluid(@NotNull FluidStack heldFluid, boolean processFullStack) {
         EntityPlayer player = getContext().getPlayer();
         ItemStack heldItem = player.inventory.getItemStack();
         if (heldItem == null || heldItem.stackSize == 0) return null;
