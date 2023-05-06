@@ -5,6 +5,7 @@ import static com.gtnewhorizons.modularui.ModularUI.isGT5ULoaded;
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityItem;
@@ -70,6 +71,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
     private boolean controlsAmount = false;
     private boolean lastShift = false;
     private boolean playClickSound = true;
+    private Function<Fluid, Boolean> filter = fluid -> true;
 
     private Consumer<Widget> onDragAndDropComplete;
 
@@ -439,6 +441,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
         FluidStack currentFluid = fluidTank.getFluid();
         // we are not using aMachine.fill() here anymore, so we need to check for fluid type here ourselves
         if (currentFluid != null && !currentFluid.isFluidEqual(heldFluid)) return null;
+        if (!filter.apply(heldFluid.getFluid())) return null;
 
         int freeSpace = fluidTank.getCapacity() - (currentFluid != null ? currentFluid.amount : 0);
         if (freeSpace <= 0)
@@ -723,6 +726,10 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
     public FluidSlotWidget setPlayClickSound(boolean playClickSound) {
         this.playClickSound = playClickSound;
         return this;
+    }
+
+    public void setFilter(Function<Fluid, Boolean> filter) {
+        this.filter = filter;
     }
 
     public FluidSlotWidget setOnDragAndDropComplete(Consumer<Widget> onDragAndDropComplete) {
