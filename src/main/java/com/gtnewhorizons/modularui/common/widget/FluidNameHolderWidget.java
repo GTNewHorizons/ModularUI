@@ -88,17 +88,20 @@ public class FluidNameHolderWidget extends SyncedWidget
 
     @Override
     public ClickResult onClick(int buttonId, boolean doubleClick) {
+        ClickData clickData = ClickData.create(buttonId, doubleClick);
         ItemStack cursorStack = getContext().getCursor().getItemStack();
-        setFluidName(cursorStack);
-        syncToServer(PACKET_CLICK, buffer -> {});
+        setFluidName(clickData, cursorStack);
+        syncToServer(PACKET_CLICK, clickData::writeToPacket);
         return ClickResult.ACCEPT;
     }
 
     @Override
     public boolean handleDragAndDrop(ItemStack draggedStack, int button) {
-        setFluidName(draggedStack);
+        ClickData clickData = ClickData.create(button, false);
+        setFluidName(clickData, draggedStack);
         syncToServer(PACKET_DND, buffer -> {
             try {
+                clickData.writeToPacket(buffer);
                 buffer.writeItemStackToBuffer(draggedStack);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -118,9 +121,9 @@ public class FluidNameHolderWidget extends SyncedWidget
     @Override
     public void readOnServer(int id, PacketBuffer buf) throws IOException {
         if (id == PACKET_CLICK) {
-            setFluidName(getContext().getCursor().getItemStack());
+            setFluidName(ClickData.readPacket(buf), getContext().getCursor().getItemStack());
         } else if (id == PACKET_DND) {
-            setFluidName(buf.readItemStackFromBuffer());
+            setFluidName(ClickData.readPacket(buf), buf.readItemStackFromBuffer());
         }
     }
 
@@ -133,8 +136,9 @@ public class FluidNameHolderWidget extends SyncedWidget
         }
     }
 
-    private void setFluidName(ItemStack stack) {
+    private void setFluidName(ClickData clickData, ItemStack stack) {
         if (stack == null) {
+            if (clickData.mouseButton != 0) return;
             setter.accept(null);
         } else {
             FluidStack fluid = getFluidForPhantomItem(stack);
