@@ -7,15 +7,13 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
-import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidContainerItem;
@@ -25,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
+import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.NumberFormat;
@@ -36,6 +35,7 @@ import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
+import com.gtnewhorizons.modularui.api.widget.FluidInteractionUtil;
 import com.gtnewhorizons.modularui.api.widget.IDragAndDropHandler;
 import com.gtnewhorizons.modularui.api.widget.IHasStackUnderMouse;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
@@ -44,14 +44,15 @@ import com.gtnewhorizons.modularui.common.internal.Theme;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 
-import codechicken.nei.recipe.StackInfo;
 import gregtech.api.util.GT_Utility;
-import gregtech.common.items.GT_FluidDisplayItem;
 
 @SuppressWarnings("unused")
-public class FluidSlotWidget extends SyncedWidget implements Interactable, IDragAndDropHandler, IHasStackUnderMouse {
+public class FluidSlotWidget extends SyncedWidget
+        implements Interactable, IDragAndDropHandler, IHasStackUnderMouse, FluidInteractionUtil {
 
     public static final Size SIZE = new Size(18, 18);
+    private static final int PACKET_REAL_CLICK = 1, PACKET_SCROLL = 2, PACKET_CONTROLS_AMOUNT = 3,
+            PACKET_DRAG_AND_DROP = 4, PACKET_SYNC_FLUID = 5;
 
     @Nullable
     private IDrawable overlayTexture;
@@ -117,9 +118,9 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
             this.controlsAmount = controlsAmount;
             if (sync) {
                 if (isClient()) {
-                    syncToServer(3, buffer -> buffer.writeBoolean(controlsAmount));
+                    syncToServer(PACKET_CONTROLS_AMOUNT, buffer -> buffer.writeBoolean(controlsAmount));
                 } else {
-                    syncToClient(3, buffer -> buffer.writeBoolean(controlsAmount));
+                    syncToClient(PACKET_CONTROLS_AMOUNT, buffer -> buffer.writeBoolean(controlsAmount));
                 }
             }
         }
@@ -170,36 +171,6 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
                     tooltip.add(Text.localised("modularui.tooltip.shift"));
                 }
             }
-        }
-    }
-
-    protected void addFluidNameInfo(List<Text> tooltip, @NotNull FluidStack fluid) {
-        tooltip.add(new Text(fluid.getLocalizedName()).format(EnumChatFormatting.WHITE));
-        if (isGT5ULoaded) {
-            String formula = GT_FluidDisplayItem.getChemicalFormula(fluid);
-            if (!formula.isEmpty()) {
-                tooltip.add(new Text(formula).format(EnumChatFormatting.YELLOW));
-            }
-        }
-        if (Minecraft.getMinecraft().gameSettings.advancedItemTooltips) {
-            tooltip.add(Text.localised("modularui.fluid.registry", fluid.getFluid().getName()));
-        }
-    }
-
-    /**
-     * Mods can override this to add custom tooltips for the fluid
-     *
-     * @param tooltipContainer add lines here
-     * @param fluid            the nonnull fluid
-     */
-    public void addAdditionalFluidInfo(List<Text> tooltipContainer, @NotNull FluidStack fluid) {
-        if (Interactable.hasShiftDown()) {
-            tooltipContainer.add(Text.localised("modularui.fluid.temperature", fluid.getFluid().getTemperature(fluid)));
-            tooltipContainer.add(
-                    Text.localised(
-                            "modularui.fluid.state",
-                            fluid.getFluid().isGaseous(fluid) ? StatCollector.translateToLocal("modularui.fluid.gas")
-                                    : StatCollector.translateToLocal("modularui.fluid.liquid")));
         }
     }
 
@@ -257,7 +228,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
         if (phantom || cursorStack != null) {
             ClickData clickData = ClickData.create(buttonId, doubleClick);
             ItemStack verifyToken = tryClickContainer(clickData);
-            syncToServer(1, buffer -> {
+            syncToServer(PACKET_REAL_CLICK, buffer -> {
                 clickData.writeToPacket(buffer);
                 try {
                     buffer.writeItemStackToBuffer(verifyToken);
@@ -286,7 +257,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
                 direction *= 100;
             }
             final int finalDirection = direction;
-            syncToServer(2, buffer -> buffer.writeVarIntToBuffer(finalDirection));
+            syncToServer(PACKET_SCROLL, buffer -> buffer.writeVarIntToBuffer(finalDirection));
             return true;
         }
         return false;
@@ -297,7 +268,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
         FluidStack currentFluid = this.fluidTank.getFluid();
         if (init || fluidChanged(currentFluid, this.lastStoredFluid)) {
             this.lastStoredFluid = currentFluid == null ? null : currentFluid.copy();
-            syncToClient(1, buffer -> NetworkUtils.writeFluidStack(buffer, currentFluid));
+            syncToClient(PACKET_SYNC_FLUID, buffer -> NetworkUtils.writeFluidStack(buffer, currentFluid));
             markForUpdate();
         }
     }
@@ -309,27 +280,27 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
 
     @Override
     public void readOnClient(int id, PacketBuffer buf) throws IOException {
-        if (id == 1) {
+        if (id == PACKET_SYNC_FLUID) {
             FluidStack fluidStack = NetworkUtils.readFluidStack(buf);
             fluidTank.drain(Integer.MAX_VALUE, true);
             fluidTank.fill(fluidStack, true);
             notifyTooltipChange();
-        } else if (id == 3) {
+        } else if (id == PACKET_CONTROLS_AMOUNT) {
             this.controlsAmount = buf.readBoolean();
         }
     }
 
     @Override
     public void readOnServer(int id, PacketBuffer buf) throws IOException {
-        if (id == 1) {
+        if (id == PACKET_REAL_CLICK) {
             onClickServer(ClickData.readPacket(buf), buf.readItemStackFromBuffer());
-        } else if (id == 2) {
+        } else if (id == PACKET_SCROLL) {
             if (this.phantom) {
                 tryScrollPhantom(buf.readVarIntFromBuffer());
             }
-        } else if (id == 3) {
+        } else if (id == PACKET_CONTROLS_AMOUNT) {
             this.controlsAmount = buf.readBoolean();
-        } else if (id == 4) {
+        } else if (id == PACKET_DRAG_AND_DROP) {
             tryClickPhantom(ClickData.readPacket(buf), buf.readItemStackFromBuffer());
             if (onDragAndDropComplete != null) {
                 onDragAndDropComplete.accept(this);
@@ -585,7 +556,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
         if (!isPhantom()) return false;
         ClickData clickData = ClickData.create(button, false);
         tryClickPhantom(clickData, draggedStack);
-        syncToServer(4, buffer -> {
+        syncToServer(PACKET_DRAG_AND_DROP, buffer -> {
             try {
                 clickData.writeToPacket(buffer);
                 buffer.writeItemStackToBuffer(draggedStack);
@@ -595,66 +566,6 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
         });
         draggedStack.stackSize = 0;
         return true;
-    }
-
-    /**
-     * Gets fluid actually stored in item. Used for transferring fluid.
-     */
-    protected FluidStack getFluidForRealItem(ItemStack itemStack) {
-        if (isGT5ULoaded) {
-            return GT_Utility.getFluidForFilledItem(itemStack, true);
-        } else {
-            FluidStack fluidStack = FluidContainerRegistry.getFluidForFilledItem(itemStack);
-            if (fluidStack == null && itemStack.getItem() instanceof IFluidContainerItem) {
-                fluidStack = ((IFluidContainerItem) itemStack.getItem()).getFluid(itemStack);
-            }
-            return fluidStack;
-        }
-    }
-
-    /**
-     * Gets fluid for use in phantom slot.
-     */
-    protected FluidStack getFluidForPhantomItem(ItemStack itemStack) {
-        if (isGT5ULoaded) {
-            return GT_Utility.getFluidFromContainerOrFluidDisplay(itemStack);
-        } else {
-            return StackInfo.getFluid(itemStack);
-        }
-    }
-
-    protected ItemStack fillFluidContainer(FluidStack fluidStack, ItemStack itemStack) {
-        ItemStack filledContainer = fillFluidContainerWithoutIFluidContainerItem(fluidStack, itemStack);
-        if (filledContainer == null) {
-            filledContainer = fillFluidContainerWithIFluidContainerItem(fluidStack, itemStack);
-        }
-        return filledContainer;
-    }
-
-    protected ItemStack fillFluidContainerWithoutIFluidContainerItem(FluidStack fluidStack, ItemStack itemStack) {
-        if (isGT5ULoaded) {
-            return GT_Utility.fillFluidContainer(fluidStack, itemStack, true, false);
-        }
-        return null;
-    }
-
-    protected ItemStack fillFluidContainerWithIFluidContainerItem(FluidStack fluidStack, ItemStack itemStack) {
-        if (itemStack.getItem() instanceof IFluidContainerItem) {
-            IFluidContainerItem tContainerItem = (IFluidContainerItem) itemStack.getItem();
-            int tFilledAmount = tContainerItem.fill(itemStack, fluidStack, true);
-            if (tFilledAmount > 0) {
-                fluidStack.amount -= tFilledAmount;
-                return itemStack;
-            }
-        }
-        return null;
-    }
-
-    protected ItemStack getContainerForFilledItemWithoutIFluidContainerItem(ItemStack itemStack) {
-        if (isGT5ULoaded) {
-            return GT_Utility.getContainerForFilledItem(itemStack, false);
-        }
-        return null;
     }
 
     protected static void addItemToPlayerInventory(EntityPlayer player, ItemStack stack) {
