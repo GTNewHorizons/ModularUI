@@ -70,7 +70,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
     private boolean phantom = false;
     private boolean controlsAmount = false;
     private boolean lastShift = false;
-    private boolean playClickSound = true;
+    private boolean playClickSound = false;
     private Function<Fluid, Boolean> filter = fluid -> true;
 
     private Consumer<Widget> onDragAndDropComplete;
