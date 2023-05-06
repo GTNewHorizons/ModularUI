@@ -116,4 +116,11 @@ public interface FluidInteractionUtil {
                                     : StatCollector.translateToLocal("modularui.fluid.liquid")));
         }
     }
+
+    default int getRealCapacity(IFluidTank fluidTank) {
+        if (fluidTank instanceof IOverflowableTank) {
+            return ((IOverflowableTank) fluidTank).getRealCapacity();
+        }
+        return fluidTank.getCapacity();
+    }
 }
