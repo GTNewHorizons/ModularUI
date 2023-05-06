@@ -223,7 +223,7 @@ public class FluidSlotWidget extends SyncedWidget implements Interactable, IDrag
             overlayTexture.draw(Pos2d.ZERO, size, partialTicks);
         }
         if (content != null && (!phantom || controlsAmount)) {
-            String s = NumberFormat.format(content.amount) + "L";
+            String s = NumberFormat.formatLong(content.amount) + "L";
             textRenderer.setAlignment(Alignment.CenterLeft, size.width - contentOffset.x - 1f);
             textRenderer.setPos((int) (contentOffset.x + 0.5f), (int) (size.height - 4.5f));
             textRenderer.draw(s);

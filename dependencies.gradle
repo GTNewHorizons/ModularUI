@@ -10,4 +10,5 @@ dependencies {
         transitive = false
         exclude group:"com.github.GTNewHorizons", module:"ModularUI"
     }
+    compileOnly("com.github.GTNewHorizons:Applied-Energistics-2-Unofficial:rv3-beta-204-GTNH:dev") { transitive = false }
 }
