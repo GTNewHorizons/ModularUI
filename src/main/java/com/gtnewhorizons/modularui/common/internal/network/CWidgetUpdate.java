@@ -46,7 +46,8 @@ public class CWidgetUpdate implements IPacket {
                 e.printStackTrace();
             }
         } else {
-            ModularUI.logger.error("Expected ModularUIContainer on server, but got {}", container);
+            // hopefully harmless error, caused by some kind of network lag
+            // ModularUI.logger.error("Expected ModularUIContainer on server, but got {}", container);
         }
         return null;
     }
