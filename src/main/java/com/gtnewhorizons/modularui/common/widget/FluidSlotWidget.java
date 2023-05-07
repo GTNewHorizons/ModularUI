@@ -648,8 +648,9 @@ public class FluidSlotWidget extends SyncedWidget
         return this;
     }
 
-    public void setFilter(Function<Fluid, Boolean> filter) {
+    public FluidSlotWidget setFilter(Function<Fluid, Boolean> filter) {
         this.filter = filter;
+        return this;
     }
 
     public FluidSlotWidget setOnDragAndDropComplete(Consumer<Widget> onDragAndDropComplete) {
