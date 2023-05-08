@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.common.fluid.IOverflowableTank;
 
+import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.recipe.StackInfo;
 import gregtech.api.util.GT_Utility;
 import gregtech.common.items.GT_FluidDisplayItem;
@@ -114,6 +115,10 @@ public interface FluidInteractionUtil {
                             "modularui.fluid.state",
                             fluid.getFluid().isGaseous(fluid) ? StatCollector.translateToLocal("modularui.fluid.gas")
                                     : StatCollector.translateToLocal("modularui.fluid.liquid")));
+            String amountDetail = GuiContainerManager.fluidAmountDetails(fluid);
+            if (amountDetail != null) {
+                tooltipContainer.add(new Text(amountDetail).format(EnumChatFormatting.GRAY));
+            }
         }
     }
 
