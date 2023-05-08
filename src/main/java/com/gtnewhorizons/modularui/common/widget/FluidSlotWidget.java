@@ -74,6 +74,7 @@ public class FluidSlotWidget extends SyncedWidget
     private boolean playClickSound = false;
     private Function<Fluid, Boolean> filter = fluid -> true;
 
+    private Consumer<FluidSlotWidget> onClickContainer;
     private Consumer<Widget> onDragAndDropComplete;
 
     public FluidSlotWidget(IFluidTank fluidTank) {
@@ -228,6 +229,9 @@ public class FluidSlotWidget extends SyncedWidget
         if (phantom || cursorStack != null) {
             ClickData clickData = ClickData.create(buttonId, doubleClick);
             ItemStack verifyToken = tryClickContainer(clickData);
+            if (onClickContainer != null) {
+                onClickContainer.accept(this);
+            }
             syncToServer(PACKET_REAL_CLICK, buffer -> {
                 clickData.writeToPacket(buffer);
                 try {
@@ -311,6 +315,9 @@ public class FluidSlotWidget extends SyncedWidget
 
     protected void onClickServer(ClickData clickData, ItemStack clientVerifyToken) {
         ItemStack serverVerifyToken = tryClickContainer(clickData);
+        if (onClickContainer != null) {
+            onClickContainer.accept(this);
+        }
         // similar to what NetHandlerPlayServer#processClickWindow does
         if (!ItemStack.areItemStacksEqual(clientVerifyToken, serverVerifyToken)) {
             ((EntityPlayerMP) getContext().getPlayer()).sendContainerToPlayer(getContext().getContainer());
@@ -650,6 +657,11 @@ public class FluidSlotWidget extends SyncedWidget
 
     public FluidSlotWidget setFilter(Function<Fluid, Boolean> filter) {
         this.filter = filter;
+        return this;
+    }
+
+    public FluidSlotWidget setOnClickContainer(Consumer<FluidSlotWidget> onClickContainer) {
+        this.onClickContainer = onClickContainer;
         return this;
     }
 
