@@ -1,7 +1,9 @@
 package com.gtnewhorizons.modularui.api.drawable;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
@@ -34,6 +36,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiHelper {
+
+    private static final Set<Fluid> errorFluids = new HashSet<>();
 
     // ==== Screen helpers ====
 
@@ -290,6 +294,14 @@ public class GuiHelper {
         Fluid fluid = content.getFluid();
         IIcon fluidStill = fluid.getIcon(content);
         int fluidColor = fluid.getColor(content);
+
+        if (fluidStill == null) {
+            if (!errorFluids.contains(fluid)) {
+                ModularUI.logger.warn("Fluid `{}` does not have icon!", fluid.getName());
+                errorFluids.add(fluid);
+            }
+            return;
+        }
 
         if (ModularUI.isHodgepodgeLoaded && fluidStill instanceof IPatchedTextureAtlasSprite) {
             ((IPatchedTextureAtlasSprite) fluidStill).markNeedsAnimationUpdate();
