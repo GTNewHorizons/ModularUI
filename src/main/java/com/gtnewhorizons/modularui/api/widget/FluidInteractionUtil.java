@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidTank;
@@ -98,6 +99,12 @@ public interface FluidInteractionUtil {
         }
         if (Minecraft.getMinecraft().gameSettings.advancedItemTooltips) {
             tooltip.add(Text.localised("modularui.fluid.registry", fluid.getFluid().getName()));
+            if (Interactable.hasShiftDown()) {
+                tooltip.add(
+                        Text.localised(
+                                "modularui.fluid.unique_registry",
+                                FluidRegistry.getDefaultFluidName(fluid.getFluid())));
+            }
         }
     }
 

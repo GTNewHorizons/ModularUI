@@ -11,6 +11,7 @@ modularui.fluid.phantom.amount=§9Amount: %,d L
 modularui.fluid.phantom.control=§7Scroll wheel up increases amount, down decreases.\nShift[§6x10§7],Ctrl[§ex100§7],Shift+Ctrl[§ax1000§7]\nRight click increases amount, left click decreases.\nShift + left click to clear.
 modularui.item.phantom.control=§7Scroll wheel up increases amount, down decreases.\n§7Shift[§6x8§7],Ctrl[§ex64§7],Shift+Ctrl[§ax512§7]\n§7Right click increases amount, left click decreases.\n§7Shift + left click to clear.
 modularui.fluid.registry=§7Registry: %s
+modularui.fluid.unique_registry=§7Unique registry key: %s
 modularui.fluid.temperature=§cTemperature: %,d K
 modularui.fluid.state=§aState: %s
 modularui.fluid.gas=Gas
