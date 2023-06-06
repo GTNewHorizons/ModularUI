@@ -115,6 +115,7 @@ public class FluidNameHolderWidget extends SyncedWidget
     public void readOnClient(int id, PacketBuffer buf) throws IOException {
         if (id == PACKET_SYNC) {
             setter.accept(NetworkUtils.readStringSafe(buf));
+            notifyTooltipChange();
         }
     }
 
