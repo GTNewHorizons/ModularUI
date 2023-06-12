@@ -8,6 +8,7 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -412,6 +413,15 @@ public class GuiHelper {
         int s = r.getScaleFactor();
         int translatedY = r.getScaledHeight() - y - h;
         GL11.glScissor(x * s, translatedY * s, w * s, h * s);
+    }
+
+    public static FontRenderer getFontRenderer(ItemStack item) {
+        FontRenderer defaultFont = Minecraft.getMinecraft().fontRenderer;
+        if (item == null) return defaultFont;
+        // noinspection DataFlowIssue
+        FontRenderer font = item.getItem().getFontRenderer(item);
+        if (font == null) return defaultFont;
+        return font;
     }
 
     public static void afterRenderItemAndEffectIntoGUI(ItemStack stack) {

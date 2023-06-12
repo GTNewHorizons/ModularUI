@@ -229,8 +229,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         GlStateManager.enableDepth();
         this.zLevel = 200.0F;
         itemRender.zLevel = 200.0F;
-        FontRenderer font = stack.getItem().getFontRenderer(stack);
-        if (font == null) font = fontRenderer;
+        FontRenderer font = GuiHelper.getFontRenderer(stack);
         itemRender.renderItemAndEffectIntoGUI(font, mc.getTextureManager(), stack, x, y);
         itemRender.renderItemOverlayIntoGUI(
                 font,
@@ -414,10 +413,8 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
 
     protected void renderToolTip(ItemStack stack, int x, int y, List<String> extraLines,
             Function<List<String>, List<String>> overwriteItemStackTooltip) {
-        FontRenderer font = null;
         List<String> lines = new ArrayList<>();
         if (stack != null) {
-            font = stack.getItem().getFontRenderer(stack);
             lines.addAll(getItemTooltip(stack));
         }
         lines.addAll(extraLines);
@@ -425,10 +422,9 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
             lines = overwriteItemStackTooltip.apply(lines);
         }
 
-        FontRenderer fontToUse = font == null ? fontRenderer : font;
         applyNEITooltipHandler(lines, stack);
         // see GuiContainerManager#renderToolTips for these magic numbers
-        GuiContainerManager.drawPagedTooltip(fontToUse, x + 12, y - 12, lines);
+        GuiContainerManager.drawPagedTooltip(GuiHelper.getFontRenderer(stack), x + 12, y - 12, lines);
     }
 
     public List<String> getItemTooltip(ItemStack stack) {

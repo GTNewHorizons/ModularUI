@@ -48,7 +48,7 @@ public class ItemDrawable implements IDrawable {
         GlStateManager.enableDepth();
         GlStateManager.scale(width / 16, height / 16, 1);
         ModularGui.getItemRenderer().renderItemAndEffectIntoGUI(
-                item.getItem().getFontRenderer(item),
+                GuiHelper.getFontRenderer(item),
                 Minecraft.getMinecraft().getTextureManager(),
                 item,
                 (int) x,
