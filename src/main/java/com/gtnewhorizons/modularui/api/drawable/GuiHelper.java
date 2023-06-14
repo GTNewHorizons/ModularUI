@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -30,8 +31,13 @@ import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
+import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
+import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 import com.mitchej123.hodgepodge.textures.IPatchedTextureAtlasSprite;
 
+import codechicken.lib.gui.GuiDraw;
+import codechicken.nei.guihook.GuiContainerManager;
+import codechicken.nei.guihook.IContainerTooltipHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -427,7 +433,7 @@ public class GuiHelper {
     public static void afterRenderItemAndEffectIntoGUI(ItemStack stack) {
         // asked by Forge :shrug:
         // RenderItem#L627
-        if (stack.hasEffect()) {
+        if (stack.hasEffect(0)) {
             GL11.glDepthFunc(GL11.GL_EQUAL);
             GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glDepthMask(false);
@@ -439,6 +445,42 @@ public class GuiHelper {
             GL11.glEnable(GL11.GL_LIGHTING);
             GL11.glDepthFunc(GL11.GL_LEQUAL);
             GL11.glDisable(GL11.GL_BLEND);
+        }
+    }
+
+    public static List<String> getItemTooltip(ItemStack stack) {
+        GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
+        if (!(currentScreen instanceof ModularGui)) return Collections.emptyList();
+        ModularGui modularGui = (ModularGui) currentScreen;
+        ModularUIContext context = modularGui.getContext();
+        // noinspection unchecked
+        List<String> tooltips = stack.getTooltip(context.getPlayer(), modularGui.mc.gameSettings.advancedItemTooltips);
+        for (int i = 0; i < tooltips.size(); i++) {
+            if (i == 0) {
+                tooltips.set(0, stack.getRarity().rarityColor.toString() + tooltips.get(0));
+            } else {
+                tooltips.set(i, EnumChatFormatting.GRAY + tooltips.get(i));
+            }
+        }
+        if (tooltips.size() > 0) {
+            tooltips.set(0, tooltips.get(0) + GuiDraw.TOOLTIP_LINESPACE); // add space after 'title'
+        }
+        applyNEITooltipHandler(tooltips, stack, context);
+        return tooltips;
+    }
+
+    private static void applyNEITooltipHandler(List<String> tooltip, ItemStack stack, ModularUIContext context) {
+        GuiContainerManager.applyItemCountDetails(tooltip, stack);
+
+        if (GuiContainerManager.getManager() == null) return;
+        if (GuiContainerManager.shouldShowTooltip(context.getScreen())) {
+            for (IContainerTooltipHandler handler : GuiContainerManager.getManager().instanceTooltipHandlers)
+                tooltip = handler.handleItemTooltip(
+                        context.getScreen(),
+                        stack,
+                        context.getCursor().getX(),
+                        context.getCursor().getY(),
+                        tooltip);
         }
     }
 }
