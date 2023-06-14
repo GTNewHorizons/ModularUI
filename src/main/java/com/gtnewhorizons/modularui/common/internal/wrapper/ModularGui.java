@@ -48,7 +48,6 @@ import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.config.Config;
 import com.gtnewhorizons.modularui.mixins.GuiContainerAccessor;
 
-import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.ItemPanels;
 import codechicken.nei.NEIClientUtils;
 import codechicken.nei.VisiblityData;
@@ -58,7 +57,6 @@ import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.guihook.IContainerDrawHandler;
 import codechicken.nei.guihook.IContainerInputHandler;
 import codechicken.nei.guihook.IContainerObjectHandler;
-import codechicken.nei.guihook.IContainerTooltipHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -415,42 +413,14 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
             Function<List<String>, List<String>> overwriteItemStackTooltip) {
         List<String> lines = new ArrayList<>();
         if (stack != null) {
-            lines.addAll(getItemTooltip(stack));
+            lines.addAll(GuiHelper.getItemTooltip(stack));
         }
         lines.addAll(extraLines);
         if (overwriteItemStackTooltip != null) {
             lines = overwriteItemStackTooltip.apply(lines);
         }
-
-        applyNEITooltipHandler(lines, stack);
         // see GuiContainerManager#renderToolTips for these magic numbers
         GuiContainerManager.drawPagedTooltip(GuiHelper.getFontRenderer(stack), x + 12, y - 12, lines);
-    }
-
-    public List<String> getItemTooltip(ItemStack stack) {
-        // noinspection unchecked
-        List<String> tooltips = stack.getTooltip(context.getPlayer(), this.mc.gameSettings.advancedItemTooltips);
-        for (int i = 0; i < tooltips.size(); i++) {
-            if (i == 0) {
-                tooltips.set(0, stack.getRarity().rarityColor.toString() + tooltips.get(0));
-            } else {
-                tooltips.set(i, EnumChatFormatting.GRAY + tooltips.get(i));
-            }
-        }
-        if (tooltips.size() > 0) {
-            tooltips.set(0, tooltips.get(0) + GuiDraw.TOOLTIP_LINESPACE); // add space after 'title'
-        }
-        return tooltips;
-    }
-
-    public void applyNEITooltipHandler(List<String> tooltip, ItemStack stack) {
-        GuiContainerManager.applyItemCountDetails(tooltip, stack);
-
-        if (GuiContainerManager.getManager() == null) return;
-        if (GuiContainerManager.shouldShowTooltip(this)) {
-            for (IContainerTooltipHandler handler : GuiContainerManager.getManager().instanceTooltipHandlers)
-                tooltip = handler.handleItemTooltip(this, stack, getCursor().getX(), getCursor().getY(), tooltip);
-        }
     }
 
     protected void drawVanillaElements(int mouseX, int mouseY, float partialTicks) {

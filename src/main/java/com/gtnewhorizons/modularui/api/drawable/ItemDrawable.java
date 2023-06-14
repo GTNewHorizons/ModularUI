@@ -2,7 +2,6 @@ package com.gtnewhorizons.modularui.api.drawable;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.function.Supplier;
 
 import net.minecraft.client.Minecraft;
@@ -70,11 +69,7 @@ public class ItemDrawable implements IDrawable {
         Widget widget = asWidget();
         return (DrawableWidget) widget.setUpdateTooltipEveryTick(true).dynamicTooltip(() -> {
             if (item.get() == null) return Collections.emptyList();
-            ModularGui gui = widget.getContext().getScreen();
-
-            List<String> lines = new ArrayList<>(gui.getItemTooltip(item.get()));
-            gui.applyNEITooltipHandler(lines, item.get());
-            return lines;
+            return new ArrayList<>(GuiHelper.getItemTooltip(item.get()));
         });
     }
 
