@@ -173,7 +173,7 @@ public class TextRenderer {
         if (simulate) {
             return getFontRenderer().getStringWidth(text);
         }
-        GlStateManager.disableBlend();
+        GL11.glDisable(GL11.GL_BLEND);
         GlStateManager.pushMatrix();
         GlStateManager.scale(scale, scale, 0f);
         GL11.glDisable(GL11.GL_LIGHTING);
@@ -181,7 +181,7 @@ public class TextRenderer {
         GL11.glColor4f(1f, 1f, 1f, 1f);
         GL11.glEnable(GL11.GL_LIGHTING);
         GlStateManager.popMatrix();
-        GlStateManager.enableBlend();
+        GL11.glEnable(GL11.GL_BLEND);
         return width * scale;
     }
 

@@ -1,11 +1,11 @@
 package com.gtnewhorizons.modularui.api.drawable.shapes;
 
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 
 import org.jetbrains.annotations.Contract;
 import org.lwjgl.opengl.GL11;
 
-import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.math.Color;
 
@@ -52,15 +52,11 @@ public class Circle implements IDrawable {
 
     @Override
     public void draw(float x0, float y0, float width, float height, float partialTicks) {
-        GlStateManager.disableTexture2D();
-        GlStateManager.enableBlend();
-        GlStateManager.enableAlpha();
-        GlStateManager.tryBlendFuncSeparate(
-                GlStateManager.SourceFactor.SRC_ALPHA,
-                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-                GlStateManager.SourceFactor.ONE,
-                GlStateManager.DestFactor.ZERO);
-        GlStateManager.shadeModel(7425);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+        GL11.glShadeModel(GL11.GL_SMOOTH);
         Tessellator tessellator = Tessellator.instance;
         float x_2 = x0 + width / 2, y_2 = y0 + height / 2;
         tessellator.startDrawing(GL11.GL_TRIANGLE_FAN);
@@ -84,9 +80,9 @@ public class Circle implements IDrawable {
             tessellator.addVertex(x, y, 0.0f);
         }
         tessellator.draw();
-        GlStateManager.shadeModel(7424);
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
-        GlStateManager.enableTexture2D();
+        GL11.glShadeModel(GL11.GL_FLAT);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
     }
 }

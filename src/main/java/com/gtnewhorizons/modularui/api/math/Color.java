@@ -8,11 +8,11 @@ import javax.annotation.Nullable;
 import net.minecraft.util.MathHelper;
 
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.gtnewhorizons.modularui.ModularUI;
-import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.common.internal.JsonHelper;
 
 import cpw.mods.fml.relauncher.Side;
@@ -247,7 +247,7 @@ public class Color implements Iterable<Integer> {
     @SideOnly(Side.CLIENT)
     public static void setGlColor(int color) {
         if (color == 0) {
-            GlStateManager.color(0, 0, 0, 0);
+            GL11.glColor4f(0, 0, 0, 0);
             return;
         }
         float a = getAlphaF(color);
@@ -255,7 +255,7 @@ public class Color implements Iterable<Integer> {
         float g = getGreenF(color);
         float b = getBlueF(color);
         if (a == 0) a = 1f;
-        GlStateManager.color(r, g, b, a);
+        GL11.glColor4f(r, g, b, a);
     }
 
     @Nullable

@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.opengl.GL11;
 
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.widget.Widget;
@@ -44,7 +45,7 @@ public class ItemDrawable implements IDrawable {
         if (item == null || item.getItem() == null) return;
         GlStateManager.pushMatrix();
         RenderHelper.enableGUIStandardItemLighting();
-        GlStateManager.enableDepth();
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
         GlStateManager.scale(width / 16, height / 16, 1);
         ModularGui.getItemRenderer().renderItemAndEffectIntoGUI(
                 GuiHelper.getFontRenderer(item),
@@ -54,9 +55,9 @@ public class ItemDrawable implements IDrawable {
                 (int) y);
         GuiHelper.afterRenderItemAndEffectIntoGUI(item);
 
-        GlStateManager.disableDepth();
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
         RenderHelper.enableStandardItemLighting();
-        GlStateManager.disableLighting();
+        GL11.glDisable(GL11.GL_LIGHTING);
         GlStateManager.popMatrix();
     }
 

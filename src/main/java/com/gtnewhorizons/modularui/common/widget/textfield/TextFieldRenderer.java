@@ -137,17 +137,17 @@ public class TextFieldRenderer extends TextRenderer {
         Tessellator tessellator = Tessellator.instance;
         GL11.glEnable(GL11.GL_LIGHT0);
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-        GlStateManager.color(red, green, blue, alpha);
-        GlStateManager.disableTexture2D();
+        GL11.glColor4f(red, green, blue, alpha);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
         tessellator.startDrawingQuads();
         tessellator.addVertex(x0, y1, 0.0D);
         tessellator.addVertex(x1, y1, 0.0D);
         tessellator.addVertex(x1, y0, 0.0D);
         tessellator.addVertex(x0, y0, 0.0D);
         tessellator.draw();
-        GlStateManager.disableColorLogic();
-        GlStateManager.enableTexture2D();
-        GlStateManager.color(1, 1, 1, 1);
+        GL11.glDisable(GL11.GL_COLOR_LOGIC_OP);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glColor4f(1, 1, 1, 1);
     }
 
     @SideOnly(Side.CLIENT)
@@ -174,20 +174,20 @@ public class TextFieldRenderer extends TextRenderer {
         float alpha = Color.getAlphaF(color);
         if (alpha == 0) alpha = 1f;
         Tessellator tessellator = Tessellator.instance;
-        GlStateManager.disableBlend();
+        GL11.glDisable(GL11.GL_BLEND);
         GlStateManager.pushMatrix();
         GlStateManager.scale(scale, scale, 0);
-        GlStateManager.color(red, green, blue, alpha);
-        GlStateManager.disableTexture2D();
+        GL11.glColor4f(red, green, blue, alpha);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
         tessellator.startDrawingQuads();
         tessellator.addVertex(x0, y1, 0.0D);
         tessellator.addVertex(x1, y1, 0.0D);
         tessellator.addVertex(x1, y0, 0.0D);
         tessellator.addVertex(x0, y0, 0.0D);
         tessellator.draw();
-        GlStateManager.color(1, 1, 1, 1);
-        GlStateManager.enableTexture2D();
+        GL11.glColor4f(1, 1, 1, 1);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
         GlStateManager.popMatrix();
-        GlStateManager.enableBlend();
+        GL11.glEnable(GL11.GL_BLEND);
     }
 }

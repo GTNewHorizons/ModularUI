@@ -16,6 +16,7 @@ import net.minecraft.util.StatCollector;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonObject;
 import com.gtnewhorizons.modularui.ModularUI;
@@ -255,7 +256,7 @@ public abstract class Widget {
             float y = (windowPos.y + windowSize.height / 2f * (1 - scale) + (pos.y - windowPos.y) * scale) * sf;
             GlStateManager.translate(x, y, 0);
             IDrawable.applyTintColor(getWindow().getGuiTint());
-            GlStateManager.enableBlend();
+            GL11.glEnable(GL11.GL_BLEND);
             drawBackground(partialTicks);
             draw(partialTicks);
             GlStateManager.popMatrix();

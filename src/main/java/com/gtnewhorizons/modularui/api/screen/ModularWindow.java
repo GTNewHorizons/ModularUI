@@ -9,6 +9,8 @@ import java.util.function.Consumer;
 
 import net.minecraft.entity.player.EntityPlayer;
 
+import org.lwjgl.opengl.GL11;
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
@@ -297,7 +299,7 @@ public class ModularWindow implements IWidgetParent {
             for (Widget widget : getChildren()) {
                 widget.drawInternal(partialTicks);
             }
-            GlStateManager.color(1, 1, 1, 1);
+            GL11.glColor4f(1, 1, 1, 1);
             GlStateManager.popMatrix();
         }
     }
@@ -488,7 +490,7 @@ public class ModularWindow implements IWidgetParent {
         /**
          * Set position of this Window displayed. {@link Alignment#getAlignedPos(Size, Size)} is useful for specifying
          * rough location. Center is selected as default.
-         * 
+         *
          * @param pos BiFunction providing {@link Pos2d} out of sizes of game screen and this window
          */
         public Builder setPos(PosProvider pos) {

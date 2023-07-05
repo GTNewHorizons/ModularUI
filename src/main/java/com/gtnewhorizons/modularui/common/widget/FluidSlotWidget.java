@@ -24,7 +24,6 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
 import com.gtnewhorizons.modularui.ModularUI;
-import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.NumberFormat;
 import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
@@ -205,9 +204,9 @@ public class FluidSlotWidget extends SyncedWidget
         if (isHovering() && !getContext().getCursor().hasDraggable()) {
             GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glEnable(GL11.GL_BLEND);
-            GlStateManager.colorMask(true, true, true, false);
+            GL11.glColorMask(true, true, true, false);
             ModularGui.drawSolidRect(1, 1, 16, 16, Theme.INSTANCE.getSlotHighlight());
-            GlStateManager.colorMask(true, true, true, true);
+            GL11.glColorMask(true, true, true, true);
             GL11.glDisable(GL11.GL_BLEND);
         }
     }

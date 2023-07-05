@@ -24,9 +24,9 @@ import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import com.gtnewhorizons.modularui.ModularUI;
-import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
@@ -159,10 +159,10 @@ public class GuiHelper {
             tooltipX += -24 - tooltipTextWidth;
         }
 
-        GlStateManager.disableRescaleNormal();
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
         RenderHelper.disableStandardItemLighting();
-        GlStateManager.disableLighting();
-        GlStateManager.disableDepth();
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
 
         final int zLevel = 300;
         int backgroundColor = 0xF0100010;
@@ -247,10 +247,10 @@ public class GuiHelper {
         renderer.setColor(0xffffff);
         renderer.drawMeasuredLines(measuredLines, colors, hasSpaceAfterFirstLine);
 
-        GlStateManager.enableLighting();
-        GlStateManager.enableDepth();
+        GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
         RenderHelper.enableStandardItemLighting();
-        GlStateManager.enableRescaleNormal();
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
     }
 
     // ==== Draw helpers ====
@@ -266,15 +266,11 @@ public class GuiHelper {
         float endGreen = (float) (endColor >> 8 & 255) / 255.0F;
         float endBlue = (float) (endColor & 255) / 255.0F;
 
-        GlStateManager.disableTexture2D();
-        GlStateManager.enableBlend();
-        GlStateManager.disableAlpha();
-        GlStateManager.tryBlendFuncSeparate(
-                GlStateManager.SourceFactor.SRC_ALPHA,
-                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-                GlStateManager.SourceFactor.ONE,
-                GlStateManager.DestFactor.ZERO);
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+        GL11.glShadeModel(GL11.GL_SMOOTH);
 
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawing(GL11.GL_QUADS);
@@ -288,10 +284,10 @@ public class GuiHelper {
         tessellator.addVertex(right, bottom, zLevel);
         tessellator.draw();
 
-        GlStateManager.shadeModel(GL11.GL_FLAT);
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
-        GlStateManager.enableTexture2D();
+        GL11.glShadeModel(GL11.GL_FLAT);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
     }
 
     public static void drawFluidTexture(FluidStack content, float x0, float y0, float width, float height, float z) {
@@ -314,7 +310,7 @@ public class GuiHelper {
             ((IPatchedTextureAtlasSprite) fluidStill).markNeedsAnimationUpdate();
         }
 
-        GlStateManager.enableBlend();
+        GL11.glEnable(GL11.GL_BLEND);
         Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 
         float u0 = fluidStill.getMinU(), u1 = fluidStill.getMaxU(), v0 = fluidStill.getMinV(),
@@ -336,7 +332,7 @@ public class GuiHelper {
         tessellator.setTextureUV(u0, v0);
         tessellator.addVertex(x0, y0, z);
         tessellator.draw();
-        GlStateManager.disableBlend();
+        GL11.glDisable(GL11.GL_BLEND);
     }
 
     // ==== Scissor helpers ====

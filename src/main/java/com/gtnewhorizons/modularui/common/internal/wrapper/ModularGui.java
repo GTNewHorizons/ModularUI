@@ -26,6 +26,7 @@ import net.minecraft.util.EnumChatFormatting;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
@@ -127,17 +128,17 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         int i = this.guiLeft;
         int j = this.guiTop;
         this.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
-        GlStateManager.disableLighting();
-        GlStateManager.disableDepth();
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
         // mainly for invtweaks compat
         drawVanillaElements(mouseX, mouseY, partialTicks);
         GlStateManager.pushMatrix();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager.enableRescaleNormal();
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         getAccessor().setHoveredSlot(null);
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
-        GlStateManager.enableRescaleNormal();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderHelper.enableGUIStandardItemLighting();
         if (shouldShowNEI()) {
             // Copied from GuiContainerManager#renderObjects but without translation
@@ -153,7 +154,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
             }
         }
         GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderHelper.disableStandardItemLighting();
         this.drawGuiContainerForegroundLayer(mouseX, mouseY);
         RenderHelper.enableGUIStandardItemLighting();
@@ -164,7 +165,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
             getAccessor().setHoveredSlot(((IVanillaSlot) hovered).getMcSlot());
         }
 
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.pushMatrix();
         GlStateManager.translate(i, j, 0);
         GlStateManager.popMatrix();
@@ -210,21 +211,21 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         GlStateManager.popMatrix();
 
         if (Config.debug) {
-            GlStateManager.disableDepth();
-            GlStateManager.disableLighting();
-            GlStateManager.enableBlend();
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL11.GL_BLEND);
             drawDebugScreen();
-            GlStateManager.color(1f, 1f, 1f, 1f);
+            GL11.glColor4f(1f, 1f, 1f, 1f);
         }
-        GlStateManager.enableLighting();
-        GlStateManager.enableDepth();
-        GlStateManager.enableRescaleNormal();
+        GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         RenderHelper.enableStandardItemLighting();
     }
 
     private void drawItemStack(ItemStack stack, int x, int y, String altText) {
         GlStateManager.translate(0.0F, 0.0F, 32.0F);
-        GlStateManager.enableDepth();
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
         this.zLevel = 200.0F;
         itemRender.zLevel = 200.0F;
         FontRenderer font = GuiHelper.getFontRenderer(stack);
@@ -239,7 +240,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         GuiHelper.afterRenderItemAndEffectIntoGUI(stack);
         this.zLevel = 0.0F;
         itemRender.zLevel = 0.0F;
-        GlStateManager.disableDepth();
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
     }
 
     @Override
@@ -256,10 +257,10 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         context.forEachWindowBottomToTop(window -> window.frameUpdate(partialTicks));
         drawDefaultBackground();
 
-        GlStateManager.disableRescaleNormal();
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
         RenderHelper.disableStandardItemLighting();
-        GlStateManager.disableLighting();
-        GlStateManager.disableDepth();
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
 
         for (ModularWindow window : context.getOpenWindowsReversed()) {
             if (window.isEnabled()) {
@@ -267,8 +268,8 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
             }
         }
 
-        GlStateManager.enableRescaleNormal();
-        GlStateManager.enableLighting();
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        GL11.glEnable(GL11.GL_LIGHTING);
         RenderHelper.enableStandardItemLighting();
 
         this.partialTicks = partialTicks;
@@ -277,10 +278,10 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         GlStateManager.pushMatrix();
-        GlStateManager.disableRescaleNormal();
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
         RenderHelper.disableStandardItemLighting();
-        GlStateManager.disableLighting();
-        GlStateManager.disableDepth();
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
 
         Widget hovered = context.getCursor().getHovered();
         if (shouldRenderOurTooltip()) {
@@ -312,7 +313,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                             hovered.isTooltipHasSpaceAfterFirstLine());
                 }
             }
-            GlStateManager.disableDepth();
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
         }
 
         if (context.getCurrentWindow().isEnabled()) {
@@ -320,8 +321,8 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         }
         context.getCursor().draw(partialTicks);
 
-        GlStateManager.enableRescaleNormal();
-        GlStateManager.enableLighting();
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        GL11.glEnable(GL11.GL_LIGHTING);
         RenderHelper.enableStandardItemLighting();
         GlStateManager.popMatrix();
     }
@@ -729,20 +730,20 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
     @SideOnly(Side.CLIENT)
     public static void drawSolidRect(float x, float y, float width, float height, int color) {
         drawRect(x, y, x + width, y + height, color);
-        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-        GlStateManager.enableBlend();
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        GL11.glEnable(GL11.GL_BLEND);
     }
 
     @SideOnly(Side.CLIENT)
     public static void drawText(String text, float x, float y, float scale, int color, boolean shadow) {
         FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
-        GlStateManager.disableBlend();
+        GL11.glDisable(GL11.GL_BLEND);
         GlStateManager.pushMatrix();
         GlStateManager.scale(scale, scale, 0f);
         float sf = 1 / scale;
         fontRenderer.drawString(text, (int) (x * sf), (int) (y * sf), color, shadow);
         GlStateManager.popMatrix();
-        GlStateManager.enableBlend();
+        GL11.glEnable(GL11.GL_BLEND);
     }
 
     public static void drawRect(float left, float top, float right, float bottom, int color) {
@@ -763,14 +764,10 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         float g = (float) (color >> 8 & 255) / 255.0F;
         float b = (float) (color & 255) / 255.0F;
         Tessellator tessellator = Tessellator.instance;
-        GlStateManager.enableBlend();
-        GlStateManager.disableTexture2D();
-        GlStateManager.tryBlendFuncSeparate(
-                GlStateManager.SourceFactor.SRC_ALPHA,
-                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-                GlStateManager.SourceFactor.ONE,
-                GlStateManager.DestFactor.ZERO);
-        GlStateManager.color(r, g, b, a);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+        GL11.glColor4f(r, g, b, a);
         tessellator.startDrawingQuads();
         // bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
         tessellator.addVertex(left, bottom, 0.0D);
@@ -778,8 +775,8 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         tessellator.addVertex(right, top, 0.0D);
         tessellator.addVertex(left, top, 0.0D);
         tessellator.draw();
-        GlStateManager.enableTexture2D();
-        GlStateManager.disableBlend();
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_BLEND);
     }
 
     private boolean shouldShowNEI() {

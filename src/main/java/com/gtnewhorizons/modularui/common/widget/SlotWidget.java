@@ -131,13 +131,13 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         RenderHelper.enableGUIStandardItemLighting();
         drawSlot(this.slot);
         RenderHelper.enableStandardItemLighting();
-        GlStateManager.disableLighting();
+        GL11.glDisable(GL11.GL_LIGHTING);
         if (isHovering() && !getContext().getCursor().hasDraggable()) {
             GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glEnable(GL11.GL_BLEND);
-            GlStateManager.colorMask(true, true, true, false);
+            GL11.glColorMask(true, true, true, false);
             ModularGui.drawSolidRect(1, 1, 16, 16, Theme.INSTANCE.getSlotHighlight());
-            GlStateManager.colorMask(true, true, true, true);
+            GL11.glColorMask(true, true, true, true);
             GL11.glDisable(GL11.GL_BLEND);
         }
     }
@@ -529,10 +529,10 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
             }
 
             if (itemstack != null) {
-                GlStateManager.enableRescaleNormal();
-                GlStateManager.enableLighting();
+                GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+                GL11.glEnable(GL11.GL_LIGHTING);
                 RenderHelper.enableGUIStandardItemLighting();
-                GlStateManager.enableDepth();
+                GL11.glEnable(GL11.GL_DEPTH_TEST);
                 GL11.glEnable(GL12.GL_RESCALE_NORMAL);
                 GlStateManager.pushMatrix();
                 // so that item z levels are properly ordered
@@ -571,13 +571,13 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
                         textRenderer.setColor(Color.WHITE.normal);
                         textRenderer.setAlignment(Alignment.BottomRight, size.width - 1, size.height - 1);
                         textRenderer.setPos(1, 1);
-                        GlStateManager.disableLighting();
-                        GlStateManager.disableDepth();
-                        GlStateManager.disableBlend();
+                        GL11.glDisable(GL11.GL_LIGHTING);
+                        GL11.glDisable(GL11.GL_DEPTH_TEST);
+                        GL11.glDisable(GL11.GL_BLEND);
                         textRenderer.draw(amountText);
-                        GlStateManager.enableLighting();
-                        GlStateManager.enableDepth();
-                        GlStateManager.enableBlend();
+                        GL11.glEnable(GL11.GL_LIGHTING);
+                        GL11.glEnable(GL11.GL_DEPTH_TEST);
+                        GL11.glEnable(GL11.GL_BLEND);
                     }
                 }
 
@@ -592,7 +592,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
                         1,
                         null);
                 itemstack.stackSize = cachedCount;
-                GlStateManager.disableDepth();
+                GL11.glDisable(GL11.GL_DEPTH_TEST);
             }
 
             renderSlotOverlayNEI();
