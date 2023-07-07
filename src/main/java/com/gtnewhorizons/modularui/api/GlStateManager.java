@@ -801,14 +801,10 @@ public class GlStateManager {
         }
 
         public void setState(boolean state) {
-            if (state != this.currentState) {
-                this.currentState = state;
-
-                if (state) {
-                    GL11.glEnable(this.capability);
-                } else {
-                    GL11.glDisable(this.capability);
-                }
+            if (state) {
+                GL11.glEnable(this.capability);
+            } else {
+                GL11.glDisable(this.capability);
             }
         }
     }
