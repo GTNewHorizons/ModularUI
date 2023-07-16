@@ -56,6 +56,13 @@ public class FluidTankLong implements IFluidTank {
      * for handling the fluids if not for recipes or GUI
      */
     public FluidStack getFluidStack() {
+        if (storedAmount <= 0) {
+            fluid = null;
+            internal = null;
+            storedAmount = 0;
+            return null;
+        }
+
         if (fluid == null) {
             return null;
         }
@@ -68,8 +75,8 @@ public class FluidTankLong implements IFluidTank {
             storedAmount -= lastFluidAmountInStack - internal.amount;
         }
 
-        lastFluidAmountInStack = internal.amount;
         internal.amount = saturatedCast(storedAmount);
+        lastFluidAmountInStack = internal.amount;
         return internal;
     }
 
@@ -156,7 +163,7 @@ public class FluidTankLong implements IFluidTank {
     }
 
     public void saveToNBT(NBTTagCompound nbt) {
-        if (fluid != null) nbt.setString("FluidName", FluidRegistry.getFluidName(getFluid()));
+        if (fluid != null) nbt.setString("FluidName", FluidRegistry.getFluidName(getFluidStored()));
         nbt.setLong("StoredAmount", storedAmount);
         nbt.setLong("Capacity", capacity);
 
