@@ -45,7 +45,7 @@ public class FluidTankLongDelegate implements IFluidTankLong {
 
     @Override
     public Fluid getStoredFluid() {
-        return tank.getFluid().getFluid();
+        return tank.getFluid() != null ? tank.getFluid().getFluid() : null;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class FluidTankLongDelegate implements IFluidTankLong {
 
     @Override
     public boolean isFluidEqual(@Nullable IFluidTankLong cached) {
-        return tank.getFluid().isFluidEqual(cached.getFluidStack());
+        return cached != null && tank.getFluid() != null && tank.getFluid().isFluidEqual(cached.getFluidStack());
     }
 
     @Override

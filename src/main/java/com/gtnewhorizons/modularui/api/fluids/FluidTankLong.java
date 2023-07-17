@@ -2,14 +2,12 @@ package com.gtnewhorizons.modularui.api.fluids;
 
 import static com.google.common.primitives.Ints.saturatedCast;
 
-import java.io.IOException;
+import javax.annotation.Nullable;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
 
 /**
  * A fluid tank with long capacity and stored amount
@@ -42,10 +40,6 @@ public class FluidTankLong implements IFluidTankLong {
         this((Fluid) null, capacity);
     }
 
-    public FluidTankLong(IFluidTank tank) {
-        this(tank.getFluid() != null ? tank.getFluid().getFluid() : null, tank.getCapacity(), tank.getFluidAmount());
-    }
-
     public FluidTankLong(FluidStack fluid, long capacity, long amount) {
         this(fluid != null ? fluid.getFluid() : null, capacity, amount);
     }
@@ -55,14 +49,11 @@ public class FluidTankLong implements IFluidTankLong {
      * for handling the fluids if not for recipes or GUI
      */
     public FluidStack getFluidStack() {
-        if (storedAmount <= 0) {
+        if (storedAmount <= 0 || fluid == null) {
             fluid = null;
             internal = null;
             storedAmount = 0;
-            return null;
-        }
-
-        if (fluid == null) {
+            lastFluidAmountInStack = 0;
             return null;
         }
 
@@ -104,14 +95,9 @@ public class FluidTankLong implements IFluidTankLong {
             return Math.min(capacity - storedAmount, amount);
         }
 
-        if (this.fluid == null) {
-            this.fluid = fluid;
-            internal = null;
-        }
-
         long amountFilled = Math.min(capacity - storedAmount, amount);
         this.storedAmount += amountFilled;
-
+        this.fluid = fluid;
         return amountFilled;
     }
 
@@ -173,26 +159,9 @@ public class FluidTankLong implements IFluidTankLong {
         }
     }
 
-    public static void writeToBuffer(PacketBuffer buffer, IFluidTankLong currentFluid) {
-        if (currentFluid == null) {
-            buffer.writeBoolean(true);
-        } else {
-            buffer.writeBoolean(false);
-            NBTTagCompound fluidTag = new NBTTagCompound();
-            currentFluid.saveToNBT(fluidTag);
-
-            try {
-                buffer.writeNBTTagCompoundToBuffer(fluidTag);
-            } catch (IOException ignored) {}
-        }
-    }
-
-    public static void readFromBuffer(PacketBuffer buffer, IFluidTankLong currentTank) throws IOException {
-        currentTank.loadFromNBT(buffer.readBoolean() ? null : buffer.readNBTTagCompoundFromBuffer());
-    }
-
-    public boolean isFluidEqual(IFluidTankLong cached) {
-        return getFluid() == cached.getFluid();
+    @Override
+    public boolean isFluidEqual(@Nullable IFluidTankLong cached) {
+        return cached != null && getFluid() == cached.getFluid();
     }
 
     public FluidTankLong copy() {

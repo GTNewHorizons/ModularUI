@@ -2,7 +2,10 @@ package com.gtnewhorizons.modularui.api.fluids;
 
 import static com.google.common.primitives.Ints.saturatedCast;
 
+import java.io.IOException;
+
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -51,7 +54,7 @@ public interface IFluidTankLong extends IFluidTank {
 
     @Override
     default FluidStack drain(int maxDrain, boolean doDrain) {
-        return drain(maxDrain, doDrain);
+        return drain((long) maxDrain, doDrain);
     }
 
     void setFluid(Fluid fluid, long amount);
@@ -64,4 +67,22 @@ public interface IFluidTankLong extends IFluidTank {
     void saveToNBT(NBTTagCompound fluidTag);
 
     void loadFromNBT(NBTTagCompound fluidTag);
+
+    public static void writeToBuffer(PacketBuffer buffer, IFluidTankLong currentFluid) {
+        if (currentFluid == null) {
+            buffer.writeBoolean(true);
+        } else {
+            buffer.writeBoolean(false);
+            NBTTagCompound fluidTag = new NBTTagCompound();
+            currentFluid.saveToNBT(fluidTag);
+
+            try {
+                buffer.writeNBTTagCompoundToBuffer(fluidTag);
+            } catch (IOException ignored) {}
+        }
+    }
+
+    public static void readFromBuffer(PacketBuffer buffer, IFluidTankLong currentTank) throws IOException {
+        currentTank.loadFromNBT(buffer.readBoolean() ? null : buffer.readNBTTagCompoundFromBuffer());
+    }
 }

@@ -33,6 +33,7 @@ import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.drawable.TextRenderer;
 import com.gtnewhorizons.modularui.api.fluids.FluidTankLong;
+import com.gtnewhorizons.modularui.api.fluids.FluidTankLongDelegate;
 import com.gtnewhorizons.modularui.api.fluids.FluidTanksHandler;
 import com.gtnewhorizons.modularui.api.fluids.IFluidTankLong;
 import com.gtnewhorizons.modularui.api.fluids.IFluidTanksHandler;
@@ -90,7 +91,7 @@ public class FluidSlotWidget extends SyncedWidget
     }
 
     public FluidSlotWidget(IFluidTank fluidTank) {
-        this(new FluidTanksHandler(new FluidTankLong(fluidTank)), 0);
+        this(new FluidTanksHandler(new FluidTankLongDelegate(fluidTank)), 0);
     }
 
     public static FluidSlotWidget phantom(IFluidTanksHandler handler, int tank, boolean controlsAmount) {
@@ -101,7 +102,7 @@ public class FluidSlotWidget extends SyncedWidget
     }
 
     public static FluidSlotWidget phantom(IFluidTank fluidTank, boolean controlsAmount) {
-        return phantom(new FluidTanksHandler(new FluidTankLong(fluidTank)), 0, controlsAmount);
+        return phantom(new FluidTanksHandler(new FluidTankLongDelegate(fluidTank)), 0, controlsAmount);
     }
 
     public static FluidSlotWidget phantom(int capacity) {
@@ -290,7 +291,7 @@ public class FluidSlotWidget extends SyncedWidget
         IFluidTankLong currentFluid = handler.getFluidTank(tank);
         if (init || fluidChanged(currentFluid, this.lastStoredFluid)) {
             this.lastStoredFluid = currentFluid == null ? null : currentFluid.copy();
-            syncToClient(PACKET_SYNC_FLUID, buffer -> FluidTankLong.writeToBuffer(buffer, currentFluid));
+            syncToClient(PACKET_SYNC_FLUID, buffer -> IFluidTankLong.writeToBuffer(buffer, currentFluid));
             markForUpdate();
         }
     }
@@ -304,7 +305,7 @@ public class FluidSlotWidget extends SyncedWidget
     @Override
     public void readOnClient(int id, PacketBuffer buf) throws IOException {
         if (id == PACKET_SYNC_FLUID) {
-            FluidTankLong.readFromBuffer(buf, handler.getFluidTank(id));
+            IFluidTankLong.readFromBuffer(buf, handler.getFluidTank(tank));
             notifyTooltipChange();
         } else if (id == PACKET_CONTROLS_AMOUNT) {
             this.controlsAmount = buf.readBoolean();

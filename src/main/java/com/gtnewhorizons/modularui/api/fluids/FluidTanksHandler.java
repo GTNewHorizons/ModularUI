@@ -13,7 +13,7 @@ public class FluidTanksHandler implements IFluidTanksHandler {
 
     protected final List<IFluidTankLong> fluids;
 
-    public FluidTanksHandler(FluidTankLong tank) {
+    public FluidTanksHandler(IFluidTankLong tank) {
         this.fluids = Collections.singletonList(tank);
     }
 
