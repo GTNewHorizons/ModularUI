@@ -117,7 +117,7 @@ public class FluidTankLong implements IFluidTankLong {
 
     /**
      * 
-     * @param amount Amount of fluid to try and drain
+     * @param amount  Amount of fluid to try and drain
      * @param doDrain Should it update the stack internally
      * @return a Fluid stack with the amount drained
      */
