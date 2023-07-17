@@ -9,9 +9,9 @@ import net.minecraftforge.fluids.IFluidTank;
 
 public interface IFluidTankLong extends IFluidTank {
 
-    long fill(Fluid fluid, long amount, boolean simulate);
+    long fill(Fluid fluid, long amount, boolean doFill);
 
-    FluidStack drain(long amount, boolean simulate);
+    FluidStack drain(long amount, boolean doFill);
 
     long getCapacityLong();
 

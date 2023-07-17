@@ -38,12 +38,12 @@ public class FluidTanksHandler implements IFluidTanksHandler {
     @Override
     public FluidStack fill(int tank, Fluid fluid, long amount, boolean simulate) {
         return fluid == null ? null
-                : new FluidStack(fluid, saturatedCast(fluids.get(tank).fill(fluid, amount, simulate)));
+                : new FluidStack(fluid, saturatedCast(fluids.get(tank).fill(fluid, amount, !simulate)));
     }
 
     @Override
     public FluidStack drain(int tank, long amount, boolean simulate) {
-        return fluids.get(tank).drain(amount, simulate);
+        return fluids.get(tank).drain(amount, !simulate);
     }
 
     @Override

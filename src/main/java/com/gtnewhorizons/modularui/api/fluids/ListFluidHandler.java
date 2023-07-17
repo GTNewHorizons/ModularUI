@@ -1,7 +1,5 @@
 package com.gtnewhorizons.modularui.api.fluids;
 
-import java.util.Iterator;
-
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -18,10 +16,9 @@ public class ListFluidHandler implements IFluidTanksHandler {
     @Override
     public int getTanks() {
         int tanks = 0;
-        IFluidTanksHandler fluidHandler;
-        for (Iterator<? extends IFluidTanksHandler> iterator = fluidHandlers.iterator(); iterator
-                .hasNext(); tanks += fluidHandler.getTanks()) {
-            fluidHandler = iterator.next();
+
+        for (IFluidTanksHandler fluidHandler : fluidHandlers) {
+            tanks += fluidHandler.getTanks();
         }
         return tanks;
     }

@@ -92,15 +92,15 @@ public class FluidTankLong implements IFluidTankLong {
     }
 
     /**
-     * @param fluid    The fluid we are trying to fill
-     * @param amount   Amount of fluid trying to be filled in
-     * @param simulate Should it update the stack internally
+     * @param fluid  The fluid we are trying to fill
+     * @param amount Amount of fluid trying to be filled in
+     * @param doFill Should it update the stack internally
      * @return Amount of fluid filled into the stack
      */
-    public long fill(Fluid fluid, long amount, boolean simulate) {
+    public long fill(Fluid fluid, long amount, boolean doFill) {
         if (this.fluid != null && this.fluid != fluid || fluid == null) return 0;
 
-        if (simulate) {
+        if (!doFill) {
             return Math.min(capacity - storedAmount, amount);
         }
 
@@ -117,15 +117,15 @@ public class FluidTankLong implements IFluidTankLong {
 
     /**
      * 
-     * @param amount   Amount of fluid to try and drain
-     * @param simulate Should it update the stack internally
+     * @param amount Amount of fluid to try and drain
+     * @param doFill Should it update the stack internally
      * @return a Fluid stack with the amount drained
      */
-    public FluidStack drain(long amount, boolean simulate) {
+    public FluidStack drain(long amount, boolean doFill) {
         if (fluid == null) {
             return null;
         }
-        if (simulate) {
+        if (!doFill) {
             return new FluidStack(fluid, saturatedCast(Math.min(storedAmount, amount)));
         }
 
