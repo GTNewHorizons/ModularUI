@@ -118,14 +118,14 @@ public class FluidTankLong implements IFluidTankLong {
     /**
      * 
      * @param amount Amount of fluid to try and drain
-     * @param doFill Should it update the stack internally
+     * @param doDrain Should it update the stack internally
      * @return a Fluid stack with the amount drained
      */
-    public FluidStack drain(long amount, boolean doFill) {
+    public FluidStack drain(long amount, boolean doDrain) {
         if (fluid == null) {
             return null;
         }
-        if (!doFill) {
+        if (!doDrain) {
             return new FluidStack(fluid, saturatedCast(Math.min(storedAmount, amount)));
         }
 
@@ -155,13 +155,14 @@ public class FluidTankLong implements IFluidTankLong {
         setFluid(fluid, 0);
     }
 
-    public static FluidTankLong loadFromNBT(NBTTagCompound nbt) {
-        return new FluidTankLong(
-                nbt.hasKey("FluidName") ? FluidRegistry.getFluid(nbt.getString("FluidName")) : null,
-                nbt.getLong("Capacity"),
-                nbt.getLong("StoredAmount"));
+    @Override
+    public void loadFromNBT(NBTTagCompound nbt) {
+        fluid = nbt.hasKey("FluidName") ? FluidRegistry.getFluid(nbt.getString("FluidName")) : null;
+        capacity = nbt.getLong("Capacity");
+        storedAmount = nbt.getLong("StoredAmount");
     }
 
+    @Override
     public void saveToNBT(NBTTagCompound nbt) {
         if (fluid != null) nbt.setString("FluidName", FluidRegistry.getFluidName(getStoredFluid()));
         nbt.setLong("StoredAmount", getFluidAmountLong());
@@ -172,13 +173,13 @@ public class FluidTankLong implements IFluidTankLong {
         }
     }
 
-    public static void writeToBuffer(PacketBuffer buffer, FluidTankLong fluid) {
-        if (fluid == null) {
+    public static void writeToBuffer(PacketBuffer buffer, IFluidTankLong currentFluid) {
+        if (currentFluid == null) {
             buffer.writeBoolean(true);
         } else {
             buffer.writeBoolean(false);
             NBTTagCompound fluidTag = new NBTTagCompound();
-            fluid.saveToNBT(fluidTag);
+            currentFluid.saveToNBT(fluidTag);
 
             try {
                 buffer.writeNBTTagCompoundToBuffer(fluidTag);
@@ -186,11 +187,11 @@ public class FluidTankLong implements IFluidTankLong {
         }
     }
 
-    public static FluidTankLong readFromBuffer(PacketBuffer buffer) throws IOException {
-        return buffer.readBoolean() ? null : loadFromNBT(buffer.readNBTTagCompoundFromBuffer());
+    public static void readFromBuffer(PacketBuffer buffer, IFluidTankLong currentTank) throws IOException {
+        currentTank.loadFromNBT(buffer.readBoolean() ? null : buffer.readNBTTagCompoundFromBuffer());
     }
 
-    public boolean isFluidEqual(FluidTankLong cached) {
+    public boolean isFluidEqual(IFluidTankLong cached) {
         return getFluid() == cached.getFluid();
     }
 

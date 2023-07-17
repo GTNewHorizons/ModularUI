@@ -11,7 +11,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class FluidTanksHandler implements IFluidTanksHandler {
 
-    protected final List<FluidTankLong> fluids;
+    protected final List<IFluidTankLong> fluids;
 
     public FluidTanksHandler(FluidTankLong tank) {
         this.fluids = Collections.singletonList(tank);
@@ -62,7 +62,7 @@ public class FluidTanksHandler implements IFluidTanksHandler {
     }
 
     @Override
-    public FluidTankLong getFluidTank(int tank) {
+    public IFluidTankLong getFluidTank(int tank) {
         return fluids.get(tank);
     }
 

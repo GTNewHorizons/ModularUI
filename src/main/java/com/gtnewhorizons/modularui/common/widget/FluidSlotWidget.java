@@ -34,6 +34,7 @@ import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.drawable.TextRenderer;
 import com.gtnewhorizons.modularui.api.fluids.FluidTankLong;
 import com.gtnewhorizons.modularui.api.fluids.FluidTanksHandler;
+import com.gtnewhorizons.modularui.api.fluids.IFluidTankLong;
 import com.gtnewhorizons.modularui.api.fluids.IFluidTanksHandler;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
@@ -65,9 +66,9 @@ public class FluidSlotWidget extends SyncedWidget
     private final int tank;
 
     @Nullable
-    private FluidTankLong lastStoredFluid;
+    private IFluidTankLong lastStoredFluid;
 
-    private FluidTankLong lastStoredPhantomFluid;
+    private IFluidTankLong lastStoredPhantomFluid;
     private Pos2d contentOffset = new Pos2d(1, 1);
     private boolean alwaysShowFull = true;
     private boolean canDrainSlot = true;
@@ -286,7 +287,7 @@ public class FluidSlotWidget extends SyncedWidget
 
     @Override
     public void detectAndSendChanges(boolean init) {
-        FluidTankLong currentFluid = handler.getFluidTank(tank);
+        IFluidTankLong currentFluid = handler.getFluidTank(tank);
         if (init || fluidChanged(currentFluid, this.lastStoredFluid)) {
             this.lastStoredFluid = currentFluid == null ? null : currentFluid.copy();
             syncToClient(PACKET_SYNC_FLUID, buffer -> FluidTankLong.writeToBuffer(buffer, currentFluid));
@@ -294,16 +295,15 @@ public class FluidSlotWidget extends SyncedWidget
         }
     }
 
-    public static boolean fluidChanged(@Nullable FluidTankLong current, @Nullable FluidTankLong cached) {
-        return current == null ^ cached == null || (current != null
-                && (current.getFluidAmountLong() != cached.getFluidAmountLong() || !current.isFluidEqual(cached)));
+    public static boolean fluidChanged(@Nullable IFluidTankLong currentFluid, @Nullable IFluidTankLong cached) {
+        return currentFluid == null ^ cached == null || (currentFluid != null
+                && (currentFluid.getFluidAmountLong() != cached.getFluidAmountLong() || !currentFluid.isFluidEqual(cached)));
     }
 
     @Override
     public void readOnClient(int id, PacketBuffer buf) throws IOException {
         if (id == PACKET_SYNC_FLUID) {
-            FluidTankLong fluidTank = FluidTankLong.readFromBuffer(buf);
-            handler.setFluidInTank(tank, fluidTank);
+            FluidTankLong.readFromBuffer(buf, handler.getFluidTank(id));
             notifyTooltipChange();
         } else if (id == PACKET_CONTROLS_AMOUNT) {
             this.controlsAmount = buf.readBoolean();

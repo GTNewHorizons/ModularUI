@@ -74,7 +74,7 @@ public class ListFluidHandler implements IFluidTanksHandler {
     }
 
     @Override
-    public FluidTankLong getFluidTank(int tank) {
+    public IFluidTankLong getFluidTank(int tank) {
         Pair<? extends IFluidTanksHandler, Integer> result = findFluidHandler(tank);
         return result.getLeft().getFluidTank(tank);
     }

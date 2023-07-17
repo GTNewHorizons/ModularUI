@@ -17,7 +17,7 @@ public interface IFluidTanksHandler {
 
     Fluid getFluidInTank(int tank);
 
-    FluidTankLong getFluidTank(int tank);
+    IFluidTankLong getFluidTank(int tank);
 
     @Nullable
     FluidStack fill(int tank, @Nullable Fluid fluid, long amount, boolean simulate);

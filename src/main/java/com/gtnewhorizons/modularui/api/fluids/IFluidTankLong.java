@@ -2,6 +2,9 @@ package com.gtnewhorizons.modularui.api.fluids;
 
 import static com.google.common.primitives.Ints.saturatedCast;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -33,7 +36,7 @@ public interface IFluidTankLong extends IFluidTank {
 
     @Override
     default int fill(FluidStack resource, boolean doFill) {
-        return saturatedCast(fill(resource.getFluid(), resource.amount, !doFill));
+        return saturatedCast(fill(resource.getFluid(), resource.amount, doFill));
     }
 
     @Override
@@ -48,6 +51,17 @@ public interface IFluidTankLong extends IFluidTank {
 
     @Override
     default FluidStack drain(int maxDrain, boolean doDrain) {
-        return drain(maxDrain, !doDrain);
+        return drain(maxDrain, doDrain);
     }
+
+    void setFluid(Fluid fluid, long amount);
+
+    @Nullable
+    IFluidTankLong copy();
+
+    boolean isFluidEqual(@Nullable IFluidTankLong cached);
+
+    void saveToNBT(NBTTagCompound fluidTag);
+
+    void loadFromNBT(NBTTagCompound fluidTag);
 }
