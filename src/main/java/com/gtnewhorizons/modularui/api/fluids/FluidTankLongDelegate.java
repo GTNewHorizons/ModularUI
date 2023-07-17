@@ -2,13 +2,13 @@ package com.gtnewhorizons.modularui.api.fluids;
 
 import static com.google.common.primitives.Ints.saturatedCast;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
+
+import org.jetbrains.annotations.Nullable;
 
 public class FluidTankLongDelegate implements IFluidTankLong {
 
@@ -75,5 +75,5 @@ public class FluidTankLongDelegate implements IFluidTankLong {
         tank.drain(Integer.MAX_VALUE, true);
         tank.fill(FluidStack.loadFluidStackFromNBT(fluidTag), true);
     }
-    
+
 }

@@ -296,8 +296,9 @@ public class FluidSlotWidget extends SyncedWidget
     }
 
     public static boolean fluidChanged(@Nullable IFluidTankLong currentFluid, @Nullable IFluidTankLong cached) {
-        return currentFluid == null ^ cached == null || (currentFluid != null
-                && (currentFluid.getFluidAmountLong() != cached.getFluidAmountLong() || !currentFluid.isFluidEqual(cached)));
+        return currentFluid == null ^ cached == null
+                || (currentFluid != null && (currentFluid.getFluidAmountLong() != cached.getFluidAmountLong()
+                        || !currentFluid.isFluidEqual(cached)));
     }
 
     @Override
