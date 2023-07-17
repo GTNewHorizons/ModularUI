@@ -1,4 +1,4 @@
-package com.gtnewhorizons.modularui.api.forge;
+package com.gtnewhorizons.modularui.api.fluids;
 
 import static com.google.common.primitives.Ints.saturatedCast;
 
@@ -9,7 +9,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
 
 /**
@@ -17,7 +16,7 @@ import net.minecraftforge.fluids.IFluidTank;
  * 
  * @author BlueWeabo
  */
-public class FluidTankLong implements IFluidTank {
+public class FluidTankLong implements IFluidTankLong {
 
     private Fluid fluid;
     private long storedAmount;
@@ -80,7 +79,7 @@ public class FluidTankLong implements IFluidTank {
         return internal;
     }
 
-    public Fluid getFluidStored() {
+    public Fluid getStoredFluid() {
         return fluid;
     }
 
@@ -107,6 +106,7 @@ public class FluidTankLong implements IFluidTank {
 
         if (this.fluid == null) {
             this.fluid = fluid;
+            internal = null;
         }
 
         long amountFilled = Math.min(capacity - storedAmount, amount);
@@ -129,7 +129,7 @@ public class FluidTankLong implements IFluidTank {
             return new FluidStack(fluid, saturatedCast(Math.min(storedAmount, amount)));
         }
 
-        long amountDrained = Math.min(storedAmount, amount);
+        long amountDrained = Math.min(Integer.MAX_VALUE, Math.min(storedAmount, amount));
         storedAmount -= amountDrained;
         FluidStack fluidDrained = new FluidStack(fluid, saturatedCast(amountDrained));
         if (storedAmount <= 0 && !locked) {
@@ -163,9 +163,9 @@ public class FluidTankLong implements IFluidTank {
     }
 
     public void saveToNBT(NBTTagCompound nbt) {
-        if (fluid != null) nbt.setString("FluidName", FluidRegistry.getFluidName(getFluidStored()));
-        nbt.setLong("StoredAmount", storedAmount);
-        nbt.setLong("Capacity", capacity);
+        if (fluid != null) nbt.setString("FluidName", FluidRegistry.getFluidName(getStoredFluid()));
+        nbt.setLong("StoredAmount", getFluidAmountLong());
+        nbt.setLong("Capacity", getCapacityLong());
 
         if (tag != null) {
             nbt.setTag("Tag", tag);
@@ -198,33 +198,4 @@ public class FluidTankLong implements IFluidTank {
         return new FluidTankLong(fluid, capacity, storedAmount);
     }
 
-    @Override
-    public int getFluidAmount() {
-        return saturatedCast(getFluidAmountLong());
-    }
-
-    @Override
-    public FluidTankInfo getInfo() {
-        return new FluidTankInfo(this);
-    }
-
-    @Override
-    public int fill(FluidStack resource, boolean doFill) {
-        return saturatedCast(fill(resource.getFluid(), resource.amount, !doFill));
-    }
-
-    @Override
-    public FluidStack getFluid() {
-        return getFluidStack();
-    }
-
-    @Override
-    public int getCapacity() {
-        return saturatedCast(getCapacityLong());
-    }
-
-    @Override
-    public FluidStack drain(int maxDrain, boolean doDrain) {
-        return drain(maxDrain, !doDrain);
-    }
 }

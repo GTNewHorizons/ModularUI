@@ -32,9 +32,9 @@ import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.drawable.TextRenderer;
-import com.gtnewhorizons.modularui.api.forge.FluidHandler;
-import com.gtnewhorizons.modularui.api.forge.FluidStackHandler;
-import com.gtnewhorizons.modularui.api.forge.FluidTankLong;
+import com.gtnewhorizons.modularui.api.fluids.FluidTankLong;
+import com.gtnewhorizons.modularui.api.fluids.FluidTanksHandler;
+import com.gtnewhorizons.modularui.api.fluids.IFluidTanksHandler;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
@@ -61,7 +61,7 @@ public class FluidSlotWidget extends SyncedWidget
     private IDrawable overlayTexture;
 
     private final TextRenderer textRenderer = new TextRenderer();
-    private final FluidHandler handler;
+    private final IFluidTanksHandler handler;
     private final int tank;
 
     @Nullable
@@ -81,7 +81,7 @@ public class FluidSlotWidget extends SyncedWidget
     private Consumer<FluidSlotWidget> onClickContainer;
     private Consumer<Widget> onDragAndDropComplete;
 
-    public FluidSlotWidget(FluidHandler handler, int tank) {
+    public FluidSlotWidget(IFluidTanksHandler handler, int tank) {
         this.handler = handler;
         this.tank = tank;
         this.textRenderer.setColor(Color.WHITE.normal);
@@ -89,10 +89,10 @@ public class FluidSlotWidget extends SyncedWidget
     }
 
     public FluidSlotWidget(IFluidTank fluidTank) {
-        this(new FluidStackHandler(new FluidTankLong(fluidTank)), 0);
+        this(new FluidTanksHandler(new FluidTankLong(fluidTank)), 0);
     }
 
-    public static FluidSlotWidget phantom(FluidHandler handler, int tank, boolean controlsAmount) {
+    public static FluidSlotWidget phantom(IFluidTanksHandler handler, int tank, boolean controlsAmount) {
         FluidSlotWidget slot = new FluidSlotWidget(handler, tank);
         slot.phantom = true;
         slot.controlsAmount = controlsAmount;
@@ -100,7 +100,7 @@ public class FluidSlotWidget extends SyncedWidget
     }
 
     public static FluidSlotWidget phantom(IFluidTank fluidTank, boolean controlsAmount) {
-        return phantom(new FluidStackHandler(new FluidTankLong(fluidTank)), 0, controlsAmount);
+        return phantom(new FluidTanksHandler(new FluidTankLong(fluidTank)), 0, controlsAmount);
     }
 
     public static FluidSlotWidget phantom(int capacity) {
@@ -148,7 +148,7 @@ public class FluidSlotWidget extends SyncedWidget
             if (fluid != null) {
                 addFluidNameInfo(tooltip, fluid);
                 if (controlsAmount) {
-                    tooltip.add(Text.localised("modularui.fluid.phantom.amount", handler.getTankAmount(tank)));
+                    tooltip.add(Text.localised("modularui.fluid.phantom.amount", handler.getTankStoredAmount(tank)));
                     addAdditionalFluidInfo(tooltip, fluid);
                     tooltip.add(Text.localised("modularui.fluid.phantom.control"));
                 } else {
@@ -168,7 +168,7 @@ public class FluidSlotWidget extends SyncedWidget
                 tooltip.add(
                         Text.localised(
                                 "modularui.fluid.amount",
-                                handler.getTankAmount(tank),
+                                handler.getTankStoredAmount(tank),
                                 handler.getTankCapacity(tank)));
                 addAdditionalFluidInfo(tooltip, fluid);
             } else {
@@ -204,7 +204,7 @@ public class FluidSlotWidget extends SyncedWidget
             float y = contentOffset.y;
             float height = size.height - contentOffset.y * 2;
             if (!alwaysShowFull) {
-                float newHeight = height * handler.getTankAmount(tank) * 1f / handler.getTankCapacity(tank);
+                float newHeight = height * handler.getTankStoredAmount(tank) * 1f / handler.getTankCapacity(tank);
                 y += height - newHeight;
                 height = newHeight;
             }
@@ -214,7 +214,7 @@ public class FluidSlotWidget extends SyncedWidget
             overlayTexture.draw(Pos2d.ZERO, size, partialTicks);
         }
         if (content != null && (!phantom || controlsAmount)) {
-            String s = NumberFormat.formatLong(handler.getTankAmount(tank)) + "L";
+            String s = NumberFormat.formatLong(handler.getTankStoredAmount(tank)) + "L";
             textRenderer.setAlignment(Alignment.CenterLeft, size.width - contentOffset.x - 1f);
             textRenderer.setPos((int) (contentOffset.x + 0.5f), (int) (size.height - 4.5f));
             textRenderer.draw(s);
@@ -292,11 +292,6 @@ public class FluidSlotWidget extends SyncedWidget
             syncToClient(PACKET_SYNC_FLUID, buffer -> FluidTankLong.writeToBuffer(buffer, currentFluid));
             markForUpdate();
         }
-    }
-
-    public static boolean fluidChanged(@Nullable FluidStack current, @Nullable FluidStack cached) {
-        return current == null ^ cached == null
-                || (current != null && (current.amount != cached.amount || !current.isFluidEqual(cached)));
     }
 
     public static boolean fluidChanged(@Nullable FluidTankLong current, @Nullable FluidTankLong cached) {
@@ -380,7 +375,7 @@ public class FluidSlotWidget extends SyncedWidget
         }
 
         // tank not empty, both action possible
-        if (heldFluid != null && handler.getTankAmount(tank) < handler.getTankCapacity(tank)) {
+        if (heldFluid != null && handler.getTankStoredAmount(tank) < handler.getTankCapacity(tank)) {
             // both nonnull and have space left for filling.
             if (canFillSlot)
                 // actually both pickup and fill is reasonable, but I'll go with fill here
@@ -411,7 +406,7 @@ public class FluidSlotWidget extends SyncedWidget
         // We want to see how much fluid is drained without modifying original fluidstack.
         currentFluid = currentFluid.copy();
 
-        long originalFluidAmount = handler.getTankAmount(tank);
+        long originalFluidAmount = handler.getTankStoredAmount(tank);
         ItemStack filledContainer = fillFluidContainer(currentFluid, heldItemSizedOne);
         if (filledContainer != null) {
             long filledAmount = originalFluidAmount - currentFluid.amount;
@@ -422,7 +417,7 @@ public class FluidSlotWidget extends SyncedWidget
                         filledContainer.getDisplayName());
                 return null;
             }
-            handler.extractFluid(tank, filledAmount, false);
+            handler.drain(tank, filledAmount, false);
             if (processFullStack) {
                 /*
                  * Work out how many more items we can fill. One cell is already used, so account for that. The round
@@ -430,7 +425,7 @@ public class FluidSlotWidget extends SyncedWidget
                  * to do with it. It will not be too fancy if it spills out partially filled cells.
                  */
                 long additionalParallel = Math.min(heldItem.stackSize - 1, currentFluid.amount / filledAmount);
-                handler.extractFluid(tank, filledAmount * additionalParallel, false);
+                handler.drain(tank, filledAmount * additionalParallel, false);
                 filledContainer.stackSize += additionalParallel;
             }
             replaceCursorItemStack(filledContainer);
@@ -451,7 +446,7 @@ public class FluidSlotWidget extends SyncedWidget
         if (currentFluid != null && !currentFluid.isFluidEqual(heldFluid)) return null;
         if (!filter.apply(heldFluid.getFluid())) return null;
 
-        long freeSpace = handler.getTankCapacity(tank) - handler.getTankAmount(tank);
+        long freeSpace = handler.getTankCapacity(tank) - handler.getTankStoredAmount(tank);
         if (freeSpace <= 0)
             // no space left
             return null;
@@ -485,7 +480,7 @@ public class FluidSlotWidget extends SyncedWidget
         // however here the fluid stack is not changed at all, so the exact code will slightly differ
         long parallel = processFullStack ? Math.min(freeSpace / fluidAmountTaken, heldItem.stackSize) : 1;
         FluidStack copiedFluidStack = heldFluid.copy();
-        handler.insertFluid(tank, copiedFluidStack.getFluid(), fluidAmountTaken * parallel, false);
+        handler.fill(tank, copiedFluidStack.getFluid(), fluidAmountTaken * parallel, false);
 
         itemStackEmptied.stackSize = saturatedCast(parallel);
         replaceCursorItemStack(itemStackEmptied);
@@ -522,7 +517,7 @@ public class FluidSlotWidget extends SyncedWidget
         if (clickData.mouseButton == 0) {
             if (cursorStack == null) {
                 if (canDrainSlot) {
-                    handler.extractFluid(tank, clickData.shift ? Integer.MAX_VALUE : 1000, false);
+                    handler.drain(tank, clickData.shift ? Integer.MAX_VALUE : 1000, false);
                 }
             } else {
                 ItemStack heldItemSizedOne = cursorStack.copy();
@@ -533,16 +528,16 @@ public class FluidSlotWidget extends SyncedWidget
                         if (!controlsAmount) {
                             heldFluid.amount = 1;
                         }
-                        if (handler.insertFluid(tank, heldFluid.getFluid(), heldFluid.amount, true).amount > 0) {
+                        if (handler.fill(tank, heldFluid.getFluid(), heldFluid.amount, true).amount > 0) {
                             lastStoredPhantomFluid = new FluidTankLong(
                                     heldFluid,
                                     handler.getTankCapacity(tank),
-                                    handler.getTankAmount(tank));
+                                    handler.getTankStoredAmount(tank));
                         }
                     }
                 } else {
                     if (canDrainSlot) {
-                        handler.extractFluid(tank, clickData.shift ? Integer.MAX_VALUE : 1000, false);
+                        handler.drain(tank, clickData.shift ? Integer.MAX_VALUE : 1000, false);
                     }
                 }
             }
@@ -552,18 +547,14 @@ public class FluidSlotWidget extends SyncedWidget
                     if (controlsAmount) {
                         FluidStack toFill = currentFluid.copy();
                         toFill.amount = 1000;
-                        handler.insertFluid(tank, toFill.getFluid(), toFill.amount, false);
+                        handler.fill(tank, toFill.getFluid(), toFill.amount, false);
                     }
                 } else if (lastStoredPhantomFluid != null) {
-                    handler.insertFluid(
-                            tank,
-                            lastStoredPhantomFluid.getFluidStored(),
-                            controlsAmount ? 1000 : 1,
-                            false);
+                    handler.fill(tank, lastStoredPhantomFluid.getStoredFluid(), controlsAmount ? 1000 : 1, false);
                 }
             }
         } else if (clickData.mouseButton == 2 && currentFluid != null && canDrainSlot) {
-            handler.extractFluid(tank, clickData.shift ? Integer.MAX_VALUE : 1000, false);
+            handler.drain(tank, clickData.shift ? Integer.MAX_VALUE : 1000, false);
         }
     }
 
@@ -571,20 +562,16 @@ public class FluidSlotWidget extends SyncedWidget
         FluidStack currentFluid = handler.getFluidStackInTank(tank);
         if (currentFluid == null) {
             if (direction > 0 && this.lastStoredPhantomFluid != null) {
-                handler.insertFluid(
-                        tank,
-                        lastStoredPhantomFluid.getFluidStored(),
-                        this.controlsAmount ? direction : 1,
-                        false);
+                handler.fill(tank, lastStoredPhantomFluid.getStoredFluid(), this.controlsAmount ? direction : 1, false);
             }
             return;
         }
         if (direction > 0 && this.controlsAmount) {
             FluidStack toFill = currentFluid.copy();
             toFill.amount = direction;
-            handler.insertFluid(tank, toFill.getFluid(), toFill.amount, false);
+            handler.fill(tank, toFill.getFluid(), toFill.amount, false);
         } else if (direction < 0) {
-            handler.extractFluid(tank, direction, false);
+            handler.drain(tank, direction, false);
         }
     }
 

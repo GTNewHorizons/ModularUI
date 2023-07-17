@@ -1,4 +1,4 @@
-package com.gtnewhorizons.modularui.api.forge;
+package com.gtnewhorizons.modularui.api.fluids;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
-public interface FluidHandler {
+public interface IFluidTanksHandler {
 
     int getTanks();
 
@@ -20,14 +20,14 @@ public interface FluidHandler {
     FluidTankLong getFluidTank(int tank);
 
     @Nullable
-    FluidStack insertFluid(int tank, Fluid fluid, long amount, boolean simulate);
+    FluidStack fill(int tank, @Nullable Fluid fluid, long amount, boolean simulate);
 
     @Nullable
-    FluidStack extractFluid(int tank, long amount, boolean simulate);
+    FluidStack drain(int tank, long amount, boolean simulate);
 
     long getTankCapacity(int tank);
 
-    long getTankAmount(int tank);
+    long getTankStoredAmount(int tank);
 
     default boolean isFluidValid(int slot, FluidStack stack) {
         return true;
@@ -49,7 +49,7 @@ public interface FluidHandler {
         setFluidInTank(tank, fluid, 0);
     }
 
-    default void setFluidInTank(int tank, FluidTankLong fluid) {
-        setFluidInTank(tank, fluid != null ? fluid.getFluidStored() : null, fluid != null ? fluid.getFluidAmount() : 0);
+    default void setFluidInTank(int tank, IFluidTankLong fluid) {
+        setFluidInTank(tank, fluid != null ? fluid.getStoredFluid() : null, fluid != null ? fluid.getFluidAmount() : 0);
     }
 }
