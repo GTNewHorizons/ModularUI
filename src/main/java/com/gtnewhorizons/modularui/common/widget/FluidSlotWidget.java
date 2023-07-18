@@ -1,5 +1,6 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import static com.google.common.primitives.Ints.saturatedCast;
 import static com.gtnewhorizons.modularui.ModularUI.isGT5ULoaded;
 
 import java.io.IOException;
@@ -31,6 +32,11 @@ import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.drawable.TextRenderer;
+import com.gtnewhorizons.modularui.api.fluids.FluidTankLong;
+import com.gtnewhorizons.modularui.api.fluids.FluidTankLongDelegate;
+import com.gtnewhorizons.modularui.api.fluids.FluidTanksHandler;
+import com.gtnewhorizons.modularui.api.fluids.IFluidTankLong;
+import com.gtnewhorizons.modularui.api.fluids.IFluidTanksHandler;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
@@ -41,7 +47,6 @@ import com.gtnewhorizons.modularui.api.widget.IHasStackUnderMouse;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.Theme;
-import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 
 import gregtech.api.util.GT_Utility;
@@ -58,12 +63,13 @@ public class FluidSlotWidget extends SyncedWidget
     private IDrawable overlayTexture;
 
     private final TextRenderer textRenderer = new TextRenderer();
-    private final IFluidTank fluidTank;
+    private final IFluidTanksHandler handler;
+    private final int tank;
 
     @Nullable
-    private FluidStack lastStoredFluid;
+    private IFluidTankLong lastStoredFluid;
 
-    private FluidStack lastStoredPhantomFluid;
+    private IFluidTankLong lastStoredPhantomFluid;
     private Pos2d contentOffset = new Pos2d(1, 1);
     private boolean alwaysShowFull = true;
     private boolean canDrainSlot = true;
@@ -77,17 +83,26 @@ public class FluidSlotWidget extends SyncedWidget
     private Consumer<FluidSlotWidget> onClickContainer;
     private Consumer<Widget> onDragAndDropComplete;
 
-    public FluidSlotWidget(IFluidTank fluidTank) {
-        this.fluidTank = fluidTank;
+    public FluidSlotWidget(IFluidTanksHandler handler, int tank) {
+        this.handler = handler;
+        this.tank = tank;
         this.textRenderer.setColor(Color.WHITE.normal);
         this.textRenderer.setShadow(true);
     }
 
-    public static FluidSlotWidget phantom(IFluidTank fluidTank, boolean controlsAmount) {
-        FluidSlotWidget slot = new FluidSlotWidget(fluidTank);
+    public FluidSlotWidget(IFluidTank fluidTank) {
+        this(new FluidTanksHandler(new FluidTankLongDelegate(fluidTank)), 0);
+    }
+
+    public static FluidSlotWidget phantom(IFluidTanksHandler handler, int tank, boolean controlsAmount) {
+        FluidSlotWidget slot = new FluidSlotWidget(handler, tank);
         slot.phantom = true;
         slot.controlsAmount = controlsAmount;
         return slot;
+    }
+
+    public static FluidSlotWidget phantom(IFluidTank fluidTank, boolean controlsAmount) {
+        return phantom(new FluidTanksHandler(new FluidTankLongDelegate(fluidTank)), 0, controlsAmount);
     }
 
     public static FluidSlotWidget phantom(int capacity) {
@@ -95,7 +110,7 @@ public class FluidSlotWidget extends SyncedWidget
     }
 
     public FluidStack getContent() {
-        return this.fluidTank.getFluid();
+        return handler.getFluidStackInTank(tank);
     }
 
     @Override
@@ -130,12 +145,12 @@ public class FluidSlotWidget extends SyncedWidget
     @Override
     public void buildTooltip(List<Text> tooltip) {
         super.buildTooltip(tooltip);
-        FluidStack fluid = fluidTank.getFluid();
+        FluidStack fluid = handler.getFluidStackInTank(tank);
         if (phantom) {
             if (fluid != null) {
                 addFluidNameInfo(tooltip, fluid);
                 if (controlsAmount) {
-                    tooltip.add(Text.localised("modularui.fluid.phantom.amount", fluid.amount));
+                    tooltip.add(Text.localised("modularui.fluid.phantom.amount", handler.getTankStoredAmount(tank)));
                     addAdditionalFluidInfo(tooltip, fluid);
                     tooltip.add(Text.localised("modularui.fluid.phantom.control"));
                 } else {
@@ -152,11 +167,15 @@ public class FluidSlotWidget extends SyncedWidget
         } else {
             if (fluid != null) {
                 addFluidNameInfo(tooltip, fluid);
-                tooltip.add(Text.localised("modularui.fluid.amount", fluid.amount, getRealCapacity(fluidTank)));
+                tooltip.add(
+                        Text.localised(
+                                "modularui.fluid.amount",
+                                handler.getTankStoredAmount(tank),
+                                handler.getTankCapacity(tank)));
                 addAdditionalFluidInfo(tooltip, fluid);
             } else {
                 tooltip.add(Text.localised("modularui.fluid.empty").format(EnumChatFormatting.WHITE));
-                tooltip.add(Text.localised("modularui.fluid.capacity", fluidTank.getCapacity()));
+                tooltip.add(Text.localised("modularui.fluid.capacity", handler.getTankCapacity(tank)));
             }
             if (canFillSlot || canDrainSlot) {
                 tooltip.add(Text.EMPTY); // Add an empty line to separate from the bottom material tooltips
@@ -182,12 +201,12 @@ public class FluidSlotWidget extends SyncedWidget
 
     @Override
     public void draw(float partialTicks) {
-        FluidStack content = fluidTank.getFluid();
+        FluidStack content = handler.getFluidStackInTank(tank);
         if (content != null) {
             float y = contentOffset.y;
             float height = size.height - contentOffset.y * 2;
             if (!alwaysShowFull) {
-                float newHeight = height * content.amount * 1f / fluidTank.getCapacity();
+                float newHeight = height * handler.getTankStoredAmount(tank) * 1f / handler.getTankCapacity(tank);
                 y += height - newHeight;
                 height = newHeight;
             }
@@ -197,7 +216,7 @@ public class FluidSlotWidget extends SyncedWidget
             overlayTexture.draw(Pos2d.ZERO, size, partialTicks);
         }
         if (content != null && (!phantom || controlsAmount)) {
-            String s = NumberFormat.formatLong(content.amount) + "L";
+            String s = NumberFormat.formatLong(handler.getTankStoredAmount(tank)) + "L";
             textRenderer.setAlignment(Alignment.CenterLeft, size.width - contentOffset.x - 1f);
             textRenderer.setPos((int) (contentOffset.x + 0.5f), (int) (size.height - 4.5f));
             textRenderer.draw(s);
@@ -269,25 +288,24 @@ public class FluidSlotWidget extends SyncedWidget
 
     @Override
     public void detectAndSendChanges(boolean init) {
-        FluidStack currentFluid = this.fluidTank.getFluid();
+        IFluidTankLong currentFluid = handler.getFluidTank(tank);
         if (init || fluidChanged(currentFluid, this.lastStoredFluid)) {
             this.lastStoredFluid = currentFluid == null ? null : currentFluid.copy();
-            syncToClient(PACKET_SYNC_FLUID, buffer -> NetworkUtils.writeFluidStack(buffer, currentFluid));
+            syncToClient(PACKET_SYNC_FLUID, buffer -> IFluidTankLong.writeToBuffer(buffer, currentFluid));
             markForUpdate();
         }
     }
 
-    public static boolean fluidChanged(@Nullable FluidStack current, @Nullable FluidStack cached) {
-        return current == null ^ cached == null
-                || (current != null && (current.amount != cached.amount || !current.isFluidEqual(cached)));
+    public static boolean fluidChanged(@Nullable IFluidTankLong currentFluid, @Nullable IFluidTankLong cached) {
+        return currentFluid == null ^ cached == null
+                || (currentFluid != null && (currentFluid.getFluidAmountLong() != cached.getFluidAmountLong()
+                        || !currentFluid.isFluidEqual(cached)));
     }
 
     @Override
     public void readOnClient(int id, PacketBuffer buf) throws IOException {
         if (id == PACKET_SYNC_FLUID) {
-            FluidStack fluidStack = NetworkUtils.readFluidStack(buf);
-            fluidTank.drain(Integer.MAX_VALUE, true);
-            fluidTank.fill(fluidStack, true);
+            IFluidTankLong.readFromBuffer(buf, handler.getFluidTank(tank));
             notifyTooltipChange();
         } else if (id == PACKET_CONTROLS_AMOUNT) {
             this.controlsAmount = buf.readBoolean();
@@ -341,7 +359,7 @@ public class FluidSlotWidget extends SyncedWidget
 
         ItemStack heldItemSizedOne = heldItem.copy();
         heldItemSizedOne.stackSize = 1;
-        FluidStack currentFluid = fluidTank.getFluid();
+        FluidStack currentFluid = handler.getFluidStackInTank(tank);
         FluidStack heldFluid = getFluidForRealItem(heldItemSizedOne);
         if (heldFluid != null && heldFluid.amount <= 0) {
             heldFluid = null;
@@ -359,7 +377,7 @@ public class FluidSlotWidget extends SyncedWidget
         }
 
         // tank not empty, both action possible
-        if (heldFluid != null && currentFluid.amount < fluidTank.getCapacity()) {
+        if (heldFluid != null && handler.getTankStoredAmount(tank) < handler.getTankCapacity(tank)) {
             // both nonnull and have space left for filling.
             if (canFillSlot)
                 // actually both pickup and fill is reasonable, but I'll go with fill here
@@ -385,15 +403,15 @@ public class FluidSlotWidget extends SyncedWidget
 
         ItemStack heldItemSizedOne = heldItem.copy();
         heldItemSizedOne.stackSize = 1;
-        FluidStack currentFluid = fluidTank.getFluid();
+        FluidStack currentFluid = handler.getFluidStackInTank(tank);
         if (currentFluid == null) return null;
         // We want to see how much fluid is drained without modifying original fluidstack.
         currentFluid = currentFluid.copy();
 
-        int originalFluidAmount = currentFluid.amount;
+        long originalFluidAmount = handler.getTankStoredAmount(tank);
         ItemStack filledContainer = fillFluidContainer(currentFluid, heldItemSizedOne);
         if (filledContainer != null) {
-            int filledAmount = originalFluidAmount - currentFluid.amount;
+            long filledAmount = originalFluidAmount - currentFluid.amount;
             if (filledAmount < 1) {
                 ModularUI.logger.warn(
                         "Item {} returned filled item {}, but no fluid was actually drained.",
@@ -401,15 +419,15 @@ public class FluidSlotWidget extends SyncedWidget
                         filledContainer.getDisplayName());
                 return null;
             }
-            fluidTank.drain(filledAmount, true);
+            handler.drain(tank, filledAmount, false);
             if (processFullStack) {
                 /*
                  * Work out how many more items we can fill. One cell is already used, so account for that. The round
                  * down behavior will leave over a fraction of a cell worth of fluid. The user then get to decide what
                  * to do with it. It will not be too fancy if it spills out partially filled cells.
                  */
-                int additionalParallel = Math.min(heldItem.stackSize - 1, currentFluid.amount / filledAmount);
-                fluidTank.drain(filledAmount * additionalParallel, true);
+                long additionalParallel = Math.min(heldItem.stackSize - 1, currentFluid.amount / filledAmount);
+                handler.drain(tank, filledAmount * additionalParallel, false);
                 filledContainer.stackSize += additionalParallel;
             }
             replaceCursorItemStack(filledContainer);
@@ -425,12 +443,12 @@ public class FluidSlotWidget extends SyncedWidget
 
         ItemStack heldItemSizedOne = heldItem.copy();
         heldItemSizedOne.stackSize = 1;
-        FluidStack currentFluid = fluidTank.getFluid();
+        FluidStack currentFluid = handler.getFluidStackInTank(tank);
         // we are not using aMachine.fill() here anymore, so we need to check for fluid type here ourselves
         if (currentFluid != null && !currentFluid.isFluidEqual(heldFluid)) return null;
         if (!filter.apply(heldFluid.getFluid())) return null;
 
-        int freeSpace = fluidTank.getCapacity() - (currentFluid != null ? currentFluid.amount : 0);
+        long freeSpace = handler.getTankCapacity(tank) - handler.getTankStoredAmount(tank);
         if (freeSpace <= 0)
             // no space left
             return null;
@@ -448,7 +466,7 @@ public class FluidSlotWidget extends SyncedWidget
         if (itemStackEmptied == null && heldItemSizedOne.getItem() instanceof IFluidContainerItem) {
             // either partially accepted, or is IFluidContainerItem
             IFluidContainerItem container = (IFluidContainerItem) heldItemSizedOne.getItem();
-            FluidStack tDrained = container.drain(heldItemSizedOne, freeSpace, true);
+            FluidStack tDrained = container.drain(heldItemSizedOne, saturatedCast(freeSpace), true);
             if (tDrained != null && tDrained.amount > 0) {
                 // something is actually drained - change the cell and drop it to player
                 itemStackEmptied = heldItemSizedOne;
@@ -462,12 +480,11 @@ public class FluidSlotWidget extends SyncedWidget
         // find out how many fill can we do
         // same round down behavior as above
         // however here the fluid stack is not changed at all, so the exact code will slightly differ
-        int parallel = processFullStack ? Math.min(freeSpace / fluidAmountTaken, heldItem.stackSize) : 1;
+        long parallel = processFullStack ? Math.min(freeSpace / fluidAmountTaken, heldItem.stackSize) : 1;
         FluidStack copiedFluidStack = heldFluid.copy();
-        copiedFluidStack.amount = fluidAmountTaken * parallel;
-        fluidTank.fill(copiedFluidStack, true);
+        handler.fill(tank, copiedFluidStack.getFluid(), fluidAmountTaken * parallel, false);
 
-        itemStackEmptied.stackSize = parallel;
+        itemStackEmptied.stackSize = saturatedCast(parallel);
         replaceCursorItemStack(itemStackEmptied);
         playSound(heldFluid, true);
         return itemStackEmptied;
@@ -497,12 +514,12 @@ public class FluidSlotWidget extends SyncedWidget
     }
 
     protected void tryClickPhantom(ClickData clickData, ItemStack cursorStack) {
-        FluidStack currentFluid = fluidTank.getFluid();
+        FluidStack currentFluid = handler.getFluidStackInTank(tank);
 
         if (clickData.mouseButton == 0) {
             if (cursorStack == null) {
                 if (canDrainSlot) {
-                    fluidTank.drain(clickData.shift ? Integer.MAX_VALUE : 1000, true);
+                    handler.drain(tank, clickData.shift ? Integer.MAX_VALUE : 1000, false);
                 }
             } else {
                 ItemStack heldItemSizedOne = cursorStack.copy();
@@ -513,13 +530,16 @@ public class FluidSlotWidget extends SyncedWidget
                         if (!controlsAmount) {
                             heldFluid.amount = 1;
                         }
-                        if (fluidTank.fill(heldFluid, true) > 0) {
-                            lastStoredPhantomFluid = heldFluid.copy();
+                        if (handler.fill(tank, heldFluid.getFluid(), heldFluid.amount, true).amount > 0) {
+                            lastStoredPhantomFluid = new FluidTankLong(
+                                    heldFluid,
+                                    handler.getTankCapacity(tank),
+                                    handler.getTankStoredAmount(tank));
                         }
                     }
                 } else {
                     if (canDrainSlot) {
-                        fluidTank.drain(clickData.shift ? Integer.MAX_VALUE : 1000, true);
+                        handler.drain(tank, clickData.shift ? Integer.MAX_VALUE : 1000, false);
                     }
                 }
             }
@@ -529,35 +549,31 @@ public class FluidSlotWidget extends SyncedWidget
                     if (controlsAmount) {
                         FluidStack toFill = currentFluid.copy();
                         toFill.amount = 1000;
-                        fluidTank.fill(toFill, true);
+                        handler.fill(tank, toFill.getFluid(), toFill.amount, false);
                     }
                 } else if (lastStoredPhantomFluid != null) {
-                    FluidStack toFill = lastStoredPhantomFluid.copy();
-                    toFill.amount = controlsAmount ? 1000 : 1;
-                    fluidTank.fill(toFill, true);
+                    handler.fill(tank, lastStoredPhantomFluid.getStoredFluid(), controlsAmount ? 1000 : 1, false);
                 }
             }
         } else if (clickData.mouseButton == 2 && currentFluid != null && canDrainSlot) {
-            fluidTank.drain(clickData.shift ? Integer.MAX_VALUE : 1000, true);
+            handler.drain(tank, clickData.shift ? Integer.MAX_VALUE : 1000, false);
         }
     }
 
     protected void tryScrollPhantom(int direction) {
-        FluidStack currentFluid = this.fluidTank.getFluid();
+        FluidStack currentFluid = handler.getFluidStackInTank(tank);
         if (currentFluid == null) {
             if (direction > 0 && this.lastStoredPhantomFluid != null) {
-                FluidStack toFill = this.lastStoredPhantomFluid.copy();
-                toFill.amount = this.controlsAmount ? direction : 1;
-                this.fluidTank.fill(toFill, true);
+                handler.fill(tank, lastStoredPhantomFluid.getStoredFluid(), this.controlsAmount ? direction : 1, false);
             }
             return;
         }
         if (direction > 0 && this.controlsAmount) {
             FluidStack toFill = currentFluid.copy();
             toFill.amount = direction;
-            this.fluidTank.fill(toFill, true);
+            handler.fill(tank, toFill.getFluid(), toFill.amount, false);
         } else if (direction < 0) {
-            this.fluidTank.drain(-direction, true);
+            handler.drain(tank, direction, false);
         }
     }
 
@@ -624,7 +640,7 @@ public class FluidSlotWidget extends SyncedWidget
     @Override
     public ItemStack getStackUnderMouse() {
         if (isGT5ULoaded) {
-            return GT_Utility.getFluidDisplayStack(fluidTank.getFluid(), false);
+            return GT_Utility.getFluidDisplayStack(handler.getFluidStackInTank(tank), false);
         }
         return null;
     }
