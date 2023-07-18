@@ -5,7 +5,6 @@ import static com.google.common.primitives.Ints.saturatedCast;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
 
 import org.jetbrains.annotations.Nullable;
@@ -56,12 +55,14 @@ public class FluidTankLongDelegate implements IFluidTankLong {
 
     @Override
     public @Nullable IFluidTankLong copy() {
-        return new FluidTankLongDelegate(new FluidTank(getFluidStack(), getCapacity()));
+        return new FluidTankLong(getStoredFluid(), getCapacityLong(), getFluidAmountLong());
     }
 
     @Override
     public boolean isFluidEqual(@Nullable IFluidTankLong cached) {
-        return cached != null && tank.getFluid() != null && tank.getFluid().isFluidEqual(cached.getFluidStack());
+        return (cached == null && tank.getFluid() == null)
+                || (cached != null && cached.getFluidStack() == null && tank.getFluid() == null)
+                || (cached != null && tank.getFluid() != null && tank.getFluid().isFluidEqual(cached.getFluidStack()));
     }
 
     @Override
