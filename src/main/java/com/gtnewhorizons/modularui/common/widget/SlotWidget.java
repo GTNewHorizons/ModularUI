@@ -471,6 +471,11 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         drawSlot(slotIn, true);
     }
 
+    @SideOnly(Side.CLIENT)
+    protected ItemStack getItemStackForRendering(Slot slotIn) {
+        return slotIn.getStack();
+    }
+
     /**
      * Copied from {@link net.minecraft.client.gui.inventory.GuiContainer} and removed the bad parts
      */
@@ -478,7 +483,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     protected void drawSlot(Slot slotIn, boolean drawStackSize) {
         int x = slotIn.xDisplayPosition;
         int y = slotIn.yDisplayPosition;
-        ItemStack itemstack = slotIn.getStack();
+        ItemStack itemstack = getItemStackForRendering(slotIn);
         boolean flag = false;
         boolean flag1 = slotIn == getGuiAccessor().getClickedSlot() && getGuiAccessor().getDraggedStack() != null
                 && !getGuiAccessor().getIsRightMouseClick();
