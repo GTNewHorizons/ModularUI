@@ -388,7 +388,7 @@ public class ModularUIContext {
         ModularWindow window = syncedWindows.get(buf.readVarIntFromBuffer());
         if (widgetId == DataCodes.INTERNAL_SYNC) {
             if (id == DataCodes.SYNC_CURSOR_STACK) {
-                player.inventory.setItemStack(buf.readItemStackFromBuffer());
+                player.inventory.setItemStack(NetworkUtils.readItemStack(buf));
             } else if (id == DataCodes.OPEN_WINDOW) {
                 queuedOpenWindow.add(buf.readVarIntFromBuffer());
             } else if (id == DataCodes.CLOSE_WINDOW) {

@@ -100,12 +100,8 @@ public class FluidNameHolderWidget extends SyncedWidget
         ClickData clickData = ClickData.create(button, false);
         setFluidName(clickData, draggedStack);
         syncToServer(PACKET_DND, buffer -> {
-            try {
-                clickData.writeToPacket(buffer);
-                buffer.writeItemStackToBuffer(draggedStack);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            clickData.writeToPacket(buffer);
+            NetworkUtils.writeItemStack(buffer, draggedStack);
         });
         draggedStack.stackSize = 0;
         return true;
@@ -124,7 +120,7 @@ public class FluidNameHolderWidget extends SyncedWidget
         if (id == PACKET_CLICK) {
             setFluidName(ClickData.readPacket(buf), getContext().getCursor().getItemStack());
         } else if (id == PACKET_DND) {
-            setFluidName(ClickData.readPacket(buf), buf.readItemStackFromBuffer());
+            setFluidName(ClickData.readPacket(buf), NetworkUtils.readItemStack(buf));
         }
     }
 

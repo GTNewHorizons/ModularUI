@@ -15,6 +15,8 @@ import java.util.function.Consumer;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTSizeTracker;
@@ -71,17 +73,62 @@ public class NetworkUtils {
             try {
                 buffer.writeNBTTagCompoundToBuffer(fluidStackTag);
             } catch (IOException e) {
-
+                ModularUI.logger.catching(e);
             }
         }
     }
 
     @Nullable
-    public static FluidStack readFluidStack(PacketBuffer buffer) throws IOException {
+    public static FluidStack readFluidStack(PacketBuffer buffer) {
         if (buffer.readBoolean()) {
             return null;
         }
-        return FluidStack.loadFluidStackFromNBT(buffer.readNBTTagCompoundFromBuffer());
+        try {
+            return FluidStack.loadFluidStackFromNBT(buffer.readNBTTagCompoundFromBuffer());
+        } catch (IOException e) {
+            ModularUI.logger.catching(e);
+            return null;
+        }
+    }
+
+    public static void writeItemStack(PacketBuffer buffer, @Nullable ItemStack stack) {
+        if (stack == null) {
+            buffer.writeShort(-1);
+            return;
+        }
+
+        buffer.writeShort(Item.getIdFromItem(stack.getItem()));
+        buffer.writeInt(stack.stackSize);
+        buffer.writeShort(stack.getItemDamage());
+
+        NBTTagCompound nbttagcompound = null;
+        if (stack.getItem().isDamageable() || stack.getItem().getShareTag()) {
+            nbttagcompound = stack.stackTagCompound;
+        }
+
+        try {
+            buffer.writeNBTTagCompoundToBuffer(nbttagcompound);
+        } catch (IOException e) {
+            ModularUI.logger.catching(e);
+        }
+    }
+
+    @Nullable
+    public static ItemStack readItemStack(PacketBuffer buffer) {
+        short itemId = buffer.readShort();
+        if (itemId < 0) {
+            return null;
+        }
+
+        int stackSize = buffer.readInt();
+        short damage = buffer.readShort();
+        ItemStack stack = new ItemStack(Item.getItemById(itemId), stackSize, damage);
+        try {
+            stack.stackTagCompound = buffer.readNBTTagCompoundFromBuffer();
+        } catch (IOException e) {
+            ModularUI.logger.catching(e);
+        }
+        return stack;
     }
 
     /**

@@ -47,6 +47,7 @@ import com.gtnewhorizons.modularui.api.widget.IHasStackUnderMouse;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.Theme;
+import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 
 import gregtech.api.util.GT_Utility;
@@ -253,11 +254,7 @@ public class FluidSlotWidget extends SyncedWidget
             }
             syncToServer(PACKET_REAL_CLICK, buffer -> {
                 clickData.writeToPacket(buffer);
-                try {
-                    buffer.writeItemStackToBuffer(verifyToken);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                NetworkUtils.writeItemStack(buffer, verifyToken);
             });
             if (playClickSound) {
                 Interactable.playButtonClickSound();
@@ -315,7 +312,7 @@ public class FluidSlotWidget extends SyncedWidget
     @Override
     public void readOnServer(int id, PacketBuffer buf) throws IOException {
         if (id == PACKET_REAL_CLICK) {
-            onClickServer(ClickData.readPacket(buf), buf.readItemStackFromBuffer());
+            onClickServer(ClickData.readPacket(buf), NetworkUtils.readItemStack(buf));
         } else if (id == PACKET_SCROLL) {
             if (this.phantom) {
                 tryScrollPhantom(buf.readVarIntFromBuffer());
@@ -323,7 +320,7 @@ public class FluidSlotWidget extends SyncedWidget
         } else if (id == PACKET_CONTROLS_AMOUNT) {
             this.controlsAmount = buf.readBoolean();
         } else if (id == PACKET_DRAG_AND_DROP) {
-            tryClickPhantom(ClickData.readPacket(buf), buf.readItemStackFromBuffer());
+            tryClickPhantom(ClickData.readPacket(buf), NetworkUtils.readItemStack(buf));
             if (onDragAndDropComplete != null) {
                 onDragAndDropComplete.accept(this);
             }
@@ -589,12 +586,8 @@ public class FluidSlotWidget extends SyncedWidget
         ClickData clickData = ClickData.create(button, false);
         tryClickPhantom(clickData, draggedStack);
         syncToServer(PACKET_DRAG_AND_DROP, buffer -> {
-            try {
-                clickData.writeToPacket(buffer);
-                buffer.writeItemStackToBuffer(draggedStack);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            clickData.writeToPacket(buffer);
+            NetworkUtils.writeItemStack(buffer, draggedStack);
         });
         draggedStack.stackSize = 0;
         return true;
