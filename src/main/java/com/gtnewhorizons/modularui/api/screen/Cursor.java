@@ -1,7 +1,6 @@
 package com.gtnewhorizons.modularui.api.screen;
 
 import java.awt.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,6 +16,7 @@ import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.widget.IDraggable;
 import com.gtnewhorizons.modularui.api.widget.IWidgetParent;
 import com.gtnewhorizons.modularui.api.widget.Widget;
+import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -135,13 +135,7 @@ public class Cursor {
                         ModularUIContext.DataCodes.SYNC_CURSOR_STACK,
                         null,
                         uiContext.getMainWindow(),
-                        buffer -> {
-                            try {
-                                buffer.writeItemStackToBuffer(stack);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        });
+                        buffer -> NetworkUtils.writeItemStack(buffer, stack));
             }
         }
     }

@@ -43,6 +43,7 @@ import com.gtnewhorizons.modularui.api.widget.IVanillaSlot;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.Theme;
+import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.common.internal.wrapper.BaseSlot;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 import com.gtnewhorizons.modularui.mixins.GuiContainerAccessor;
@@ -317,7 +318,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         } else if (id == 4) {
             setEnabled(buf.readBoolean());
         } else if (id == 5) {
-            handleDragAndDropServer(ClickData.readPacket(buf), buf.readItemStackFromBuffer());
+            handleDragAndDropServer(ClickData.readPacket(buf), NetworkUtils.readItemStack(buf));
             if (onDragAndDropComplete != null) {
                 onDragAndDropComplete.accept(this);
             }
@@ -440,12 +441,8 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         if (!isPhantom()) return false;
         ClickData clickData = ClickData.create(button, false);
         syncToServer(5, buffer -> {
-            try {
-                clickData.writeToPacket(buffer);
-                buffer.writeItemStackToBuffer(draggedStack);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            clickData.writeToPacket(buffer);
+            NetworkUtils.writeItemStack(buffer, draggedStack);
         });
         if (handlePhantomActionClient) {
             phantomClick(clickData, draggedStack);

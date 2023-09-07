@@ -168,34 +168,14 @@ public class FakeSyncWidget<T> extends SyncedWidget {
     public static class ItemStackSyncer extends FakeSyncWidget<ItemStack> {
 
         public ItemStackSyncer(Supplier<ItemStack> getter, Consumer<ItemStack> setter) {
-            super(getter, setter, (buffer, stack) -> {
-                try {
-                    buffer.writeItemStackToBuffer(stack);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }, buffer -> {
-                try {
-                    return buffer.readItemStackFromBuffer();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            });
+            super(getter, setter, NetworkUtils::writeItemStack, NetworkUtils::readItemStack);
         }
     }
 
     public static class FluidStackSyncer extends FakeSyncWidget<FluidStack> {
 
         public FluidStackSyncer(Supplier<FluidStack> getter, Consumer<FluidStack> setter) {
-            super(getter, setter, NetworkUtils::writeFluidStack, buffer -> {
-                try {
-                    return NetworkUtils.readFluidStack(buffer);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            });
+            super(getter, setter, NetworkUtils::writeFluidStack, NetworkUtils::readFluidStack);
         }
     }
 
