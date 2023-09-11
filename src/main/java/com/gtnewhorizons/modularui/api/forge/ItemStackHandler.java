@@ -10,6 +10,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.util.Constants;
 
 public class ItemStackHandler implements IItemHandlerModifiable, INBTSerializable<NBTTagCompound> {
 
@@ -143,10 +144,11 @@ public class ItemStackHandler implements IItemHandlerModifiable, INBTSerializabl
         NBTTagList nbtTagList = new NBTTagList();
 
         for (int i = 0; i < this.stacks.size(); ++i) {
-            if ((ItemStack) this.stacks.get(i) != null) {
+            if (this.stacks.get(i) != null) {
                 NBTTagCompound itemTag = new NBTTagCompound();
                 itemTag.setInteger("Slot", i);
-                ((ItemStack) this.stacks.get(i)).writeToNBT(itemTag);
+                this.stacks.get(i).writeToNBT(itemTag);
+                itemTag.setInteger("Count", stacks.get(i).stackSize);
                 nbtTagList.appendTag(itemTag);
             }
         }
@@ -166,7 +168,11 @@ public class ItemStackHandler implements IItemHandlerModifiable, INBTSerializabl
             NBTTagCompound itemTags = tagList.getCompoundTagAt(i);
             int slot = itemTags.getInteger("Slot");
             if (slot >= 0 && slot < this.stacks.size()) {
-                this.stacks.set(slot, ItemStack.loadItemStackFromNBT(itemTags));
+                ItemStack loadedStack = ItemStack.loadItemStackFromNBT(itemTags);
+                if (loadedStack != null && itemTags.hasKey("Count", Constants.NBT.TAG_INT)) {
+                    loadedStack.stackSize = itemTags.getInteger("Count");
+                }
+                this.stacks.set(slot, loadedStack);
             }
         }
 
