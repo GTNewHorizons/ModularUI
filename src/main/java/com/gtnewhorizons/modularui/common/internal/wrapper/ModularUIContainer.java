@@ -1,6 +1,10 @@
 package com.gtnewhorizons.modularui.common.internal.wrapper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;

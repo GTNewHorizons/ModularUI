@@ -3,7 +3,9 @@ package com.gtnewhorizons.modularui.common.widget;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import net.minecraft.network.PacketBuffer;
