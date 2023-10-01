@@ -1,6 +1,6 @@
 package com.gtnewhorizons.modularui.api.widget;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;

@@ -1,6 +1,6 @@
 package com.gtnewhorizons.modularui.api.screen;
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;

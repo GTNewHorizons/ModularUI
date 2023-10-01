@@ -1,6 +1,7 @@
 package com.gtnewhorizons.modularui.mixinplugin;
 
-import static com.gtnewhorizons.modularui.mixinplugin.TargetedMod.*;
+import static com.gtnewhorizons.modularui.mixinplugin.TargetedMod.NOTENOUGHITEMS;
+import static com.gtnewhorizons.modularui.mixinplugin.TargetedMod.VANILLA;
 
 import java.util.Arrays;
 import java.util.List;

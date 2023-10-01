@@ -11,7 +11,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 /**
  * A fluid tank with long capacity and stored amount
- * 
+ *
  * @author BlueWeabo
  */
 public class FluidTankLong implements IFluidTankLong {
@@ -102,7 +102,7 @@ public class FluidTankLong implements IFluidTankLong {
     }
 
     /**
-     * 
+     *
      * @param amount  Amount of fluid to try and drain
      * @param doDrain Should it update the stack internally
      * @return a Fluid stack with the amount drained

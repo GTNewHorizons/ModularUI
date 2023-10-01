@@ -1,6 +1,6 @@
 package com.gtnewhorizons.modularui.mixins;
 
-import java.awt.*;
+import java.awt.Point;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;

@@ -1,6 +1,6 @@
 package com.gtnewhorizons.modularui.api.screen;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
 import org.jetbrains.annotations.Nullable;
 

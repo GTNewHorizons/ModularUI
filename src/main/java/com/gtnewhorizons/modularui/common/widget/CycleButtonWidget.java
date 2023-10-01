@@ -3,7 +3,9 @@ package com.gtnewhorizons.modularui.common.widget;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import net.minecraft.network.PacketBuffer;
@@ -230,7 +232,7 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
 
     /**
      * Sets texture that will be changed depending on the value stored and drawn on top of background.
-     * 
+     *
      * @param textureGetter state of button -> texture
      */
     public CycleButtonWidget setTextureGetter(Function<Integer, IDrawable> textureGetter) {
@@ -258,7 +260,7 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
 
     /**
      * Sets background that will be changed depending on the value stored.
-     * 
+     *
      * @param backgroundGetter state of button -> background
      */
     public CycleButtonWidget setVariableBackgroundGetter(Function<Integer, IDrawable[]> backgroundGetter) {
@@ -295,7 +297,7 @@ public class CycleButtonWidget extends SyncedWidget implements Interactable {
 
     /**
      * Adds tooltips with given function. Should be called after {@link #setLength}.
-     * 
+     *
      * @param tooltipFunc state -> tooltip
      */
     public CycleButtonWidget addTooltip(Function<Integer, String> tooltipFunc) {

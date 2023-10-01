@@ -314,6 +314,7 @@ public class GuiHelper {
             ((IPatchedTextureAtlasSprite) fluidStill).markNeedsAnimationUpdate();
         }
 
+        GlStateManager.disableLighting();
         GlStateManager.enableBlend();
         Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 

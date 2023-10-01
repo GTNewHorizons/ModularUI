@@ -1,6 +1,6 @@
 package com.gtnewhorizons.modularui.api.math;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.Objects;
 
 import com.google.gson.JsonElement;

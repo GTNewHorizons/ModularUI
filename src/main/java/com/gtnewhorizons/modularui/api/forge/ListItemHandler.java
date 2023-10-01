@@ -68,7 +68,7 @@ public class ListItemHandler implements IItemHandlerModifiable {
 
     /**
      * Searches all item handlers and find one matching handler that contains specified slot index
-     * 
+     *
      * @param slot Index to search
      * @return Pair of item handler and actual index for it
      */

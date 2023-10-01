@@ -1,6 +1,6 @@
 package com.gtnewhorizons.modularui.api.math;
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.util.Objects;
 
 /**
