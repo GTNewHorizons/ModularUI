@@ -41,7 +41,7 @@ public interface IItemHandler {
     /**
      * Get the inventory this slot originates from. Only supposed to be an identifier. Avoid callings methods on this
      * inventory directly beyond comparing its identity.
-     * 
+     *
      * @return the source inventory, or null if not from any {@link IInventory}, or the source inventory information has
      *         been lost.
      */

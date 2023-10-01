@@ -1,6 +1,7 @@
 package com.gtnewhorizons.modularui.common.widget.textfield;
 
-import java.awt.*;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;

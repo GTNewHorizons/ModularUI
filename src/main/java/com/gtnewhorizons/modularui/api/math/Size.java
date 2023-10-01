@@ -1,6 +1,7 @@
 package com.gtnewhorizons.modularui.api.math;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.util.Objects;
 
 import com.google.gson.JsonElement;

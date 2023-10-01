@@ -488,7 +488,7 @@ public class ModularWindow implements IWidgetParent {
         /**
          * Set position of this Window displayed. {@link Alignment#getAlignedPos(Size, Size)} is useful for specifying
          * rough location. Center is selected as default.
-         * 
+         *
          * @param pos BiFunction providing {@link Pos2d} out of sizes of game screen and this window
          */
         public Builder setPos(PosProvider pos) {

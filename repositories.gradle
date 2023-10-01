@@ -1,14 +1,4 @@
 // Add any additional repositories for your dependencies here
 
 repositories {
-//    mavenLocal()
-//
-//    maven {
-//        name = "ic2"
-//        url = "https://maven.ic2.player.to/"
-//        metadataSources {
-//            mavenPom()
-//            artifact()
-//        }
-//    }
 }

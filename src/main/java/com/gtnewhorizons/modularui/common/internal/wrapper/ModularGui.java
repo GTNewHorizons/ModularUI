@@ -2,7 +2,7 @@ package com.gtnewhorizons.modularui.common.internal.wrapper;
 
 import static codechicken.lib.render.FontUtils.fontRenderer;
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
