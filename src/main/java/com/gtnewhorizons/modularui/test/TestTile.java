@@ -276,9 +276,10 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
                                 .setSynced(false, false).setPos(99, 85))
                 .addChild(
                         SlotGroup.ofFluidTanks(Collections.singletonList(fluidTank2), 1).controlsAmount(true)
-                                .phantom(true).widgetCreator(h -> {
+                                .phantom(true).widgetCreator((slotIndex, h) -> {
                                     FluidSlotWidget widget = new FluidSlotWidget(h);
-                                    widget.dynamicTooltip(() -> Collections.singletonList("Dynamic tooltip"));
+                                    widget.dynamicTooltip(
+                                            () -> Collections.singletonList("Dynamic tooltip " + slotIndex));
                                     return widget;
                                 }).build().setPos(38, 47))
                 .addChild(new FluidSlotWidget(fluidTank1).setPos(20, 47))
