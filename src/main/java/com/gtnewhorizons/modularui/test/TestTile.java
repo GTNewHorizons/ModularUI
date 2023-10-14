@@ -1,5 +1,6 @@
 package com.gtnewhorizons.modularui.test;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -273,7 +274,13 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
                         new ProgressBar().setProgress(() -> progress * 1f / duration)
                                 .setDirection(ProgressBar.Direction.CIRCULAR_CW).setTexture(PROGRESS_BAR_MIXER, 20)
                                 .setSynced(false, false).setPos(99, 85))
-                .addChild(FluidSlotWidget.phantom(fluidTank2, true).setPos(38, 47))
+                .addChild(
+                        SlotGroup.ofFluidTanks(Collections.singletonList(fluidTank2), 1).controlsAmount(true)
+                                .phantom(true).widgetCreator(h -> {
+                                    FluidSlotWidget widget = new FluidSlotWidget(h);
+                                    widget.dynamicTooltip(() -> Collections.singletonList("Dynamic tooltip"));
+                                    return widget;
+                                }).build().setPos(38, 47))
                 .addChild(new FluidSlotWidget(fluidTank1).setPos(20, 47))
                 .addChild(new ButtonWidget().setOnClick((clickData, widget) -> {
                     if (++serverValue == 3) {

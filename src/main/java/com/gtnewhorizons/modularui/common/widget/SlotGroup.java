@@ -13,6 +13,9 @@ import net.minecraftforge.fluids.IFluidTank;
 
 import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
+import com.gtnewhorizons.modularui.api.fluids.FluidTankLongDelegate;
+import com.gtnewhorizons.modularui.api.fluids.FluidTanksHandler;
+import com.gtnewhorizons.modularui.api.fluids.IFluidTanksHandler;
 import com.gtnewhorizons.modularui.api.forge.IItemHandlerModifiable;
 import com.gtnewhorizons.modularui.api.forge.PlayerMainInvWrapper;
 import com.gtnewhorizons.modularui.api.math.Alignment;
@@ -228,6 +231,9 @@ public class SlotGroup extends MultiChildWidget {
         private Integer endAtSlot;
         private Boolean phantom;
         private Boolean controlsAmount;
+        private IDrawable[] background;
+        private Function<IFluidTank, IFluidTanksHandler> tankHandlerCreator;
+        private Function<IFluidTanksHandler, FluidSlotWidget> widgetCreator;
 
         private FluidGroupBuilder(List<IFluidTank> fluidTanks, int slotsPerRow) {
             this.fluidTanks = fluidTanks;
@@ -247,6 +253,12 @@ public class SlotGroup extends MultiChildWidget {
             if (controlsAmount == null) {
                 controlsAmount = true;
             }
+            if (tankHandlerCreator == null) {
+                tankHandlerCreator = tank -> new FluidTanksHandler(new FluidTankLongDelegate(tank));
+            }
+            if (widgetCreator == null) {
+                widgetCreator = h -> new FluidSlotWidget(h, 0);
+            }
 
             SlotGroup slotGroup = new SlotGroup();
             if (startFromSlot > endAtSlot) {
@@ -254,13 +266,10 @@ public class SlotGroup extends MultiChildWidget {
             }
             int x = 0, y = 0;
             for (int i = startFromSlot; i < endAtSlot + 1; i++) {
-                FluidSlotWidget toAdd;
-                if (phantom) {
-                    toAdd = FluidSlotWidget.phantom(fluidTanks.get(i), controlsAmount);
-                } else {
-                    toAdd = new FluidSlotWidget(fluidTanks.get(i));
-                }
-                toAdd.setPos(new Pos2d(x * 18, y * 18));
+                FluidSlotWidget toAdd = widgetCreator.apply(tankHandlerCreator.apply(fluidTanks.get(i)));
+                toAdd.setPhantom(phantom);
+                toAdd.setControlsAmount(controlsAmount, false);
+                toAdd.setBackground(background).setPos(new Pos2d(x * 18, y * 18));
                 slotGroup.addChild(toAdd);
                 if (++x == slotsPerRow) {
                     x = 0;
@@ -287,6 +296,21 @@ public class SlotGroup extends MultiChildWidget {
 
         public FluidGroupBuilder controlsAmount(boolean controlsAmount) {
             this.controlsAmount = controlsAmount;
+            return this;
+        }
+
+        public FluidGroupBuilder background(IDrawable... background) {
+            this.background = background;
+            return this;
+        }
+
+        public FluidGroupBuilder tankHandlerCreator(Function<IFluidTank, IFluidTanksHandler> tankHandlerCreator) {
+            this.tankHandlerCreator = tankHandlerCreator;
+            return this;
+        }
+
+        public FluidGroupBuilder widgetCreator(Function<IFluidTanksHandler, FluidSlotWidget> widgetCreator) {
+            this.widgetCreator = widgetCreator;
             return this;
         }
     }
