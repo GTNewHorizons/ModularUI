@@ -91,8 +91,12 @@ public class FluidSlotWidget extends SyncedWidget
         this.textRenderer.setShadow(true);
     }
 
+    public FluidSlotWidget(IFluidTanksHandler singleSlotHandler) {
+        this(singleSlotHandler, 0);
+    }
+
     public FluidSlotWidget(IFluidTank fluidTank) {
-        this(new FluidTanksHandler(new FluidTankLongDelegate(fluidTank)), 0);
+        this(new FluidTanksHandler(new FluidTankLongDelegate(fluidTank)));
     }
 
     public static FluidSlotWidget phantom(IFluidTanksHandler handler, int tank, boolean controlsAmount) {
@@ -128,6 +132,10 @@ public class FluidSlotWidget extends SyncedWidget
     @Override
     protected @NotNull Size determineSize(int maxWidth, int maxHeight) {
         return SIZE;
+    }
+
+    public void setPhantom(boolean phantom) {
+        this.phantom = phantom;
     }
 
     public void setControlsAmount(boolean controlsAmount, boolean sync) {
