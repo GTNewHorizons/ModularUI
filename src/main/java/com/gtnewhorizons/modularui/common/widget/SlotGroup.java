@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -233,7 +234,7 @@ public class SlotGroup extends MultiChildWidget {
         private Boolean controlsAmount;
         private IDrawable[] background;
         private Function<IFluidTank, IFluidTanksHandler> tankHandlerCreator;
-        private Function<IFluidTanksHandler, FluidSlotWidget> widgetCreator;
+        private BiFunction<Integer, IFluidTanksHandler, FluidSlotWidget> widgetCreator;
 
         private FluidGroupBuilder(List<IFluidTank> fluidTanks, int slotsPerRow) {
             this.fluidTanks = fluidTanks;
@@ -257,7 +258,7 @@ public class SlotGroup extends MultiChildWidget {
                 tankHandlerCreator = tank -> new FluidTanksHandler(new FluidTankLongDelegate(tank));
             }
             if (widgetCreator == null) {
-                widgetCreator = h -> new FluidSlotWidget(h, 0);
+                widgetCreator = (i, h) -> new FluidSlotWidget(h);
             }
 
             SlotGroup slotGroup = new SlotGroup();
@@ -266,7 +267,7 @@ public class SlotGroup extends MultiChildWidget {
             }
             int x = 0, y = 0;
             for (int i = startFromSlot; i < endAtSlot + 1; i++) {
-                FluidSlotWidget toAdd = widgetCreator.apply(tankHandlerCreator.apply(fluidTanks.get(i)));
+                FluidSlotWidget toAdd = widgetCreator.apply(i, tankHandlerCreator.apply(fluidTanks.get(i)));
                 toAdd.setPhantom(phantom);
                 toAdd.setControlsAmount(controlsAmount, false);
                 toAdd.setBackground(background).setPos(new Pos2d(x * 18, y * 18));
@@ -309,7 +310,7 @@ public class SlotGroup extends MultiChildWidget {
             return this;
         }
 
-        public FluidGroupBuilder widgetCreator(Function<IFluidTanksHandler, FluidSlotWidget> widgetCreator) {
+        public FluidGroupBuilder widgetCreator(BiFunction<Integer, IFluidTanksHandler, FluidSlotWidget> widgetCreator) {
             this.widgetCreator = widgetCreator;
             return this;
         }
