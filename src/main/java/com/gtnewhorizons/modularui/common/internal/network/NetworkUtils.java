@@ -93,11 +93,11 @@ public class NetworkUtils {
 
     public static void writeItemStack(PacketBuffer buffer, @Nullable ItemStack stack) {
         if (stack == null) {
-            buffer.writeShort(-1);
+            buffer.writeVarIntToBuffer(-1);
             return;
         }
 
-        buffer.writeShort(Item.getIdFromItem(stack.getItem()));
+        buffer.writeVarIntToBuffer(Item.getIdFromItem(stack.getItem()));
         buffer.writeInt(stack.stackSize);
         buffer.writeShort(stack.getItemDamage());
 
@@ -115,7 +115,7 @@ public class NetworkUtils {
 
     @Nullable
     public static ItemStack readItemStack(PacketBuffer buffer) {
-        short itemId = buffer.readShort();
+        int itemId = buffer.readVarIntFromBuffer();
         if (itemId < 0) {
             return null;
         }
