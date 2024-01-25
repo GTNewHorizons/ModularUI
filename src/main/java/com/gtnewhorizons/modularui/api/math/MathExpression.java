@@ -44,7 +44,7 @@ public class MathExpression {
 
         for (int i = 1; i < parsed.size() - 1; i++) {
             Object obj = parsed.get(i);
-            if (obj == Operator.EXPONENT) {
+            if (obj == Operator.SCIENTIFIC) {
                 Double left = (Double) parsed.get(i - 1);
                 Double right = (Double) parsed.get(i + 1);
                 Double result = left * Math.pow(10, right);
@@ -198,7 +198,7 @@ public class MathExpression {
                         parsed.add(parse(builder.toString(), onFailReturn));
                         builder.delete(0, builder.length());
                     }
-                    parsed.add(Operator.EXPONENT);
+                    parsed.add(Operator.SCIENTIFIC);
                     break;
                 }
                 case 'k':
@@ -284,7 +284,7 @@ public class MathExpression {
         DIVIDE("/"),
         MOD("%"),
         POWER("^"),
-        EXPONENT("e");
+        SCIENTIFIC("e");
 
         public final String sign;
 

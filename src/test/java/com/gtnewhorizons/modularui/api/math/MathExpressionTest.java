@@ -51,7 +51,7 @@ class MathExpressionTest {
     }
 
     @Test
-    void ExponentBasic_Test() {
+    void ScientificBasic_Test() {
         assertEquals(2000, MathExpression.parseMathExpression("2e3"));
         assertEquals(3000, MathExpression.parseMathExpression("3E3"));
         assertEquals(4000, MathExpression.parseMathExpression("4 e 3"));
@@ -61,7 +61,7 @@ class MathExpressionTest {
     }
 
     @Test
-    void ExponentArithmetic_Test() {
+    void ScientificArithmetic_Test() {
         assertEquals(4000, MathExpression.parseMathExpression("2*2e3"));
         assertEquals(6000, MathExpression.parseMathExpression("2e3 * 3"));
         assertEquals(-200, MathExpression.parseMathExpression("-2e2"));
