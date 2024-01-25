@@ -31,6 +31,7 @@ import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.math.CrossAxisAlignment;
 import com.gtnewhorizons.modularui.api.math.MainAxisAlignment;
+import com.gtnewhorizons.modularui.api.math.MathExpression;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.screen.ITileWithModularUI;
@@ -78,6 +79,7 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
     private int progress = 0;
     private int ticks = 0;
     private float sliderValue = 0;
+    private long longValue = 0;
     private int serverCounter = 0;
     private static final AdaptableUITexture DISPLAY = AdaptableUITexture
             .of("modularui:gui/background/display", 143, 75, 2);
@@ -175,6 +177,12 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
                     serverCounter = 0;
                     changeableWidget.notifyChangeServer();
                 }).setShiftClickPriority(0).setPos(10, 30))
+                .addChild(
+                        new TextFieldWidget().setGetter(() -> String.valueOf(longValue))
+                                .setSetter(val -> longValue = (long) MathExpression.parseMathExpression(val))
+                                .setNumbersLong(val -> val).setTextColor(Color.WHITE.dark(1))
+                                .setTextAlignment(Alignment.CenterLeft).setScrollBar()
+                                .setBackground(DISPLAY.withOffset(-2, -2, 4, 4)).setSize(92, 20).setPos(10, 50))
                 .addChild(
                         SlotWidget.phantom(phantomInventory, 1).setShiftClickPriority(1).setIgnoreStackSizeLimit(true)
                                 .setControlsAmount(true).setPos(28, 30))

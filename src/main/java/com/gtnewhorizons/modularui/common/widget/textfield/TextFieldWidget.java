@@ -262,7 +262,7 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
     }
 
     public TextFieldWidget setNumbersLong(Function<Long, Long> validator) {
-        setPattern(WHOLE_NUMS);
+        setPattern(MATH_EXPRESSION);
         setValidator(val -> {
             long num;
             if (val.isEmpty()) {
@@ -276,7 +276,7 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
     }
 
     public TextFieldWidget setNumbers(Function<Integer, Integer> validator) {
-        setPattern(WHOLE_NUMS);
+        setPattern(MATH_EXPRESSION);
         return setValidator(val -> {
             int num;
             if (val.isEmpty()) {
@@ -289,7 +289,7 @@ public class TextFieldWidget extends BaseTextFieldWidget implements ISyncedWidge
     }
 
     public TextFieldWidget setNumbersDouble(Function<Double, Double> validator) {
-        setPattern(DECIMALS);
+        setPattern(MATH_EXPRESSION);
         return setValidator(val -> {
             double num;
             if (val.isEmpty()) {
