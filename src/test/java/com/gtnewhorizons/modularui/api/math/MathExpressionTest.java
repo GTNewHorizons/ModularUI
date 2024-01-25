@@ -37,6 +37,9 @@ class MathExpressionTest {
         assertEquals(10, MathExpression.parseMathExpression("2*3+4"));
         assertEquals(7, MathExpression.parseMathExpression("2^3-1"));
         assertEquals(13, MathExpression.parseMathExpression("1+2^3+4"));
+
+        // a^b^c = a^(b^c)
+        assertEquals(262_144, MathExpression.parseMathExpression("4^3^2"));
     }
 
     @Test

@@ -56,7 +56,8 @@ public class MathExpression {
             }
         }
 
-        for (int i = 1; i < parsed.size() - 1; i++) {
+        // ^ is right-associative: a^b^c = a^(b^c)
+        for (int i = parsed.size() - 2; i > 0; i--) {
             Object obj = parsed.get(i);
             if (obj == Operator.POWER) {
                 Double left = (Double) parsed.get(i - 1);
