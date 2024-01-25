@@ -11,4 +11,7 @@ dependencies {
         exclude group:"com.github.GTNewHorizons", module:"ModularUI"
     }
     compileOnly("com.github.GTNewHorizons:Applied-Energistics-2-Unofficial:rv3-beta-310-GTNH:dev") { transitive = false }
+
+    testImplementation(platform('org.junit:junit-bom:5.9.2'))
+    testImplementation('org.junit.jupiter:junit-jupiter')
 }
