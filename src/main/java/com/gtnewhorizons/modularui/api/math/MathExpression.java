@@ -1,6 +1,8 @@
 package com.gtnewhorizons.modularui.api.math;
 
+import java.text.NumberFormat;
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,11 +14,19 @@ public class MathExpression {
     private static final List<Object> DEFAULT = Collections.singletonList(0);
 
     public static double parseMathExpression(String expr) {
-        return parseMathExpression(expr, 0);
+        return parseMathExpression(expr, 0, NumberFormat.getNumberInstance());
+    }
+
+    public static double parseMathExpression(String expr, NumberFormat format) {
+        return parseMathExpression(expr, 0, format);
     }
 
     public static double parseMathExpression(String expr, double onFailReturn) {
-        List<Object> parsed = buildParsedList(expr, onFailReturn);
+        return parseMathExpression(expr, onFailReturn, NumberFormat.getNumberInstance());
+    }
+
+    public static double parseMathExpression(String expr, double onFailReturn, NumberFormat format) {
+        List<Object> parsed = buildParsedList(expr, onFailReturn, format);
         if (parsed == DEFAULT || parsed.size() == 0) {
             return onFailReturn;
         }
@@ -133,90 +143,59 @@ public class MathExpression {
     }
 
     public static List<Object> buildParsedList(String expr, double onFailReturn) {
+        return buildParsedList(expr, onFailReturn, NumberFormat.getNumberInstance());
+    }
+
+    public static List<Object> buildParsedList(String expr, double onFailReturn, NumberFormat format) {
         List<Object> parsed = new ArrayList<>();
-        StringBuilder builder = new StringBuilder();
         if (expr == null || expr.isEmpty()) return parsed;
 
+        // Strip all spaces.
+        // Also correctly interprets numbers in the French locale typed by user.
+        // See: https://bugs.java.com/bugdatabase/view_bug?bug_id=4510618
+        expr = expr.replace(" ", "");
+
+        ParsePosition pp = new ParsePosition(0);
         for (int i = 0; i < expr.length(); i++) {
             char c = expr.charAt(i);
-            switch (c) {
-                case ' ':
-                case ',':
-                case '_':
-                    break;
 
+            switch (c) {
                 case '+': {
-                    if (builder.length() > 0) {
-                        parsed.add(parse(builder.toString(), onFailReturn));
-                        builder.delete(0, builder.length());
-                    }
                     parsed.add(Operator.PLUS);
                     break;
                 }
                 case '-': {
-                    if (builder.length() > 0) {
-                        parsed.add(parse(builder.toString(), onFailReturn));
-                        builder.delete(0, builder.length());
-                    }
                     parsed.add(Operator.MINUS);
                     break;
                 }
                 case '*': {
-                    if (builder.length() > 0) {
-                        parsed.add(parse(builder.toString(), onFailReturn));
-                        builder.delete(0, builder.length());
-                    }
                     parsed.add(Operator.MULTIPLY);
                     break;
                 }
                 case '/': {
-                    if (builder.length() > 0) {
-                        parsed.add(parse(builder.toString(), onFailReturn));
-                        builder.delete(0, builder.length());
-                    }
                     parsed.add(Operator.DIVIDE);
                     break;
                 }
                 case '%': {
-                    if (builder.length() > 0) {
-                        parsed.add(parse(builder.toString(), onFailReturn));
-                        builder.delete(0, builder.length());
-                    }
                     parsed.add(Operator.MOD);
                     break;
                 }
                 case '^': {
-                    if (builder.length() > 0) {
-                        parsed.add(parse(builder.toString(), onFailReturn));
-                        builder.delete(0, builder.length());
-                    }
                     parsed.add(Operator.POWER);
                     break;
                 }
                 case 'e':
                 case 'E': {
-                    if (builder.length() > 0) {
-                        parsed.add(parse(builder.toString(), onFailReturn));
-                        builder.delete(0, builder.length());
-                    }
                     parsed.add(Operator.SCIENTIFIC);
                     break;
                 }
                 case 'k':
                 case 'K': {
-                    if (builder.length() > 0) {
-                        parsed.add(parse(builder.toString(), onFailReturn));
-                        builder.delete(0, builder.length());
-                    }
                     parsed.add(Suffix.THOUSAND);
                     break;
                 }
                 case 'm':
                 case 'M': {
-                    if (builder.length() > 0) {
-                        parsed.add(parse(builder.toString(), onFailReturn));
-                        builder.delete(0, builder.length());
-                    }
                     parsed.add(Suffix.MILLION);
                     break;
                 }
@@ -224,29 +203,25 @@ public class MathExpression {
                 case 'B':
                 case 'g':
                 case 'G': {
-                    if (builder.length() > 0) {
-                        parsed.add(parse(builder.toString(), onFailReturn));
-                        builder.delete(0, builder.length());
-                    }
                     parsed.add(Suffix.BILLION);
                     break;
                 }
                 case 't':
                 case 'T': {
-                    if (builder.length() > 0) {
-                        parsed.add(parse(builder.toString(), onFailReturn));
-                        builder.delete(0, builder.length());
-                    }
                     parsed.add(Suffix.TRILLION);
                     break;
                 }
 
                 default:
-                    builder.append(c);
+                    pp.setIndex(i);
+                    Number num = format.parse(expr, pp);
+                    if (pp.getErrorIndex() > -1 || pp.getIndex() == i) {
+                        // No number found.
+                        return DEFAULT;
+                    }
+                    i = pp.getIndex() - 1;
+                    parsed.add(num.doubleValue());
             }
-        }
-        if (builder.length() > 0) {
-            parsed.add(parse(builder.toString(), onFailReturn));
         }
 
         if (parsed.isEmpty()) return DEFAULT;
@@ -268,6 +243,7 @@ public class MathExpression {
         return parsed;
     }
 
+    @Deprecated
     public static double parse(String num, double onFailReturn) {
         try {
             return TextFieldWidget.format.parse(num).doubleValue();

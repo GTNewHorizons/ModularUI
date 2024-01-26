@@ -178,7 +178,7 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
                     changeableWidget.notifyChangeServer();
                 }).setShiftClickPriority(0).setPos(10, 30))
                 .addChild(
-                        new TextFieldWidget().setGetter(() -> String.valueOf(longValue))
+                        new TextFieldWidget().setGetterLong(() -> longValue)
                                 .setSetter(val -> longValue = (long) MathExpression.parseMathExpression(val))
                                 .setNumbersLong(val -> val).setTextColor(Color.WHITE.dark(1))
                                 .setTextAlignment(Alignment.CenterLeft).setScrollBar()

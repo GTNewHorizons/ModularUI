@@ -2,9 +2,16 @@ package com.gtnewhorizons.modularui.api.math;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 import org.junit.jupiter.api.Test;
 
 class MathExpressionTest {
+
+    static final NumberFormat formatEnglish = NumberFormat.getInstance(Locale.ENGLISH);
+    static final NumberFormat formatFrench = NumberFormat.getInstance(Locale.FRENCH);
+    static final NumberFormat formatSpanish = NumberFormat.getInstance(Locale.forLanguageTag("ES"));
 
     @Test
     void NumbersBasic_Test() {
@@ -12,10 +19,20 @@ class MathExpressionTest {
         assertEquals(42, MathExpression.parseMathExpression("  42  "));
 
         assertEquals(123456, MathExpression.parseMathExpression("123,456"));
-        assertEquals(123456, MathExpression.parseMathExpression("123 456"));
-        assertEquals(123456, MathExpression.parseMathExpression("123_456"));
+    }
 
-        assertEquals(123.456, MathExpression.parseMathExpression("123.456"));
+    @Test
+    void NumbersLocalization_Test() {
+        assertEquals(123456.789, MathExpression.parseMathExpression("123,456.789", formatEnglish));
+        assertEquals(123456.789, MathExpression.parseMathExpression("123.456,789", formatSpanish));
+
+        // Using spaces
+        assertEquals(123456.789, MathExpression.parseMathExpression("123 456,789", formatFrench));
+        // Using correct decimal separator (char 0xA0)
+        assertEquals(123456.789, MathExpression.parseMathExpression(formatFrench.format(123456.789), formatFrench));
+
+        // This shouldn't work in locales that do not use spaces as decimal separator, but we take it anyway.
+        assertEquals(123456, MathExpression.parseMathExpression("123 456", formatEnglish));
     }
 
     @Test
@@ -58,7 +75,7 @@ class MathExpressionTest {
         assertEquals(2000, MathExpression.parseMathExpression("2e3"));
         assertEquals(3000, MathExpression.parseMathExpression("3E3"));
         assertEquals(4000, MathExpression.parseMathExpression("4 e 3"));
-        assertEquals(5600, MathExpression.parseMathExpression("5.6e3"));
+        assertEquals(5600, MathExpression.parseMathExpression("5.6e3", formatEnglish));
         assertEquals(70_000, MathExpression.parseMathExpression("700e2"));
         assertEquals(8, MathExpression.parseMathExpression("8e0"));
     }
@@ -87,8 +104,8 @@ class MathExpressionTest {
         assertEquals(10_000_000_000_000D, MathExpression.parseMathExpression("10t"));
         assertEquals(11_000_000_000_000D, MathExpression.parseMathExpression("11T"));
 
-        assertEquals(2050, MathExpression.parseMathExpression("2.05k"));
-        assertEquals(50, MathExpression.parseMathExpression("0.05k"));
+        assertEquals(2050, MathExpression.parseMathExpression("2.05k", formatEnglish));
+        assertEquals(50, MathExpression.parseMathExpression("0.05k", formatEnglish));
         assertEquals(3000, MathExpression.parseMathExpression("3 k"));
     }
 
@@ -105,9 +122,9 @@ class MathExpressionTest {
 
         // Not supported, but shouldn't fail.
         assertEquals(6_000_000_000D, MathExpression.parseMathExpression("6km"));
-        assertEquals(500_000, MathExpression.parseMathExpression("0.5ke3"));
+        assertEquals(500_000, MathExpression.parseMathExpression("0.5ke3", formatEnglish));
 
         // Please don't do this.
-        assertEquals(20_000_000_000D, MathExpression.parseMathExpression("2e0.01k"));
+        assertEquals(20_000_000_000D, MathExpression.parseMathExpression("2e0.01k", formatEnglish));
     }
 }

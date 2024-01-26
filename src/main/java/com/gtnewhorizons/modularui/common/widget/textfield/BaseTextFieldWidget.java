@@ -65,14 +65,15 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
      * A mathematical expression. Supported:
      * <ul>
      * <li>digits: 0..9</li>
-     * <li>decimal point: .</li>
-     * <li>thousands separators: , _ [space]</li>
+     * <li>decimal point: , or . (interpreted based on locale)</li>
+     * <li>thousands separators: , . [space] (interpreted based on locale)</li>
      * <li>arithmetic operations: + - * / % ^</li>
-     * <li>decimal exponent: e E</li>
+     * <li>scientific notation: e E</li>
      * <li>decimal suffixes: k K m M b B g G t T</li>
+     * <li>spaces between tokens (ignored)</li>
      * </ul>
      */
-    public static final Pattern MATH_EXPRESSION = Pattern.compile("[0-9.,_ +\\-*/%^eEkKmMgGbBtT]*");
+    public static final Pattern MATH_EXPRESSION = Pattern.compile("[0-9., +\\-*/%^eEkKmMgGbBtT]*");
 
     /**
      * alphabets
