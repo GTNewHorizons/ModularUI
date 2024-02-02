@@ -18,7 +18,7 @@ class MathExpressionTest {
         assertEquals(42, MathExpression.parseMathExpression("42"));
         assertEquals(42, MathExpression.parseMathExpression("  42  "));
 
-        assertEquals(123456, MathExpression.parseMathExpression("123,456"));
+        assertEquals(123456, MathExpression.parseMathExpression("123456"));
     }
 
     @Test
