@@ -39,6 +39,15 @@ public class MathExpression {
     }
 
     /**
+     * @deprecated Call as <code>parseMathExpression(num, new MathExpression.Context()
+     *             .setPlainOnly(true).setDefaultValue(onFailReturn))</code>
+     */
+    @Deprecated
+    public static double parse(String num, double onFailReturn) {
+        return parseMathExpression(num, new Context().setPlainOnly(true).setDefaultValue(onFailReturn));
+    }
+
+    /**
      * Parses a mathematical expression in a string and returns the result value.
      * <p>
      * Supported concepts:
