@@ -178,10 +178,13 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
                     changeableWidget.notifyChangeServer();
                 }).setShiftClickPriority(0).setPos(10, 30))
                 .addChild(
-                        new TextFieldWidget().setGetter(() -> String.valueOf(longValue))
-                                .setSetter(val -> longValue = (long) MathExpression.parseMathExpression(val))
-                                .setNumbersLong(val -> val).setTextColor(Color.WHITE.dark(1))
-                                .setTextAlignment(Alignment.CenterLeft).setScrollBar()
+                        new TextFieldWidget().setPattern(MathExpression.EXPRESSION_PATTERN)
+                                .setGetter(() -> String.valueOf(longValue))
+                                .setSetter(
+                                        val -> longValue = (long) MathExpression.parseMathExpression(
+                                                val,
+                                                new MathExpression.Context().setHundredPercent(1000)))
+                                .setTextColor(Color.WHITE.dark(1)).setTextAlignment(Alignment.CenterLeft).setScrollBar()
                                 .setBackground(DISPLAY.withOffset(-2, -2, 4, 4)).setSize(92, 20).setPos(10, 50))
                 .addChild(
                         SlotWidget.phantom(phantomInventory, 1).setShiftClickPriority(1).setIgnoreStackSizeLimit(true)

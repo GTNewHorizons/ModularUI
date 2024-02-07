@@ -2,20 +2,34 @@ package com.gtnewhorizons.modularui.api.math;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 import org.junit.jupiter.api.Test;
 
 class MathExpressionTest {
 
+    MathExpression.Context ctxEN = new MathExpression.Context()
+            .setNumberFormat(NumberFormat.getNumberInstance(Locale.US));
+    MathExpression.Context ctxFR = new MathExpression.Context()
+            .setNumberFormat(NumberFormat.getNumberInstance(Locale.FRENCH));
+    MathExpression.Context ctxES = new MathExpression.Context()
+            .setNumberFormat(NumberFormat.getNumberInstance(Locale.forLanguageTag("ES")));
+
     @Test
     void NumbersBasic_Test() {
-        assertEquals(42, MathExpression.parseMathExpression("42"));
+        assertEquals(41, MathExpression.parseMathExpression("41"));
         assertEquals(42, MathExpression.parseMathExpression("  42  "));
 
-        assertEquals(123456, MathExpression.parseMathExpression("123,456"));
-        assertEquals(123456, MathExpression.parseMathExpression("123 456"));
-        assertEquals(123456, MathExpression.parseMathExpression("123_456"));
+        assertEquals(123456.789, MathExpression.parseMathExpression("123456.789", ctxEN));
+        assertEquals(234567.891, MathExpression.parseMathExpression("234,567.891", ctxEN));
 
-        assertEquals(123.456, MathExpression.parseMathExpression("123.456"));
+        assertEquals(345678.912, MathExpression.parseMathExpression("345 678,912", ctxFR));
+
+        String s = NumberFormat.getNumberInstance(Locale.FRENCH).format(456789.123);
+        assertEquals(456789.123, MathExpression.parseMathExpression(s, ctxFR));
+
+        assertEquals(567891.234, MathExpression.parseMathExpression("567.891,234", ctxES));
     }
 
     @Test
@@ -24,10 +38,20 @@ class MathExpressionTest {
         assertEquals(-1, MathExpression.parseMathExpression("2-3"));
         assertEquals(6, MathExpression.parseMathExpression("2*3"));
         assertEquals(2, MathExpression.parseMathExpression("6/3"));
-        assertEquals(1, MathExpression.parseMathExpression("7%3"));
         assertEquals(8, MathExpression.parseMathExpression("2^3"));
+    }
 
-        assertEquals(5, MathExpression.parseMathExpression("2 + 3"));
+    @Test
+    void UnaryMinus_Test() {
+        assertEquals(-5, MathExpression.parseMathExpression("-5"));
+        assertEquals(-3, MathExpression.parseMathExpression("-5+2"));
+        assertEquals(-7, MathExpression.parseMathExpression("-5-2"));
+        assertEquals(-15, MathExpression.parseMathExpression("-5*3"));
+        assertEquals(-2.5, MathExpression.parseMathExpression("-5/2"));
+        assertEquals(-25, MathExpression.parseMathExpression("-5^2")); // ! this is -(5^2), not (-5)^2.
+
+        assertEquals(2, MathExpression.parseMathExpression("4+-2"));
+        assertEquals(6, MathExpression.parseMathExpression("4--2"));
     }
 
     @Test
@@ -43,24 +67,26 @@ class MathExpressionTest {
     }
 
     @Test
-    void UnaryZero_Test() {
-        assertEquals(-5, MathExpression.parseMathExpression("-5"));
-        assertEquals(-3, MathExpression.parseMathExpression("-5+2"));
-        assertEquals(-7, MathExpression.parseMathExpression("-5-2"));
-        assertEquals(-10, MathExpression.parseMathExpression("-5*2"));
-        assertEquals(-2.5, MathExpression.parseMathExpression("-5/2"));
-        assertEquals(-1, MathExpression.parseMathExpression("-5%2"));
-        assertEquals(25, MathExpression.parseMathExpression("-5^2")); // ! this is (-5)^2, not -(5^2).
+    void Brackets_Test() {
+        assertEquals(5, MathExpression.parseMathExpression("(2+3)"));
+        assertEquals(20, MathExpression.parseMathExpression("(2+3)*4"));
+        assertEquals(14, MathExpression.parseMathExpression("2+(3*4)"));
+        assertEquals(42, MathExpression.parseMathExpression("(((42)))"));
+
+        assertEquals(14, MathExpression.parseMathExpression("2(3+4)"));
     }
 
     @Test
     void ScientificBasic_Test() {
         assertEquals(2000, MathExpression.parseMathExpression("2e3"));
         assertEquals(3000, MathExpression.parseMathExpression("3E3"));
-        assertEquals(4000, MathExpression.parseMathExpression("4 e 3"));
-        assertEquals(5600, MathExpression.parseMathExpression("5.6e3"));
-        assertEquals(70_000, MathExpression.parseMathExpression("700e2"));
-        assertEquals(8, MathExpression.parseMathExpression("8e0"));
+        assertEquals(0.04, MathExpression.parseMathExpression("4e-2"));
+        assertEquals(0.05, MathExpression.parseMathExpression("5E-2"));
+
+        assertEquals(6000, MathExpression.parseMathExpression("6 e 3"));
+        assertEquals(7800, MathExpression.parseMathExpression("7.8e3"));
+        assertEquals(90_000, MathExpression.parseMathExpression("900e2"));
+        assertEquals(1, MathExpression.parseMathExpression("1e0"));
     }
 
     @Test
@@ -87,8 +113,8 @@ class MathExpressionTest {
         assertEquals(10_000_000_000_000D, MathExpression.parseMathExpression("10t"));
         assertEquals(11_000_000_000_000D, MathExpression.parseMathExpression("11T"));
 
-        assertEquals(2050, MathExpression.parseMathExpression("2.05k"));
-        assertEquals(50, MathExpression.parseMathExpression("0.05k"));
+        assertEquals(2050, MathExpression.parseMathExpression("2.05k", ctxEN));
+        assertEquals(50, MathExpression.parseMathExpression("0.05k", ctxEN));
         assertEquals(3000, MathExpression.parseMathExpression("3 k"));
     }
 
@@ -104,10 +130,22 @@ class MathExpressionTest {
         assertEquals(4_000_000_000D, MathExpression.parseMathExpression("4kkk"));
 
         // Not supported, but shouldn't fail.
-        assertEquals(6_000_000_000D, MathExpression.parseMathExpression("6km"));
-        assertEquals(500_000, MathExpression.parseMathExpression("0.5ke3"));
+        assertEquals(6_000_000_000d, MathExpression.parseMathExpression("6km"));
+        assertEquals(500_000, MathExpression.parseMathExpression("0.5ke3", ctxEN));
 
         // Please don't do this.
-        assertEquals(20_000_000_000D, MathExpression.parseMathExpression("2e0.01k"));
+        assertEquals(20_000_000_000D, MathExpression.parseMathExpression("2e0.01k", ctxEN));
+    }
+
+    @Test
+    void Percent_Test() {
+        ctxEN.setHundredPercent(1000);
+
+        assertEquals(100, MathExpression.parseMathExpression("10%", ctxEN));
+        assertEquals(2000, MathExpression.parseMathExpression("200%", ctxEN));
+        assertEquals(-300, MathExpression.parseMathExpression("-30%", ctxEN));
+
+        assertEquals(450, MathExpression.parseMathExpression("40% + 50", ctxEN));
+        assertEquals(500, MathExpression.parseMathExpression("(20+30)%", ctxEN));
     }
 }
