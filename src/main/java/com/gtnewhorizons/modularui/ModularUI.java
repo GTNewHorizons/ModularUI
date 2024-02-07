@@ -31,7 +31,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @Mod(
         modid = ModularUI.MODID,
         version = Tags.VERSION,
-        name = Tags.MODNAME,
+        name = "ModularUI",
         acceptedMinecraftVersions = "[1.7.10]",
         dependencies = ModularUI.DEPENDENCIES,
         guiFactory = ModularUI.GUI_FACTORY)
@@ -42,9 +42,9 @@ public class ModularUI {
             + "required-after:NotEnoughItems@[2.3.50-GTNH,);"
             + "after:hodgepodge@[2.0.0,);"
             + "before:gregtech";
-    public static final String GUI_FACTORY = Tags.GROUPNAME + ".config.GuiFactory";
+    public static final String GUI_FACTORY = "com.gtnewhorizons.modularui.config.GuiFactory";
 
-    public static final Logger logger = LogManager.getLogger(Tags.MODID);
+    public static final Logger logger = LogManager.getLogger(MODID);
 
     public static final String MODID_GT5U = "gregtech";
     public static final String MODID_GT6 = "gregapi_post";
@@ -59,8 +59,8 @@ public class ModularUI {
 
     @SidedProxy(
             modId = MODID,
-            clientSide = Tags.GROUPNAME + ".ClientProxy",
-            serverSide = Tags.GROUPNAME + ".CommonProxy")
+            clientSide = "com.gtnewhorizons.modularui.ClientProxy",
+            serverSide = "com.gtnewhorizons.modularui.CommonProxy")
     public static CommonProxy proxy;
 
     @Mod.EventHandler
