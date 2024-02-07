@@ -57,10 +57,10 @@ public class MathExpression {
      * <li>Locale-specific thousands separator: ',', '.', ' ', or ' ' (Non-breaking space, French locale).</li>
      * <li>Binary operations: '+', '-', '*', '/', '^'</li>
      * <li>Unary '-'.</li>
+     * <li>Parentheses: '(', ')'.</li>
      * <li>Scientific notation: 'e', 'E'.</li>
      * <li>Suffixes denoting large values: 'k', 'K', 'm', 'M', 'b', 'B', 'g', 'G', 't', 'T'.</li>
      * <li>Percentage of maximum amount (specify maximum in the context instance): '%'.</li>
-     * <li>Parentheses: '(', ')'.</li>
      * </ul>
      * </p>
      * <p>
@@ -472,7 +472,7 @@ public class MathExpression {
         }
     }
 
-    public enum Suffix {
+    private enum Suffix {
 
         THOUSAND(1_000d),
         MILLION(1_000_000d),
