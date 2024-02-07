@@ -21,13 +21,11 @@ import org.spongepowered.asm.lib.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
-import com.gtnewhorizons.modularui.Tags;
-
 import ru.timeconqueror.spongemixins.MinecraftURLClassPath;
 
 public class MixinPlugin implements IMixinConfigPlugin {
 
-    private static final Logger LOG = LogManager.getLogger(Tags.MODID + " mixins");
+    private static final Logger LOG = LogManager.getLogger("ModularUI Mixins");
     private static final Path MODS_DIRECTORY_PATH = new File(Launch.minecraftHome, "mods/").toPath();
 
     @Override
