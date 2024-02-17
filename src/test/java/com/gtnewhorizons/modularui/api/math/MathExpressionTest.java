@@ -53,8 +53,30 @@ class MathExpressionTest {
         assertEquals(-2.5, MathExpression.parseMathExpression("-5/2"));
         assertEquals(-25, MathExpression.parseMathExpression("-5^2")); // ! this is -(5^2), not (-5)^2.
 
+        assertEquals(16, MathExpression.parseMathExpression("(-4)^2"));
+        assertEquals(-64, MathExpression.parseMathExpression("(-4)^3"));
+
         assertEquals(2, MathExpression.parseMathExpression("4+-2"));
         assertEquals(6, MathExpression.parseMathExpression("4--2"));
+
+        assertEquals(7, MathExpression.parseMathExpression("--7"));
+        assertEquals(-8, MathExpression.parseMathExpression("---8"));
+    }
+
+    @Test
+    void UnaryPlus_Test() {
+        assertEquals(5, MathExpression.parseMathExpression("+5"));
+        assertEquals(7, MathExpression.parseMathExpression("+5+2"));
+        assertEquals(3, MathExpression.parseMathExpression("+5-2"));
+        assertEquals(15, MathExpression.parseMathExpression("+5*3"));
+        assertEquals(2.5, MathExpression.parseMathExpression("+5/2"));
+        assertEquals(25, MathExpression.parseMathExpression("+5^2"));
+
+        assertEquals(6, MathExpression.parseMathExpression("4++2"));
+        assertEquals(2, MathExpression.parseMathExpression("4-+2"));
+
+        assertEquals(7, MathExpression.parseMathExpression("++7"));
+        assertEquals(8, MathExpression.parseMathExpression("+++8"));
     }
 
     @Test
@@ -85,6 +107,7 @@ class MathExpressionTest {
         assertEquals(3000, MathExpression.parseMathExpression("3E3"));
         assertEquals(0.04, MathExpression.parseMathExpression("4e-2"));
         assertEquals(0.05, MathExpression.parseMathExpression("5E-2"));
+        assertEquals(6000, MathExpression.parseMathExpression("6e+3"));
 
         assertEquals(6000, MathExpression.parseMathExpression("6 e 3"));
         assertEquals(7800, MathExpression.parseMathExpression("7.8e3"));

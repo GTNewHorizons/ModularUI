@@ -147,14 +147,15 @@ public class MathExpression {
             char c = expr.charAt(i);
 
             switch (c) {
-                // Binary operators:
+                // Plus and minus need special handling, could be unary or binary:
                 case '+':
-                    handleOperator(stack, Operator.PLUS, ctx);
+                    handlePlus(stack, ctx);
                     break;
-                // Minus needs special handling, could be unary or binary:
                 case '-':
                     handleMinus(stack, ctx);
                     break;
+
+                // Binary operators:
                 case '*':
                     handleOperator(stack, Operator.MULTIPLY, ctx);
                     break;
@@ -253,6 +254,24 @@ public class MathExpression {
         evaluateStack(stack, op == Operator.POWER ? op.priority + 1 : op.priority);
 
         stack.add(new StackElement(op));
+        return true;
+    }
+
+    /**
+     * Special handling for plus, we need to determine whether this is a unary or binary plus. If the top of the stack
+     * is a number, this is binary; if the stack is empty or the top is an operator, this is unary.
+     *
+     * @return True on success, false on failure.
+     */
+    private static boolean handlePlus(@NotNull List<StackElement> stack, Context ctx) {
+        if (stack.isEmpty() || stack.get(stack.size() - 1).isOperator) {
+            // Unary plus.
+            stack.add(new StackElement(0));
+            stack.add(new StackElement(Operator.UNARY_PLUS));
+        } else {
+            // Binary plus.
+            if (!handleOperator(stack, Operator.PLUS, ctx)) return false;
+        }
         return true;
     }
 
@@ -456,6 +475,7 @@ public class MathExpression {
         MINUS('-', 10, (a, b) -> a - b),
         MULTIPLY('*', 20, (a, b) -> a * b),
         DIVIDE('/', 20, (a, b) -> a / b),
+        UNARY_PLUS('+', 30, (a, b) -> b),
         UNARY_MINUS('-', 30, (a, b) -> -b),
         POWER('^', 40, (a, b) -> Math.pow(a, b)),
         SCIENTIFIC('e', 50, (a, b) -> a * Math.pow(10, b)),
