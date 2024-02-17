@@ -297,7 +297,7 @@ public class MathExpression {
 
     /**
      * Handles adding a suffix on top of the stack. Suffixes are never actually added to the stack, since they have the
-     * highest priority the value on top of the stack is directly modified by the suffix.
+     * highest priority. Instead, the value on top of the stack is directly modified by the suffix.
      *
      * @param chr Character representing the suffix. This is used for error reporting, as the same suffix can be
      *            represented by multiple different characters (for example, k and K).
