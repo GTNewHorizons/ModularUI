@@ -1,9 +1,11 @@
 package com.gtnewhorizons.modularui.api.math;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
@@ -16,7 +18,7 @@ public class MathExpression {
      * strings that do not evaluate to a valid value. See {@link #parseMathExpression(String, Context)} for an
      * explanation of the syntax.
      */
-    public static final Pattern EXPRESSION_PATTERN = Pattern.compile("[0-9.,  +\\-*/^()eEkKmMgGbBtT%]*");
+    public static final Pattern EXPRESSION_PATTERN = Pattern.compile("[0-9.,  _+\\-*/^()eEkKmMgGbBtT%]*");
     // Character ' ' (non-breaking space) to support French locale thousands separator.
 
     // TODO:
@@ -585,13 +587,19 @@ public class MathExpression {
             return this;
         }
 
-        private NumberFormat numberFormat = NumberFormat.getNumberInstance();
+        private NumberFormat numberFormat = DecimalFormat.getNumberInstance(Locale.US);
 
         /**
          * Format in which to expect the input expression to be. The main purpose of specifying this is properly
          * handling thousands separators and decimal point.
          * <p>
-         * Defaults to the user's system locale <code>NumberFormat</code>.
+         * This defaults to the EN_US locale. Care should be taken when changing this in a multiplayer setting. Code
+         * that blindly trusts the player's system locale will run into issues. One player could input a value, which
+         * will be formatted for that player's locale and potentially stored as a string. Then another player with a
+         * <b>different</b> locale might open the same UI, and see what to their client looks like a malformed string.
+         * <p>
+         * Proper locale-aware code needs to communicate only the numeric value between server and all clients, and let
+         * every client both parse and format it on their own.
          */
         public Context setNumberFormat(NumberFormat numberFormat) {
             this.numberFormat = numberFormat;
