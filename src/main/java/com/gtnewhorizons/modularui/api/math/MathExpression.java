@@ -17,7 +17,7 @@ public class MathExpression {
      * explanation of the syntax.
      */
     public static final Pattern EXPRESSION_PATTERN = Pattern.compile("[0-9.,  +\\-*/^()eEkKmMgGbBtT%]*");
-    // Character   to support French locale thousands separator.
+    // Character ' ' (non-breaking space) to support French locale thousands separator.
 
     // TODO:
     // There should be a config option to default the number format to either the user's computer locale, or to a
@@ -84,38 +84,43 @@ public class MathExpression {
     public static double parseMathExpression(String expr, Context ctx) {
         if (expr == null) {
             ctx.success = true;
+            ctx.errorMessage = "Success";
             return ctx.emptyValue;
         }
 
-        // Strip all spaces from the input string.
+        // Strip all spaces and underscores from the input string.
+        // This allows using them for readability and as thousands separators (using java convention 1_000_000).
         // This also correctly interprets numbers in the French locale typed by user using spaces as thousands
         // separators.
         // See: https://bugs.java.com/bugdatabase/view_bug?bug_id=4510618
-        expr = expr.replace(" ", "");
+        expr = expr.replace(" ", "").replace("_", "");
 
         if (expr.isEmpty()) {
             ctx.success = true;
+            ctx.errorMessage = "Success";
             return ctx.emptyValue;
         }
 
         // Read the first numeric value, skip any further parsing if the string contains *only* one number.
-        ParsePosition pp = new ParsePosition(0);
-        Number value = ctx.numberFormat.parse(expr, pp);
+        ParsePosition parsePos = new ParsePosition(0);
+        Number value = ctx.numberFormat.parse(expr, parsePos);
         if (ctx.plainOnly) {
             // Skip any further parsing, only return what was found.
-            if (value == null || pp.getIndex() == 0) {
+            if (value == null || parsePos.getIndex() == 0) {
                 ctx.success = false;
                 ctx.errorMessage = "Error: No number found";
                 return ctx.errorValue;
             } else {
                 ctx.success = true;
+                ctx.errorMessage = "Success";
                 return value.doubleValue();
             }
         }
 
-        if (value != null && pp.getIndex() == expr.length()) {
+        if (value != null && parsePos.getIndex() == expr.length()) {
             // The entire expr is just a single number. Skip the rest of parsing completely.
             ctx.success = true;
+            ctx.errorMessage = "Success";
             return value.doubleValue();
         }
 
@@ -138,7 +143,7 @@ public class MathExpression {
             }
         }
 
-        for (int i = pp.getIndex(); i < expr.length(); ++i) {
+        for (int i = parsePos.getIndex(); i < expr.length(); ++i) {
             char c = expr.charAt(i);
 
             switch (c) {
@@ -197,15 +202,15 @@ public class MathExpression {
 
                 // Otherwise, read the next number.
                 default:
-                    pp.setIndex(i);
-                    value = ctx.numberFormat.parse(expr, pp);
-                    if (value == null || pp.getIndex() == i) {
+                    parsePos.setIndex(i);
+                    value = ctx.numberFormat.parse(expr, parsePos);
+                    if (value == null || parsePos.getIndex() == i) {
                         ctx.success = false;
                         ctx.errorMessage = "Error: Number expected";
                         return ctx.errorValue;
                     } else {
                         handleNumber(stack, value.doubleValue(), ctx);
-                        i = pp.getIndex() - 1;
+                        i = parsePos.getIndex() - 1;
                     }
             }
 
@@ -220,6 +225,7 @@ public class MathExpression {
             return ctx.errorValue;
         }
 
+        ctx.errorMessage = "Success";
         return stack.get(0).value;
     }
 
@@ -406,7 +412,7 @@ public class MathExpression {
      *
      * This means that 1 + 2 * 3 ^ 4 / 5 gets correctly parsed as 1 + ((2 * (3 ^ 4)) / 5).
      */
-    private static void evaluateStack(List<StackElement> stack, int minPriority) {
+    private static void evaluateStack(@NotNull List<StackElement> stack, int minPriority) {
         // The invariant is that values and operators always alternate on the stack.
         // This loop must preserve it for the internals of the stack.
         while (stack.size() >= 3) {
@@ -572,9 +578,9 @@ public class MathExpression {
         /**
          * Call this after parsing has finished.
          *
-         * @return true if the parsing was successful.
+         * @return true if the last parsing operation using this context was successful.
          */
-        public boolean getSuccess() {
+        public boolean wasSuccessful() {
             return success;
         }
 

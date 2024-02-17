@@ -21,6 +21,9 @@ class MathExpressionTest {
         assertEquals(41, MathExpression.parseMathExpression("41"));
         assertEquals(42, MathExpression.parseMathExpression("  42  "));
 
+        assertEquals(1000000, MathExpression.parseMathExpression("1 000 000"));
+        assertEquals(1000000, MathExpression.parseMathExpression("1_000_000"));
+
         assertEquals(123456.789, MathExpression.parseMathExpression("123456.789", ctxEN));
         assertEquals(234567.891, MathExpression.parseMathExpression("234,567.891", ctxEN));
 
