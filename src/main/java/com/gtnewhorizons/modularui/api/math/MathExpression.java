@@ -239,14 +239,14 @@ public class MathExpression {
     private static boolean handleOperator(@NotNull List<StackElement> stack, Operator op, Context ctx) {
         if (stack.isEmpty()) {
             ctx.success = false;
-            ctx.errorMessage = "Syntax error: no left-hand value for operator " + op.name;
+            ctx.errorMessage = "Syntax error: no left-hand value for operator " + op;
             return false;
         }
         if (stack.get(stack.size() - 1).isOperator) {
             ctx.success = false;
-            ctx.errorMessage = "Syntax error: two operators in a row: " + stack.get(stack.size() - 1).operator.name
+            ctx.errorMessage = "Syntax error: two operators in a row: " + stack.get(stack.size() - 1).operator
                     + ", "
-                    + op.name;
+                    + op;
             return false;
         }
         // Evaluate any preceding operations with equal or higher priority than op.
@@ -310,7 +310,7 @@ public class MathExpression {
         StackElement a = stack.get(stack.size() - 1);
         if (!a.isValue) {
             ctx.success = false;
-            ctx.errorMessage = "Syntax error: suffix " + chr + " follows operator " + a.operator.name;
+            ctx.errorMessage = "Syntax error: suffix " + chr + " follows operator " + a.operator;
             return false;
         }
         stack.remove(stack.size() - 1);
@@ -372,7 +372,7 @@ public class MathExpression {
         if (stack.get(stack.size() - 1).isOperator) {
             ctx.success = false;
             ctx.errorMessage = "Syntax error: Closed bracket immediately after operator "
-                    + stack.get(stack.size() - 1).operator.name;
+                    + stack.get(stack.size() - 1).operator;
             return false;
         }
 
@@ -405,8 +405,7 @@ public class MathExpression {
         }
         if (stack.get(stack.size() - 1).isOperator) {
             ctx.success = false;
-            ctx.errorMessage = "Syntax error: no right-hand value for operator "
-                    + stack.get(stack.size() - 1).operator.name;
+            ctx.errorMessage = "Syntax error: no right-hand value for operator " + stack.get(stack.size() - 1).operator;
             return false;
         }
 
@@ -467,6 +466,20 @@ public class MathExpression {
             this.isValue = true;
             this.isOperator = false;
         }
+
+        @Override
+        public String toString() {
+            if (isValue && isOperator) {
+                return "Error! Stack element incorrectly set to both value and operator.";
+            }
+            if (isValue) {
+                return "Value: " + value;
+            }
+            if (isOperator) {
+                return "Operator: " + operator;
+            }
+            return "Error! Stack element incorrectly set to neither value nor operator.";
+        }
     }
 
     private enum Operator {
@@ -495,6 +508,11 @@ public class MathExpression {
             this.name = name;
             this.priority = priority;
             this.evaluator = evaluator;
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(name);
         }
     }
 
