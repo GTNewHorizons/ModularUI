@@ -31,7 +31,6 @@ import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.math.CrossAxisAlignment;
 import com.gtnewhorizons.modularui.api.math.MainAxisAlignment;
-import com.gtnewhorizons.modularui.api.math.MathExpression;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.screen.ITileWithModularUI;
@@ -59,6 +58,7 @@ import com.gtnewhorizons.modularui.common.widget.TabButton;
 import com.gtnewhorizons.modularui.common.widget.TabContainer;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.VanillaButtonWidget;
+import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
 
 public class TestTile extends TileEntity implements ITileWithModularUI {
@@ -79,7 +79,8 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
     private int progress = 0;
     private int ticks = 0;
     private float sliderValue = 0;
-    private long longValue = 0;
+    private long longValue = 50;
+    private double doubleValue;
     private int serverCounter = 0;
     private static final AdaptableUITexture DISPLAY = AdaptableUITexture
             .of("modularui:gui/background/display", 143, 75, 2);
@@ -176,13 +177,27 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
                 .addChild(new SlotWidget(phantomInventory, 0).setChangeListener(() -> {
                     serverCounter = 0;
                     changeableWidget.notifyChangeServer();
-                }).setShiftClickPriority(0).setPos(10, 30))
+                }).setShiftClickPriority(0).setPos(10, 30)).addChild(
+                        new NumericWidget()//
+                                .setMinValue(-1_000_000)//
+                                .setMaxValue(5_000_000)//
+                                .setDefaultValue(50)//
+                                .setGetter(() -> (double) longValue)//
+                                .setSetter(val -> longValue = val.longValue())//
+                                // .setValidator(val -> Math.round(val / 2) * 2d)//
+                                .setScrollValues(2, 10, 1000)//
+                                .setTextColor(Color.WHITE.dark(1)).setBackground(DISPLAY.withOffset(-2, -2, 4, 4))
+                                .setSize(92, 20).setPos(10, 50))
                 .addChild(
-                        new TextFieldWidget().setGetter(() -> String.valueOf(longValue))
-                                .setSetter(val -> longValue = (long) MathExpression.parseMathExpression(val))
-                                .setNumbersLong(val -> val).setTextColor(Color.WHITE.dark(1))
-                                .setTextAlignment(Alignment.CenterLeft).setScrollBar()
-                                .setBackground(DISPLAY.withOffset(-2, -2, 4, 4)).setSize(92, 20).setPos(10, 50))
+                        new NumericWidget()//
+                                .setIntegerOnly(false)//
+                                .setMinValue(-1_000_000)//
+                                .setMaxValue(5_000_000)//
+                                .setDefaultValue(50)//
+                                .setGetter(() -> doubleValue)//
+                                .setSetter(val -> doubleValue = val)//
+                                .setTextColor(Color.WHITE.dark(1)).setBackground(DISPLAY.withOffset(-2, -2, 4, 4))
+                                .setSize(92, 20).setPos(100, 50))
                 .addChild(
                         SlotWidget.phantom(phantomInventory, 1).setShiftClickPriority(1).setIgnoreStackSizeLimit(true)
                                 .setControlsAmount(true).setPos(28, 30))
