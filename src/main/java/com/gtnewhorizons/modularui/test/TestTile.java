@@ -183,8 +183,8 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
                                 .setMaxValue(999_000_000)//
                                 .setDefaultValue(50)//
                                 .setGetter(() -> (double) longValue)//
-                                .setSetter(val -> longValue = val.longValue())//
-                                // .setValidator(val -> Math.round(val / 2) * 2d)//
+                                .setSetter(val -> longValue = (long) val)//
+                                .setValidator(val -> Math.round(val / 2) * 2d)//
                                 .setScrollValues(2, 10, 1000)//
                                 .setTextColor(Color.WHITE.dark(1)).setBackground(DISPLAY.withOffset(-2, -2, 4, 4))
                                 .setSize(92, 20).setPos(10, 50))

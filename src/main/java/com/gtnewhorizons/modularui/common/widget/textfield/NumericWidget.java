@@ -4,12 +4,13 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.DoubleConsumer;
+import java.util.function.DoubleSupplier;
+import java.util.function.DoubleUnaryOperator;
 import java.util.regex.Pattern;
 
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.MathHelper;
 
 import com.gtnewhorizon.gtnhlib.util.parsing.MathExpressionParser;
 import com.gtnewhorizon.gtnhlib.util.parsing.MathExpressionParser.Context;
@@ -28,9 +29,9 @@ import com.gtnewhorizons.modularui.config.Config;
 public class NumericWidget extends BaseTextFieldWidget implements ISyncedWidget {
 
     private double value = 0;
-    private Supplier<Double> getter;
-    private Consumer<Double> setter;
-    private Function<Double, Double> validator;
+    private DoubleSupplier getter;
+    private DoubleConsumer setter;
+    private DoubleUnaryOperator validator;
 
     private double minValue = 0;
     private double maxValue = Double.POSITIVE_INFINITY;
@@ -83,13 +84,12 @@ public class NumericWidget extends BaseTextFieldWidget implements ISyncedWidget 
      * @return true if the value has changed.
      */
     private boolean validateAndSetValue(double newValue) {
-        newValue = Math.max(newValue, minValue);
-        newValue = Math.min(newValue, maxValue);
+        newValue = MathHelper.clamp_double(newValue, minValue, maxValue);
         if (integerOnly) {
             newValue = Math.round(newValue);
         }
         if (validator != null) {
-            newValue = validator.apply(newValue);
+            newValue = validator.applyAsDouble(newValue);
         }
 
         // We want to call setValue even if the value has not changed.
@@ -229,7 +229,7 @@ public class NumericWidget extends BaseTextFieldWidget implements ISyncedWidget 
     /**
      * Sets a supplier of numeric values to display in the input field.
      */
-    public NumericWidget setGetter(Supplier<Double> getter) {
+    public NumericWidget setGetter(DoubleSupplier getter) {
         this.getter = getter;
         return this;
     }
@@ -237,7 +237,7 @@ public class NumericWidget extends BaseTextFieldWidget implements ISyncedWidget 
     /**
      * Sets a consumer of values entered by the player.
      */
-    public NumericWidget setSetter(Consumer<Double> setter) {
+    public NumericWidget setSetter(DoubleConsumer setter) {
         this.setter = setter;
         return this;
     }
@@ -246,7 +246,7 @@ public class NumericWidget extends BaseTextFieldWidget implements ISyncedWidget 
      * Sets a validator for entered values. For simply restricting the value to a certain range, use
      * {@link #setMinValue(double)} and {@link #setMaxValue(double)}.
      */
-    public NumericWidget setValidator(Function<Double, Double> validator) {
+    public NumericWidget setValidator(DoubleUnaryOperator validator) {
         this.validator = validator;
         return this;
     }
@@ -324,7 +324,7 @@ public class NumericWidget extends BaseTextFieldWidget implements ISyncedWidget 
     @Override
     public void detectAndSendChanges(boolean init) {
         if (syncsToClient() && getter != null) {
-            double newValue = getter.get();
+            double newValue = getter.getAsDouble();
 
             // Order matters here, validateAndSetValue() has side effects, it needs to be evaluated first so that it
             // does not get short-circuited.
@@ -350,7 +350,7 @@ public class NumericWidget extends BaseTextFieldWidget implements ISyncedWidget 
                         forceFocus();
                     }
                 }
-                if (this.setter != null && (this.getter == null || this.getter.get() != value)) {
+                if (this.setter != null && (this.getter == null || this.getter.getAsDouble() != value)) {
                     this.setter.accept(value);
                 }
             }
