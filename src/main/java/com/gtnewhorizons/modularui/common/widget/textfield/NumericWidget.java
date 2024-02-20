@@ -1,6 +1,7 @@
 package com.gtnewhorizons.modularui.common.widget.textfield;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -44,14 +45,16 @@ public class NumericWidget extends BaseTextFieldWidget implements ISyncedWidget 
 
     private Context ctx;
     private static final int MAX_FRACTION_DIGITS = 4;
-    private static final Pattern NUMBER_PATTERN = Pattern.compile("-?[0-9.,  _’]*");
-    // Character ' ' (non-breaking space) to support French locale thousands separator.
+    private static final Pattern NUMBER_PATTERN = Pattern.compile("-?[0-9., \u202F_’]*");
+    // Character '\u202F' (non-breaking space) to support French locale thousands separator.
+    private boolean shouldReplaceSpaces = false;
 
     public NumericWidget() {
         setTextAlignment(Alignment.CenterLeft);
         handler.setMaxLines(1);
 
         numberFormat = DecimalFormat.getNumberInstance(Config.locale);
+        shouldReplaceSpaces = DecimalFormatSymbols.getInstance(Config.locale).getGroupingSeparator() == '\u202F';
 
         // If you need more than 4 decimal digits of precision, use getNumberFormat().setMaximumFractionDigits().
         numberFormat.setMaximumFractionDigits(MAX_FRACTION_DIGITS);
@@ -71,12 +74,18 @@ public class NumericWidget extends BaseTextFieldWidget implements ISyncedWidget 
 
     public void setValue(double newValue) {
         value = newValue;
+
+        String displayValue = numberFormat.format(value);
+        // The non-breaking space character '\u202F', used as a thousands separator in French locales, does not display
+        // properly in the MC font.
+        if (shouldReplaceSpaces) {
+            displayValue = displayValue.replace('\u202F', ' ');
+        }
+
         if (handler.getText().isEmpty()) {
-            // The non-breaking space character ' ', used in the French locale, does not display properly in the MC
-            // font.
-            handler.getText().add(numberFormat.format(value).replace(' ', ' '));
+            handler.getText().add(displayValue);
         } else {
-            handler.getText().set(0, numberFormat.format(value).replace(' ', ' '));
+            handler.getText().set(0, displayValue);
         }
     }
 
