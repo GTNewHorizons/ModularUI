@@ -4,7 +4,6 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -18,6 +17,7 @@ import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
+import com.gtnewhorizons.modularui.config.Config;
 
 /**
  * A widget that allows the user to enter a numeric value. Synced between client and server. Automatically handles
@@ -39,21 +39,21 @@ public class NumericWidget extends BaseTextFieldWidget implements ISyncedWidget 
     private double scrollStepCtrl = 0.1;
     private double scrollStepShift = 100;
     private boolean integerOnly = true;
-    private Context ctx;
     private NumberFormat numberFormat;
-    private static final Pattern NUMBER_PATTERN = Pattern.compile("-?[0-9.,  _]*");
+
+    private Context ctx;
+    private static final int MAX_FRACTION_DIGITS = 4;
+    private static final Pattern NUMBER_PATTERN = Pattern.compile("-?[0-9.,  _’]*");
+    // Character ' ' (non-breaking space) to support French locale thousands separator.
 
     public NumericWidget() {
         setTextAlignment(Alignment.CenterLeft);
         handler.setMaxLines(1);
 
-        // TODO: handle localization into the player's system locale.
-        // This needs to be configurable in the config, if a player wants to force the US (or any other) locale despite
-        // their system settings.
-        numberFormat = DecimalFormat.getNumberInstance(Locale.US);
+        numberFormat = DecimalFormat.getNumberInstance(Config.locale);
 
         // If you need more than 4 decimal digits of precision, use getNumberFormat().setMaximumFractionDigits().
-        numberFormat.setMaximumFractionDigits(4);
+        numberFormat.setMaximumFractionDigits(MAX_FRACTION_DIGITS);
 
         if (ModularUI.isGTNHLibLoaded) {
             handler.setPattern(MathExpressionParser.EXPRESSION_PATTERN);
@@ -71,9 +71,11 @@ public class NumericWidget extends BaseTextFieldWidget implements ISyncedWidget 
     public void setValue(double newValue) {
         value = newValue;
         if (handler.getText().isEmpty()) {
-            handler.getText().add(numberFormat.format(value));
+            // The non-breaking space character ' ', used in the French locale, does not display properly in the MC
+            // font.
+            handler.getText().add(numberFormat.format(value).replace(' ', ' '));
         } else {
-            handler.getText().set(0, numberFormat.format(value));
+            handler.getText().set(0, numberFormat.format(value).replace(' ', ' '));
         }
     }
 

@@ -1,8 +1,10 @@
 package com.gtnewhorizons.modularui.config;
 
 import java.io.File;
+import java.util.Locale;
 
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 
 import com.gtnewhorizons.modularui.ModularUI;
 
@@ -22,6 +24,8 @@ public class Config {
     public static boolean escRestoreLastText = false;
     public static boolean closeWindowsAtOnce = false;
 
+    public static Locale locale = Locale.getDefault();
+
     public static boolean useJson = false;
 
     public static boolean debug = false;
@@ -30,13 +34,14 @@ public class Config {
     public static final String CATEGORY_ANIMATIONS = "animations";
     public static final String CATEGORY_RENDERING = "rendering";
     public static final String CATEGORY_KEYBOARD = "keyboard";
+    public static final String CATEGORY_LOCALIZATION = "localization";
     public static final String CATEGORY_JSON = "json";
     public static final String CATEGORY_DEBUG = "debug";
 
     private static final String LANG_PREFIX = ModularUI.MODID + ".config.";
 
     public static final String[] CATEGORIES = new String[] { CATEGORY_ANIMATIONS, CATEGORY_RENDERING, CATEGORY_KEYBOARD,
-            CATEGORY_JSON, CATEGORY_DEBUG, };
+            CATEGORY_LOCALIZATION, CATEGORY_JSON, CATEGORY_DEBUG, };
 
     public static void init(File configFile) {
         config = new Configuration(configFile);
@@ -50,6 +55,8 @@ public class Config {
         config.setCategoryLanguageKey(CATEGORY_RENDERING, LANG_PREFIX + CATEGORY_RENDERING);
         config.setCategoryComment(CATEGORY_KEYBOARD, "Keyboard");
         config.setCategoryLanguageKey(CATEGORY_KEYBOARD, LANG_PREFIX + CATEGORY_KEYBOARD);
+        config.setCategoryComment(CATEGORY_LOCALIZATION, "Localization");
+        config.setCategoryLanguageKey(CATEGORY_LOCALIZATION, LANG_PREFIX + CATEGORY_LOCALIZATION);
         config.setCategoryComment(CATEGORY_JSON, "Json");
         config.setCategoryLanguageKey(CATEGORY_JSON, LANG_PREFIX + CATEGORY_JSON);
         config.setCategoryComment(CATEGORY_DEBUG, "Debug");
@@ -124,6 +131,29 @@ public class Config {
         closeWindowsAtOnce = config
                 .get(CATEGORY_KEYBOARD, "closeWindowsAtOnce", false, "Whether to close all the opened windows at once")
                 .setLanguageKey(LANG_PREFIX + CATEGORY_KEYBOARD + ".closeWindowsAtOnce").getBoolean();
+
+        // === Localization ===
+
+        Property property = config.get(
+                CATEGORY_LOCALIZATION,
+                "locale",
+                Locale.getDefault().toLanguageTag(),
+                "Locale to use to display GUI elements. Primarily used to display numbers in your regional format.")
+                .setLanguageKey(LANG_PREFIX + CATEGORY_LOCALIZATION + ".locale");
+
+        Locale newLocale = Locale.forLanguageTag(property.getString());
+        boolean isValid = false;
+        for (Locale l : Locale.getAvailableLocales()) {
+            if (l.equals(newLocale)) {
+                locale = newLocale;
+                isValid = true;
+                break;
+            }
+        }
+        if (!isValid) {
+            // Reset the config value.
+            property.set(locale.toLanguageTag());
+        }
 
         // === Json ===
 

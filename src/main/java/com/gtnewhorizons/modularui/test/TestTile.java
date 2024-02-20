@@ -79,8 +79,8 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
     private int progress = 0;
     private int ticks = 0;
     private float sliderValue = 0;
-    private long longValue = 50;
-    private double doubleValue;
+    private long longValue = 123456789;
+    private double doubleValue = 123456.789;
     private int serverCounter = 0;
     private static final AdaptableUITexture DISPLAY = AdaptableUITexture
             .of("modularui:gui/background/display", 143, 75, 2);
@@ -180,7 +180,7 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
                 }).setShiftClickPriority(0).setPos(10, 30)).addChild(
                         new NumericWidget()//
                                 .setMinValue(-1_000_000)//
-                                .setMaxValue(5_000_000)//
+                                .setMaxValue(999_000_000)//
                                 .setDefaultValue(50)//
                                 .setGetter(() -> (double) longValue)//
                                 .setSetter(val -> longValue = val.longValue())//
@@ -192,7 +192,7 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
                         new NumericWidget()//
                                 .setIntegerOnly(false)//
                                 .setMinValue(-1_000_000)//
-                                .setMaxValue(5_000_000)//
+                                .setMaxValue(999_000_000)//
                                 .setDefaultValue(50)//
                                 .setGetter(() -> doubleValue)//
                                 .setSetter(val -> doubleValue = val)//
