@@ -1,8 +1,5 @@
 package com.gtnewhorizons.modularui.common.widget;
 
-import static codechicken.lib.gui.GuiDraw.drawRect;
-import static codechicken.nei.NEIClientConfig.getSearchExpression;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,8 +45,8 @@ import com.gtnewhorizons.modularui.common.internal.wrapper.BaseSlot;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 import com.gtnewhorizons.modularui.mixins.GuiContainerAccessor;
 
-import codechicken.nei.LayoutManager;
-import codechicken.nei.SearchField;
+import codechicken.nei.guihook.GuiContainerManager;
+import codechicken.nei.guihook.IContainerDrawHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -478,8 +475,6 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
      */
     @SideOnly(Side.CLIENT)
     protected void drawSlot(Slot slotIn, boolean drawStackSize) {
-        int x = slotIn.xDisplayPosition;
-        int y = slotIn.yDisplayPosition;
         ItemStack itemstack = getItemStackForRendering(slotIn);
         boolean flag = false;
         boolean flag1 = slotIn == getGuiAccessor().getClickedSlot() && getGuiAccessor().getDraggedStack() != null
@@ -529,6 +524,8 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
             if (flag) {
                 ModularGui.drawSolidRect(1, 1, 16, 16, -2130706433);
             }
+
+            renderSlotUnderlayNEI(slotIn);
 
             if (itemstack != null) {
                 GlStateManager.enableRescaleNormal();
@@ -597,7 +594,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
                 GlStateManager.disableDepth();
             }
 
-            renderSlotOverlayNEI();
+            renderSlotOverlayNEI(slotIn);
         }
 
         GL11.glDisable(GL11.GL_BLEND);
@@ -606,19 +603,38 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     }
 
     /**
-     * Adapted from {@link LayoutManager#renderSlotOverlay}
+     * Adapted from {@link GuiContainerManager#renderSlotUnderlay}
      */
-    protected void renderSlotOverlayNEI() {
-        ItemStack item = slot.getStack();
-        if (SearchField.searchInventories() && (item == null ? !getSearchExpression().equals("")
-                : !LayoutManager.searchField.getFilter().matches(item))) {
-            GL11.glDisable(GL11.GL_LIGHTING);
-            GL11.glDisable(GL11.GL_DEPTH_TEST);
-            GL11.glTranslatef(0, 0, 150);
-            drawRect(0, 0, 16, 16, 0x80000000);
-            GL11.glTranslatef(0, 0, -150);
-            GL11.glEnable(GL11.GL_LIGHTING);
-            GL11.glEnable(GL11.GL_DEPTH_TEST);
+    protected void renderSlotUnderlayNEI(Slot slotIn) {
+        final int xDisplayPosition = slotIn.xDisplayPosition;
+        final int yDisplayPosition = slotIn.yDisplayPosition;
+        final ModularGui screen = getScreen();
+        slotIn.xDisplayPosition = 1;
+        slotIn.yDisplayPosition = 1;
+
+        for (IContainerDrawHandler drawHandler : GuiContainerManager.drawHandlers) {
+            drawHandler.renderSlotUnderlay(screen, slotIn);
         }
+
+        slotIn.xDisplayPosition = xDisplayPosition;
+        slotIn.yDisplayPosition = yDisplayPosition;
+    }
+
+    /**
+     * Adapted from {@link GuiContainerManager#renderSlotOverlay}
+     */
+    protected void renderSlotOverlayNEI(Slot slotIn) {
+        final int xDisplayPosition = slotIn.xDisplayPosition;
+        final int yDisplayPosition = slotIn.yDisplayPosition;
+        final ModularGui screen = getScreen();
+        slotIn.xDisplayPosition = 1;
+        slotIn.yDisplayPosition = 1;
+
+        for (IContainerDrawHandler drawHandler : GuiContainerManager.drawHandlers) {
+            drawHandler.renderSlotOverlay(screen, slotIn);
+        }
+
+        slotIn.xDisplayPosition = xDisplayPosition;
+        slotIn.yDisplayPosition = yDisplayPosition;
     }
 }
