@@ -26,6 +26,7 @@ modularui.fluid.click_to_empty=§7Left Click with a Fluid Container to empty the
 modularui.config.animations=Animations
 modularui.config.rendering=Rendering
 modularui.config.keyboard=Keyboard
+modularui.config.localization=Localization
 modularui.config.json=Json
 modularui.config.debug=Debug
 
@@ -47,6 +48,8 @@ modularui.config.keyboard.escRestoreLastText=Restore last text with esc key
 modularui.config.keyboard.escRestoreLastText.tooltip=Whether to restore last text if esc key is pressed in the text field
 modularui.config.keyboard.closeWindowsAtOnce=Close windows at once
 modularui.config.keyboard.closeWindowsAtOnce.tooltip=Whether to close all the opened windows at once
+modularui.config.localization.locale=Locale
+modularui.config.localization.locale.tooltip=Locale to use to display GUI elements. Primarily used to display numbers in your regional format.
 modularui.config.json.useJson=Use Json
 modularui.config.json.useJson.tooltip=Whether to enable Json. Enabling this will increase loading time.
 modularui.config.debug.debug=Enable debug
