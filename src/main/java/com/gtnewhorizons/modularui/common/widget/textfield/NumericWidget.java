@@ -47,7 +47,7 @@ public class NumericWidget extends BaseTextFieldWidget implements ISyncedWidget 
     private static final int MAX_FRACTION_DIGITS = 4;
     private static final Pattern NUMBER_PATTERN = Pattern.compile("-?[0-9., \u202F_’]*");
     // Character '\u202F' (non-breaking space) to support French locale thousands separator.
-    private boolean shouldReplaceSpaces = false;
+    private final boolean shouldReplaceSpaces;
 
     public NumericWidget() {
         setTextAlignment(Alignment.CenterLeft);
