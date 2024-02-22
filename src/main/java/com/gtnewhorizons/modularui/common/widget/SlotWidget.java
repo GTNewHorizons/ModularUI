@@ -46,7 +46,6 @@ import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 import com.gtnewhorizons.modularui.mixins.GuiContainerAccessor;
 
 import codechicken.nei.guihook.GuiContainerManager;
-import codechicken.nei.guihook.IContainerDrawHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -608,13 +607,10 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     protected void renderSlotUnderlayNEI(Slot slotIn) {
         final int xDisplayPosition = slotIn.xDisplayPosition;
         final int yDisplayPosition = slotIn.yDisplayPosition;
-        final ModularGui screen = getScreen();
         slotIn.xDisplayPosition = 1;
         slotIn.yDisplayPosition = 1;
 
-        for (IContainerDrawHandler drawHandler : GuiContainerManager.drawHandlers) {
-            drawHandler.renderSlotUnderlay(screen, slotIn);
-        }
+        GuiContainerManager.getManager().renderSlotUnderlay(slotIn);
 
         slotIn.xDisplayPosition = xDisplayPosition;
         slotIn.yDisplayPosition = yDisplayPosition;
@@ -626,13 +622,10 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     protected void renderSlotOverlayNEI(Slot slotIn) {
         final int xDisplayPosition = slotIn.xDisplayPosition;
         final int yDisplayPosition = slotIn.yDisplayPosition;
-        final ModularGui screen = getScreen();
         slotIn.xDisplayPosition = 1;
         slotIn.yDisplayPosition = 1;
 
-        for (IContainerDrawHandler drawHandler : GuiContainerManager.drawHandlers) {
-            drawHandler.renderSlotOverlay(screen, slotIn);
-        }
+        GuiContainerManager.getManager().renderSlotOverlay(slotIn);
 
         slotIn.xDisplayPosition = xDisplayPosition;
         slotIn.yDisplayPosition = yDisplayPosition;
