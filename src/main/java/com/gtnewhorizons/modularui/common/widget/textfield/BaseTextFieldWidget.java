@@ -197,6 +197,11 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
         if (!isRightBelowMouse()) {
             return ClickResult.IGNORE;
         }
+        // Right click - clear
+        if (buttonId == 1) {
+            handler.getText().clear();
+            return ClickResult.SUCCESS;
+        }
         handler.setCursor(
                 renderer.getCursorPos(
                         handler.getText(),
@@ -282,7 +287,8 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
             // mark whole text
             handler.markAll();
             return true;
-        } else if (BASE_PATTERN.matcher(String.valueOf(character)).matches()) {
+            // Support CJKV Unified Ideographs
+        } else if (BASE_PATTERN.matcher(String.valueOf(character)).matches() || Character.isIdeographic(character)) {
             if (handler.test(String.valueOf(character))) {
                 // delete selected chars
                 if (handler.hasTextMarked()) {
