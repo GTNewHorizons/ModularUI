@@ -605,29 +605,39 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
      * Adapted from {@link GuiContainerManager#renderSlotUnderlay}
      */
     protected void renderSlotUnderlayNEI(Slot slotIn) {
-        final int xDisplayPosition = slotIn.xDisplayPosition;
-        final int yDisplayPosition = slotIn.yDisplayPosition;
-        slotIn.xDisplayPosition = 1;
-        slotIn.yDisplayPosition = 1;
+        final GuiContainerManager manager = GuiContainerManager.getManager();
+        final ModularGui screen = getScreen();
 
-        GuiContainerManager.getManager().renderSlotUnderlay(slotIn);
+        if (manager != null && manager.window == screen) {
+            final int xDisplayPosition = slotIn.xDisplayPosition;
+            final int yDisplayPosition = slotIn.yDisplayPosition;
+            slotIn.xDisplayPosition = 1;
+            slotIn.yDisplayPosition = 1;
 
-        slotIn.xDisplayPosition = xDisplayPosition;
-        slotIn.yDisplayPosition = yDisplayPosition;
+            manager.renderSlotUnderlay(slotIn);
+
+            slotIn.xDisplayPosition = xDisplayPosition;
+            slotIn.yDisplayPosition = yDisplayPosition;
+        }
     }
 
     /**
      * Adapted from {@link GuiContainerManager#renderSlotOverlay}
      */
     protected void renderSlotOverlayNEI(Slot slotIn) {
-        final int xDisplayPosition = slotIn.xDisplayPosition;
-        final int yDisplayPosition = slotIn.yDisplayPosition;
-        slotIn.xDisplayPosition = 1;
-        slotIn.yDisplayPosition = 1;
+        final GuiContainerManager manager = GuiContainerManager.getManager();
+        final ModularGui screen = getScreen();
 
-        GuiContainerManager.getManager().renderSlotOverlay(slotIn);
+        if (manager != null && manager.window == screen) {
+            final int xDisplayPosition = slotIn.xDisplayPosition;
+            final int yDisplayPosition = slotIn.yDisplayPosition;
+            slotIn.xDisplayPosition = 1;
+            slotIn.yDisplayPosition = 1;
 
-        slotIn.xDisplayPosition = xDisplayPosition;
-        slotIn.yDisplayPosition = yDisplayPosition;
+            manager.renderSlotOverlay(slotIn);
+
+            slotIn.xDisplayPosition = xDisplayPosition;
+            slotIn.yDisplayPosition = yDisplayPosition;
+        }
     }
 }
