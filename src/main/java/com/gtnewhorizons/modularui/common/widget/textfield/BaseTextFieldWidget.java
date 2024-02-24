@@ -197,6 +197,11 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
         if (!isRightBelowMouse()) {
             return ClickResult.IGNORE;
         }
+        // Right click - clear
+        if (buttonId == 1) {
+            handler.getText().clear();
+            return ClickResult.SUCCESS;
+        }
         handler.setCursor(
                 renderer.getCursorPos(
                         handler.getText(),
@@ -282,16 +287,15 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
             // mark whole text
             handler.markAll();
             return true;
-        } else if (BASE_PATTERN.matcher(String.valueOf(character)).matches()) {
-            if (handler.test(String.valueOf(character))) {
-                // delete selected chars
-                if (handler.hasTextMarked()) {
-                    handler.delete();
-                }
-                // insert typed char
-                handler.insert(String.valueOf(character));
-                return true;
+            // Support CJKV Unified Ideographs
+        } else if (handler.test(String.valueOf(character))) {
+            // delete selected chars
+            if (handler.hasTextMarked()) {
+                handler.delete();
             }
+            // insert typed char
+            handler.insert(String.valueOf(character));
+            return true;
         }
         if (Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode() == keyCode) {
             removeFocus();
