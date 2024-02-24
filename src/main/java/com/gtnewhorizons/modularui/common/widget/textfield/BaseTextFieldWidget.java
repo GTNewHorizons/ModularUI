@@ -288,16 +288,14 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
             handler.markAll();
             return true;
             // Support CJKV Unified Ideographs
-        } else if (BASE_PATTERN.matcher(String.valueOf(character)).matches() || Character.isIdeographic(character)) {
-            if (handler.test(String.valueOf(character))) {
-                // delete selected chars
-                if (handler.hasTextMarked()) {
-                    handler.delete();
-                }
-                // insert typed char
-                handler.insert(String.valueOf(character));
-                return true;
+        } else if (handler.test(String.valueOf(character))) {
+            // delete selected chars
+            if (handler.hasTextMarked()) {
+                handler.delete();
             }
+            // insert typed char
+            handler.insert(String.valueOf(character));
+            return true;
         }
         if (Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode() == keyCode) {
             removeFocus();
