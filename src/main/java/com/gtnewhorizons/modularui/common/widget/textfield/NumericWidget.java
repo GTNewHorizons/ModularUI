@@ -5,6 +5,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
@@ -159,6 +160,21 @@ public class NumericWidget extends BaseTextFieldWidget implements ISyncedWidget 
     }
 
     /**
+     * Convenience method to set both minimum and maximum value at the same time.
+     *
+     * @see #setMinValue
+     * @see #setMaxValue
+     */
+    public NumericWidget setBounds(double minValue, double maxValue) {
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+        if (ModularUI.isGTNHLibLoaded) {
+            ctx.setHundredPercent(maxValue);
+        }
+        return this;
+    }
+
+    /**
      * Sets the default input value to be used when the text field is empty.
      * <p>
      * Default: 0.
@@ -220,6 +236,16 @@ public class NumericWidget extends BaseTextFieldWidget implements ISyncedWidget 
      */
     public NumberFormat getNumberFormat() {
         return numberFormat;
+    }
+
+    /**
+     * Convenience method for chaining. Use: <code>
+     *     new NumericWidget().modifyNumberFormat(format -> format.setMaximumFractionDigits(10)).setBounds(0, 10)...
+     * </code>
+     */
+    public NumericWidget modifyNumberFormat(Consumer<NumberFormat> consumer) {
+        consumer.accept(numberFormat);
+        return this;
     }
 
     /**
