@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
+import com.gtnewhorizons.modularui.api.NumberFormatMUI;
 import com.gtnewhorizons.modularui.api.drawable.AdaptableUITexture;
 import com.gtnewhorizons.modularui.api.drawable.FluidDrawable;
 import com.gtnewhorizons.modularui.api.drawable.ItemDrawable;
@@ -81,6 +82,7 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
     private float sliderValue = 0;
     private long longValue = 123456789;
     private double doubleValue = 123456.789;
+    private static final NumberFormatMUI numberFormat = new NumberFormatMUI();
     private int serverCounter = 0;
     private static final AdaptableUITexture DISPLAY = AdaptableUITexture
             .of("modularui:gui/background/display", 143, 75, 2);
@@ -222,7 +224,7 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
                                 .setOnClick((clickData, widget) -> {
                                     if (!widget.isClient()) {
                                         widget.getContext().getPlayer().addChatMessage(
-                                                new ChatComponentText("Internal Name: " + widget.getInternalName()));
+                                                new ChatComponentText(numberFormat.formatWithSuffix(longValue)));
                                     }
                                 }).setPos(70, 80).setSize(32, 16).setInternalName("debug"))
                 .addChild(

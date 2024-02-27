@@ -1,7 +1,5 @@
 package com.gtnewhorizons.modularui.common.widget.textfield;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -17,10 +15,10 @@ import net.minecraft.util.MathHelper;
 import com.gtnewhorizon.gtnhlib.util.parsing.MathExpressionParser;
 import com.gtnewhorizon.gtnhlib.util.parsing.MathExpressionParser.Context;
 import com.gtnewhorizons.modularui.ModularUI;
+import com.gtnewhorizons.modularui.api.NumberFormatMUI;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
-import com.gtnewhorizons.modularui.config.Config;
 
 /**
  * A widget that allows the user to enter a numeric value. Synced between client and server. Automatically handles
@@ -48,16 +46,12 @@ public class NumericWidget extends BaseTextFieldWidget implements ISyncedWidget 
     private static final int MAX_FRACTION_DIGITS = 4;
     private static final Pattern NUMBER_PATTERN = Pattern.compile("-?[0-9., \u202F_’]*");
     // Character '\u202F' (non-breaking space) to support French locale thousands separator.
-    private final boolean shouldReplaceSpaces;
 
     public NumericWidget() {
         setTextAlignment(Alignment.CenterLeft);
         handler.setMaxLines(1);
 
-        numberFormat = DecimalFormat.getNumberInstance(Config.locale);
-        shouldReplaceSpaces = DecimalFormatSymbols.getInstance(Config.locale).getGroupingSeparator() == '\u202F';
-
-        // If you need more than 4 decimal digits of precision, use getNumberFormat().setMaximumFractionDigits().
+        numberFormat = new NumberFormatMUI();
         numberFormat.setMaximumFractionDigits(MAX_FRACTION_DIGITS);
 
         if (ModularUI.isGTNHLibLoaded) {
@@ -77,11 +71,6 @@ public class NumericWidget extends BaseTextFieldWidget implements ISyncedWidget 
         value = newValue;
 
         String displayValue = numberFormat.format(value);
-        // The non-breaking space character '\u202F', used as a thousands separator in French locales, does not display
-        // properly in the MC font.
-        if (shouldReplaceSpaces) {
-            displayValue = displayValue.replace('\u202F', ' ');
-        }
 
         if (handler.getText().isEmpty()) {
             handler.getText().add(displayValue);

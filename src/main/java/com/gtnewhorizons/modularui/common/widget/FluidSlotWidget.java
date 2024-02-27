@@ -27,7 +27,7 @@ import org.lwjgl.opengl.GL11;
 import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
-import com.gtnewhorizons.modularui.api.NumberFormat;
+import com.gtnewhorizons.modularui.api.NumberFormatMUI;
 import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
@@ -83,6 +83,7 @@ public class FluidSlotWidget extends SyncedWidget
 
     private Consumer<FluidSlotWidget> onClickContainer;
     private Consumer<Widget> onDragAndDropComplete;
+    private static final NumberFormatMUI numberFormat = new NumberFormatMUI();
 
     public FluidSlotWidget(IFluidTanksHandler handler, int tank) {
         this.handler = handler;
@@ -225,7 +226,8 @@ public class FluidSlotWidget extends SyncedWidget
             overlayTexture.draw(Pos2d.ZERO, size, partialTicks);
         }
         if (content != null && (!phantom || controlsAmount)) {
-            String s = NumberFormat.formatLong(handler.getTankStoredAmount(tank)) + "L";
+            String s = numberFormat.formatWithSuffix(handler.getTankStoredAmount(tank), new StringBuffer()).append('L')
+                    .toString();
             textRenderer.setAlignment(Alignment.CenterLeft, size.width - contentOffset.x - 1f);
             textRenderer.setPos((int) (contentOffset.x + 0.5f), (int) (size.height - 4.5f));
             textRenderer.draw(s);

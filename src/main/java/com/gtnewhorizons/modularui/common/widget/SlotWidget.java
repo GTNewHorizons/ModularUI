@@ -25,7 +25,7 @@ import org.lwjgl.opengl.GL12;
 
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
-import com.gtnewhorizons.modularui.api.NumberFormat;
+import com.gtnewhorizons.modularui.api.NumberFormatMUI;
 import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.drawable.TextRenderer;
@@ -66,6 +66,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     private Function<List<String>, List<String>> overwriteItemStackTooltip;
 
     protected Consumer<Widget> onDragAndDropComplete;
+    private static final NumberFormatMUI numberFormat = new NumberFormatMUI();
 
     @Nullable
     private String sortAreaName = null;
@@ -552,10 +553,8 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
                     }
                     // render the amount overlay
                     if (amount > 1 || format != null) {
-                        String amountText = NumberFormat.format(amount, 2);
-                        if (format != null) {
-                            amountText = format + amountText;
-                        }
+                        String amountText = numberFormat
+                                .formatWithSuffix(amount, new StringBuffer(format == null ? "" : format)).toString();
                         float scale = 1f;
                         if (amountText.length() == 3) {
                             scale = 0.8f;
