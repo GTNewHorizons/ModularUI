@@ -81,6 +81,29 @@ class NumberFormatMUITest {
     }
 
     @Test
+    void basicCN_Test() {
+        Config.locale = Locale.CHINA;
+        NumberFormatMUI nf = new NumberFormatMUI();
+
+        assertEquals("123,456,789", nf.format(123_456_789));
+        assertEquals("234,567.891", nf.format(234_567.891));
+        assertEquals("-345,678,912", nf.format(-345_678_912));
+        assertEquals("-456,789.123", nf.format(-456_789.123));
+
+        assertEquals("[567,891,234]", nf.format(567_891_234, new StringBuffer("[")).append(']').toString());
+        assertEquals("[678,912.345]", nf.format(678_912.345, new StringBuffer("[")).append(']').toString());
+        assertEquals("[-789,123,456]", nf.format(-789_123_456, new StringBuffer("[")).append(']').toString());
+        assertEquals("[-891,234.567]", nf.format(-891_234.567, new StringBuffer("[")).append(']').toString());
+
+        try {
+            assertEquals(912_345_678L, nf.parse("912345678").longValue());
+            assertEquals(123_456.789D, nf.parse("123,456.789").doubleValue());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
     void suffixes_Test() {
         Config.locale = Locale.US;
         NumberFormatMUI nf = new NumberFormatMUI();
