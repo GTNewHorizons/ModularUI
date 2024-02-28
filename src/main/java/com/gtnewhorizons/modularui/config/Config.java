@@ -1,6 +1,8 @@
 package com.gtnewhorizons.modularui.config;
 
 import java.io.File;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Locale;
 
 import net.minecraftforge.common.config.Configuration;
@@ -142,16 +144,11 @@ public class Config {
                 .setLanguageKey(LANG_PREFIX + CATEGORY_LOCALIZATION + ".locale");
 
         Locale newLocale = Locale.forLanguageTag(property.getString());
-        boolean isValid = false;
-        for (Locale l : Locale.getAvailableLocales()) {
-            if (l.equals(newLocale)) {
-                locale = newLocale;
-                isValid = true;
-                break;
-            }
-        }
-        if (!isValid) {
-            // Reset the config value.
+        if (NumberFormat.getNumberInstance(newLocale) instanceof DecimalFormat) {
+            // If we can make sense of this locale, use it.
+            locale = newLocale;
+        } else {
+            // Otherwise reset the config value.
             property.set(locale.toLanguageTag());
         }
 
