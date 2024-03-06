@@ -106,12 +106,20 @@ public class TextWidget extends Widget {
         return text;
     }
 
+    /**
+     * The textSupplier will ONLY be called on the client. It must have access to all the data it needs to build the
+     * text from the client side.
+     */
     public TextWidget setTextSupplier(Supplier<Text> textSupplier) {
         this.textSupplier = textSupplier;
         this.isDynamic = textSupplier != null;
         return this;
     }
 
+    /**
+     * The stringSupplier will ONLY be called on the client. It must have access to all the data it needs to build the
+     * text from the client side.
+     */
     public TextWidget setStringSupplier(Supplier<String> stringSupplier) {
         if (stringSupplier != null) {
             this.textSupplier = () -> new Text(stringSupplier.get());
