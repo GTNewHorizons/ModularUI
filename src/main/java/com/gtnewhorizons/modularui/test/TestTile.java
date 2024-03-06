@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.gtnewhorizons.modularui.common.widget.DynamicTextWidget;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -178,7 +179,7 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
         return new MultiChildWidget().addChild(new TextWidget("Page 1"))
                 .addChild(new SlotWidget(phantomInventory, 0).setChangeListener(() -> {
                     serverCounter = 0;
-                    changeableWidget.notifyChangeServer();
+                    //changeableWidget.notifyChangeServer();
                 }).setShiftClickPriority(0).setPos(10, 30)).addChild(
                         new NumericWidget()//
                                 .setMinValue(-1_000_000)//
@@ -200,7 +201,14 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
                                 .setSetter(val -> doubleValue = val)//
                                 .setTextColor(Color.WHITE.dark(1)).setBackground(DISPLAY.withOffset(-2, -2, 4, 4))
                                 .setSize(92, 20).setPos(100, 50))
-                .addChild(
+                .addChild(new TextWidget("TextWidget:\n" + numberFormat.format(System.currentTimeMillis()))
+                    .setTextAlignment(Alignment.CenterLeft).setPos(10, 80))
+                .addChild(new DynamicTextWidget(() -> new Text("DynamicTextWidget:\n" + numberFormat.format(System.currentTimeMillis())))
+                    .setTextAlignment(Alignment.CenterLeft).setPos(10, 100))
+                .addChild(new TextWidget().setStringSupplier(() -> "w/ Supplier:\n" + numberFormat.format(System.currentTimeMillis()))
+                    .setTextAlignment(Alignment.CenterLeft).setPos(10, 120))
+
+                /*.addChild(
                         SlotWidget.phantom(phantomInventory, 1).setShiftClickPriority(1).setIgnoreStackSizeLimit(true)
                                 .setControlsAmount(true).setPos(28, 30))
                 .addChild(changeableWidget.setPos(12, 55))
@@ -230,7 +238,8 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
                 .addChild(
                         new DrawableWidget()
                                 .setDrawable(new FluidDrawable().setFluid(FluidRegistry.LAVA).withFixedSize(32, 16))
-                                .setPos(70, 100).setSize(32, 16))
+                                .setPos(70, 100).setSize(32, 16))*/
+
                 .setPos(10, 10).setDebugLabel("Page1");
     }
 
