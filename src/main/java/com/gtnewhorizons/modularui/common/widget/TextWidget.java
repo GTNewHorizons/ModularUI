@@ -19,8 +19,9 @@ import com.gtnewhorizons.modularui.common.internal.Theme;
  */
 public class TextWidget extends Widget {
 
-    private final Text text;
+    private Text text;
     protected String localised;
+    protected Supplier<Text> textSupplier = null;
     private int maxWidth = -1;
     private Alignment textAlignment = Alignment.Center;
     private final TextRenderer textRenderer = new TextRenderer();
@@ -76,6 +77,9 @@ public class TextWidget extends Widget {
 
     @Override
     public void onScreenUpdate() {
+        if (textSupplier != null) {
+            text = textSupplier.get();
+        }
         if (isDynamic || isAutoSized()) {
             String l = getText().getFormatted();
             if (!l.equals(localised)) {
@@ -100,6 +104,30 @@ public class TextWidget extends Widget {
 
     public Text getText() {
         return text;
+    }
+
+    /**
+     * The textSupplier will ONLY be called on the client. It must have access to all the data it needs to build the
+     * text from the client side.
+     */
+    public TextWidget setTextSupplier(Supplier<Text> textSupplier) {
+        this.textSupplier = textSupplier;
+        this.isDynamic = textSupplier != null;
+        return this;
+    }
+
+    /**
+     * The stringSupplier will ONLY be called on the client. It must have access to all the data it needs to build the
+     * text from the client side.
+     */
+    public TextWidget setStringSupplier(Supplier<String> stringSupplier) {
+        if (stringSupplier != null) {
+            this.textSupplier = () -> new Text(stringSupplier.get());
+            this.isDynamic = true;
+        } else {
+            this.isDynamic = false;
+        }
+        return this;
     }
 
     public TextWidget setDefaultColor(int color) {

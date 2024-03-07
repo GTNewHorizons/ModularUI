@@ -45,6 +45,7 @@ import com.gtnewhorizons.modularui.common.widget.Column;
 import com.gtnewhorizons.modularui.common.widget.CycleButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.DropDownWidget;
+import com.gtnewhorizons.modularui.common.widget.DynamicTextWidget;
 import com.gtnewhorizons.modularui.common.widget.ExpandTab;
 import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
 import com.gtnewhorizons.modularui.common.widget.MultiChildWidget;
@@ -97,14 +98,7 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
     public ModularWindow createWindow(UIBuildContext buildContext) {
         phantomInventory.setStackInSlot(1, new ItemStack(Items.diamond, Integer.MAX_VALUE));
         ModularWindow.Builder builder = ModularWindow.builder(new Size(176, 272));
-        // .addFromJson("modularui:test", buildContext);
-        /*
-         * buildContext.applyToWidget("background", DrawableWidget.class, widget -> { widget.
-         * addTooltip("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum."
-         * ) .addTooltip("Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.")
-         * .addTooltip("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet"
-         * ); });
-         */
+
         List<Integer> nums = IntStream.range(1, 101).boxed().collect(Collectors.toList());
         builder.setBackground(ModularUITextures.VANILLA_BACKGROUND).bindPlayerInventory(buildContext.getPlayer());
         buildContext.addSyncedWindow(1, this::createAnotherWindow);
@@ -201,6 +195,20 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
                                 .setTextColor(Color.WHITE.dark(1)).setBackground(DISPLAY.withOffset(-2, -2, 4, 4))
                                 .setSize(92, 20).setPos(100, 50))
                 .addChild(
+                        new TextWidget("TextWidget: " + numberFormat.format(System.currentTimeMillis() % 100_000_000))
+                                .setTextAlignment(Alignment.CenterLeft).setPos(0, 140))
+                .addChild(
+                        new DynamicTextWidget(
+                                () -> new Text(
+                                        "DynamicTextWidget: "
+                                                + numberFormat.format(System.currentTimeMillis() % 100_000_000)))
+                                                        .setTextAlignment(Alignment.CenterLeft).setPos(0, 150))
+                .addChild(
+                        new TextWidget().setStringSupplier(
+                                () -> "w/ Supplier: " + numberFormat.format(System.currentTimeMillis() % 100_000_000))
+                                .setTextAlignment(Alignment.CenterLeft).setPos(0, 160))
+
+                .addChild(
                         SlotWidget.phantom(phantomInventory, 1).setShiftClickPriority(1).setIgnoreStackSizeLimit(true)
                                 .setControlsAmount(true).setPos(28, 30))
                 .addChild(changeableWidget.setPos(12, 55))
@@ -231,6 +239,7 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
                         new DrawableWidget()
                                 .setDrawable(new FluidDrawable().setFluid(FluidRegistry.LAVA).withFixedSize(32, 16))
                                 .setPos(70, 100).setSize(32, 16))
+
                 .setPos(10, 10).setDebugLabel("Page1");
     }
 
