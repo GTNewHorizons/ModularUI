@@ -11,7 +11,10 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidTank;
 
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +23,7 @@ import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.NumberFormatMUI;
 import com.gtnewhorizons.modularui.api.drawable.AdaptableUITexture;
+import com.gtnewhorizons.modularui.api.drawable.FluidDrawable;
 import com.gtnewhorizons.modularui.api.drawable.ItemDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
@@ -40,6 +44,7 @@ import com.gtnewhorizons.modularui.common.widget.ChangeableWidget;
 import com.gtnewhorizons.modularui.common.widget.Column;
 import com.gtnewhorizons.modularui.common.widget.CycleButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
+import com.gtnewhorizons.modularui.common.widget.DropDownWidget;
 import com.gtnewhorizons.modularui.common.widget.DynamicTextWidget;
 import com.gtnewhorizons.modularui.common.widget.ExpandTab;
 import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
@@ -54,6 +59,7 @@ import com.gtnewhorizons.modularui.common.widget.SortableListWidget;
 import com.gtnewhorizons.modularui.common.widget.TabButton;
 import com.gtnewhorizons.modularui.common.widget.TabContainer;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.gtnewhorizons.modularui.common.widget.VanillaButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
 
@@ -92,14 +98,7 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
     public ModularWindow createWindow(UIBuildContext buildContext) {
         phantomInventory.setStackInSlot(1, new ItemStack(Items.diamond, Integer.MAX_VALUE));
         ModularWindow.Builder builder = ModularWindow.builder(new Size(176, 272));
-        // .addFromJson("modularui:test", buildContext);
-        /*
-         * buildContext.applyToWidget("background", DrawableWidget.class, widget -> { widget.
-         * addTooltip("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum."
-         * ) .addTooltip("Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.")
-         * .addTooltip("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet"
-         * ); });
-         */
+
         List<Integer> nums = IntStream.range(1, 101).boxed().collect(Collectors.toList());
         builder.setBackground(ModularUITextures.VANILLA_BACKGROUND).bindPlayerInventory(buildContext.getPlayer());
         buildContext.addSyncedWindow(1, this::createAnotherWindow);
@@ -173,7 +172,7 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
         return new MultiChildWidget().addChild(new TextWidget("Page 1"))
                 .addChild(new SlotWidget(phantomInventory, 0).setChangeListener(() -> {
                     serverCounter = 0;
-                    // changeableWidget.notifyChangeServer();
+                    changeableWidget.notifyChangeServer();
                 }).setShiftClickPriority(0).setPos(10, 30)).addChild(
                         new NumericWidget()//
                                 .setMinValue(-1_000_000)//
@@ -196,35 +195,50 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
                                 .setTextColor(Color.WHITE.dark(1)).setBackground(DISPLAY.withOffset(-2, -2, 4, 4))
                                 .setSize(92, 20).setPos(100, 50))
                 .addChild(
-                        new TextWidget("TextWidget:\n" + numberFormat.format(System.currentTimeMillis()))
-                                .setTextAlignment(Alignment.CenterLeft).setPos(10, 80))
+                        new TextWidget("TextWidget: " + numberFormat.format(System.currentTimeMillis() % 100_000_000))
+                                .setTextAlignment(Alignment.CenterLeft).setPos(0, 140))
                 .addChild(
                         new DynamicTextWidget(
                                 () -> new Text(
-                                        "DynamicTextWidget:\n" + numberFormat.format(System.currentTimeMillis())))
-                                                .setTextAlignment(Alignment.CenterLeft).setPos(10, 100))
+                                        "DynamicTextWidget: "
+                                                + numberFormat.format(System.currentTimeMillis() % 100_000_000)))
+                                                        .setTextAlignment(Alignment.CenterLeft).setPos(0, 150))
                 .addChild(
-                        new TextWidget()
-                                .setStringSupplier(
-                                        () -> "w/ Supplier:\n" + numberFormat.format(System.currentTimeMillis()))
-                                .setTextAlignment(Alignment.CenterLeft).setPos(10, 120))
+                        new TextWidget().setStringSupplier(
+                                () -> "w/ Supplier: " + numberFormat.format(System.currentTimeMillis() % 100_000_000))
+                                .setTextAlignment(Alignment.CenterLeft).setPos(0, 160))
 
-                /*
-                 * .addChild( SlotWidget.phantom(phantomInventory,
-                 * 1).setShiftClickPriority(1).setIgnoreStackSizeLimit(true) .setControlsAmount(true).setPos(28, 30))
-                 * .addChild(changeableWidget.setPos(12, 55)) .addChild(SlotGroup.ofItemHandler(items,
-                 * 3).build().setPos(12, 80)) .addChild( new DropDownWidget().addDropDownItemsSimple( IntStream.range(0,
-                 * 20).boxed().map(i -> "label " + i).collect(Collectors.toList()), (buttonWidget, index, label,
-                 * setSelected) -> buttonWidget .setOnClick((clickData, widget) -> { if (!widget.isClient()) {
-                 * widget.getContext().getPlayer() .addChatMessage(new ChatComponentText("Selected " + label)); }
-                 * setSelected.run(); }), true).setExpandedMaxHeight(60).setDirection(DropDownWidget.Direction.DOWN)
-                 * .setPos(90, 30).setSize(60, 11)) .addChild( new VanillaButtonWidget()
-                 * .setDisplayString(StatCollector.translateToLocal("modularui.config.debug")) .setOnClick((clickData,
-                 * widget) -> { if (!widget.isClient()) { widget.getContext().getPlayer().addChatMessage( new
-                 * ChatComponentText(numberFormat.formatWithSuffix(longValue))); } }).setPos(70, 80).setSize(32,
-                 * 16).setInternalName("debug")) .addChild( new DrawableWidget() .setDrawable(new
-                 * FluidDrawable().setFluid(FluidRegistry.LAVA).withFixedSize(32, 16)) .setPos(70, 100).setSize(32, 16))
-                 */
+                .addChild(
+                        SlotWidget.phantom(phantomInventory, 1).setShiftClickPriority(1).setIgnoreStackSizeLimit(true)
+                                .setControlsAmount(true).setPos(28, 30))
+                .addChild(changeableWidget.setPos(12, 55))
+                .addChild(SlotGroup.ofItemHandler(items, 3).build().setPos(12, 80))
+                .addChild(
+                        new DropDownWidget().addDropDownItemsSimple(
+                                IntStream.range(0, 20).boxed().map(i -> "label " + i).collect(Collectors.toList()),
+                                (buttonWidget, index, label, setSelected) -> buttonWidget
+                                        .setOnClick((clickData, widget) -> {
+                                            if (!widget.isClient()) {
+                                                widget.getContext().getPlayer()
+                                                        .addChatMessage(new ChatComponentText("Selected " + label));
+                                            }
+                                            setSelected.run();
+                                        }),
+                                true).setExpandedMaxHeight(60).setDirection(DropDownWidget.Direction.DOWN)
+                                .setPos(90, 30).setSize(60, 11))
+                .addChild(
+                        new VanillaButtonWidget()
+                                .setDisplayString(StatCollector.translateToLocal("modularui.config.debug"))
+                                .setOnClick((clickData, widget) -> {
+                                    if (!widget.isClient()) {
+                                        widget.getContext().getPlayer().addChatMessage(
+                                                new ChatComponentText(numberFormat.formatWithSuffix(longValue)));
+                                    }
+                                }).setPos(70, 80).setSize(32, 16).setInternalName("debug"))
+                .addChild(
+                        new DrawableWidget()
+                                .setDrawable(new FluidDrawable().setFluid(FluidRegistry.LAVA).withFixedSize(32, 16))
+                                .setPos(70, 100).setSize(32, 16))
 
                 .setPos(10, 10).setDebugLabel("Page1");
     }
