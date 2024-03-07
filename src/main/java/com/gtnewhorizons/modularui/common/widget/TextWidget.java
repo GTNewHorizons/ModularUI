@@ -22,6 +22,8 @@ public class TextWidget extends Widget {
     private Text text;
     protected String localised;
     protected Supplier<Text> textSupplier = null;
+    protected Integer defaultColor;
+    protected EnumChatFormatting defaultFormat;
     private int maxWidth = -1;
     private Alignment textAlignment = Alignment.Center;
     private final TextRenderer textRenderer = new TextRenderer();
@@ -79,6 +81,12 @@ public class TextWidget extends Widget {
     public void onScreenUpdate() {
         if (textSupplier != null) {
             text = textSupplier.get();
+            if (defaultColor != null) {
+                text.color(defaultColor);
+            }
+            if (defaultFormat != null) {
+                text.format(defaultFormat);
+            }
         }
         if (isDynamic || isAutoSized()) {
             String l = getText().getFormatted();
@@ -131,11 +139,13 @@ public class TextWidget extends Widget {
     }
 
     public TextWidget setDefaultColor(int color) {
+        this.defaultColor = color;
         this.text.color(color);
         return this;
     }
 
     public TextWidget setDefaultColor(EnumChatFormatting color) {
+        this.defaultFormat = color;
         this.text.format(color);
         return this;
     }

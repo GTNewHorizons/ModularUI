@@ -196,17 +196,20 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
                                 .setSize(92, 20).setPos(100, 50))
                 .addChild(
                         new TextWidget("TextWidget: " + numberFormat.format(System.currentTimeMillis() % 100_000_000))
-                                .setTextAlignment(Alignment.CenterLeft).setPos(0, 140))
+                                .setDefaultColor(EnumChatFormatting.WHITE).setTextAlignment(Alignment.CenterLeft)
+                                .setPos(0, 140))
                 .addChild(
                         new DynamicTextWidget(
                                 () -> new Text(
                                         "DynamicTextWidget: "
                                                 + numberFormat.format(System.currentTimeMillis() % 100_000_000)))
+                                                        .setDefaultColor(EnumChatFormatting.WHITE)
                                                         .setTextAlignment(Alignment.CenterLeft).setPos(0, 150))
                 .addChild(
                         new TextWidget().setStringSupplier(
                                 () -> "w/ Supplier: " + numberFormat.format(System.currentTimeMillis() % 100_000_000))
-                                .setTextAlignment(Alignment.CenterLeft).setPos(0, 160))
+                                .setDefaultColor(EnumChatFormatting.WHITE).setTextAlignment(Alignment.CenterLeft)
+                                .setPos(0, 160))
 
                 .addChild(
                         SlotWidget.phantom(phantomInventory, 1).setShiftClickPriority(1).setIgnoreStackSizeLimit(true)
