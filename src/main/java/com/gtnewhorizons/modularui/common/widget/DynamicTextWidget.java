@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.function.Supplier;
 
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.EnumChatFormatting;
 
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
@@ -19,9 +18,6 @@ public class DynamicTextWidget extends TextWidget implements ISyncedWidget {
 
     private boolean syncsToClient = true;
     private Text lastText;
-
-    private Integer defaultColor;
-    private EnumChatFormatting defaultFormat;
 
     private static final int MAX_PACKET_LENGTH = Short.MAX_VALUE;
 
@@ -52,18 +48,6 @@ public class DynamicTextWidget extends TextWidget implements ISyncedWidget {
             ret.format(defaultFormat);
         }
         return ret;
-    }
-
-    @Override
-    public TextWidget setDefaultColor(int color) {
-        this.defaultColor = color;
-        return this;
-    }
-
-    @Override
-    public TextWidget setDefaultColor(EnumChatFormatting color) {
-        this.defaultFormat = color;
-        return this;
     }
 
     public DynamicTextWidget setSynced(boolean synced) {
