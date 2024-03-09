@@ -92,6 +92,17 @@ public class NumberFormatMUI extends NumberFormat {
         return baseFormat.format(number, toAppendTo, pos);
     }
 
+    public StringBuffer format(Object number, StringBuffer toAppendTo) {
+        if (currentLocale != Config.locale) refreshBaseFormat();
+        return baseFormat.format(number, toAppendTo, unusedFieldPosition);
+    }
+
+    @Override
+    public StringBuffer format(Object number, StringBuffer toAppendTo, FieldPosition pos) {
+        if (currentLocale != Config.locale) refreshBaseFormat();
+        return baseFormat.format(number, toAppendTo, pos);
+    }
+
     public static final char[] SUFFIXES = { 'k', 'M', 'G', 'T', 'P', 'E' };
 
     /**
