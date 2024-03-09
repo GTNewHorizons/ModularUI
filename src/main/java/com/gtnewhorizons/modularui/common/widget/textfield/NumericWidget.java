@@ -1,5 +1,6 @@
 package com.gtnewhorizons.modularui.common.widget.textfield;
 
+import java.awt.Point;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -15,7 +16,9 @@ import net.minecraft.util.MathHelper;
 import com.gtnewhorizon.gtnhlib.util.parsing.MathExpressionParser;
 import com.gtnewhorizon.gtnhlib.util.parsing.MathExpressionParser.Context;
 import com.gtnewhorizons.modularui.ModularUI;
+import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.NumberFormatMUI;
+import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.widget.ISyncedWidget;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
@@ -61,6 +64,21 @@ public class NumericWidget extends BaseTextFieldWidget implements ISyncedWidget 
         } else {
             handler.setPattern(NUMBER_PATTERN);
         }
+    }
+
+    @Override
+    public void draw(float partialTicks) {
+        Point draggableTranslate = getDraggableTranslate();
+        GuiHelper
+                .useScissor(pos.x + draggableTranslate.x, pos.y + draggableTranslate.y, size.width, size.height, () -> {
+                    GlStateManager.pushMatrix();
+                    GlStateManager.translate(1, 1, 0);
+                    renderer.setSimulate(false);
+                    renderer.setScale(scale);
+                    renderer.setAlignment(textAlignment, size.width - 2, size.height - 2);
+                    renderer.draw(handler.getText());
+                    GlStateManager.popMatrix();
+                });
     }
 
     public double getValue() {
