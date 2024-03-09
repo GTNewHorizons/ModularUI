@@ -2,6 +2,7 @@ package com.gtnewhorizons.modularui.api;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.Locale;
 
@@ -127,6 +128,16 @@ class NumberFormatMUITest {
         assertEquals("-4M", nf.formatWithSuffix(-4_000_000));
         assertEquals("-5.6M", nf.formatWithSuffix(-5_600_000));
         assertEquals("-6.7M", nf.formatWithSuffix(-6_799_999));
+    }
+
+    @Test
+    void bigInteger_Test() {
+        Config.locale = Locale.US;
+        NumberFormatMUI nf = new NumberFormatMUI();
+
+        BigInteger million = new BigInteger("1000000000");
+        BigInteger n = million.multiply(million).multiply(million);
+        assertEquals("1,000,000,000,000,000,000,000,000,000", nf.format(n));
     }
 
     @Test
