@@ -287,7 +287,6 @@ public class BaseTextFieldWidget extends Widget implements IWidgetParent, Intera
             // mark whole text
             handler.markAll();
             return true;
-            // Support CJKV Unified Ideographs
         } else if (handler.test(String.valueOf(character))) {
             // delete selected chars
             if (handler.hasTextMarked()) {
