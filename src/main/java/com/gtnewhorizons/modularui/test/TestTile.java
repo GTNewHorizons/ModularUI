@@ -182,8 +182,9 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
                                 .setSetter(val -> longValue = (long) val)//
                                 .setValidator(val -> Math.round(val / 2) * 2d)//
                                 .setScrollValues(2, 10, 1000)//
+                                .setTextAlignment(Alignment.Center)//
                                 .setTextColor(Color.WHITE.dark(1)).setBackground(DISPLAY.withOffset(-2, -2, 4, 4))
-                                .setSize(92, 20).setPos(10, 50))
+                                .setSize(80, 20).setPos(10, 50))
                 .addChild(
                         new NumericWidget()//
                                 .setIntegerOnly(false)//
@@ -192,8 +193,9 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
                                 .setDefaultValue(50)//
                                 .setGetter(() -> doubleValue)//
                                 .setSetter(val -> doubleValue = val)//
+                                .setTextAlignment(Alignment.BottomRight)//
                                 .setTextColor(Color.WHITE.dark(1)).setBackground(DISPLAY.withOffset(-2, -2, 4, 4))
-                                .setSize(92, 20).setPos(100, 50))
+                                .setSize(80, 20).setPos(100, 50))
                 .addChild(
                         new TextWidget("TextWidget: " + numberFormat.format(System.currentTimeMillis() % 100_000_000))
                                 .setDefaultColor(EnumChatFormatting.WHITE).setTextAlignment(Alignment.CenterLeft)
