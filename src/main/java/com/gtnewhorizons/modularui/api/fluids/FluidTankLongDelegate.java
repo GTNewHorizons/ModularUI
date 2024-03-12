@@ -9,6 +9,8 @@ import net.minecraftforge.fluids.IFluidTank;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.gtnewhorizons.modularui.common.fluid.IOverflowableTank;
+
 public class FluidTankLongDelegate implements IFluidTankLong {
 
     private final IFluidTank tank;
@@ -29,6 +31,9 @@ public class FluidTankLongDelegate implements IFluidTankLong {
 
     @Override
     public long getCapacityLong() {
+        if (tank instanceof IOverflowableTank) {
+            return ((IOverflowableTank) tank).getRealCapacity();
+        }
         return tank.getCapacity();
     }
 
