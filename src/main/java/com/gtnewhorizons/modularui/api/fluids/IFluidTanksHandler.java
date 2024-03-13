@@ -27,6 +27,8 @@ public interface IFluidTanksHandler {
 
     long getTankCapacity(int tank);
 
+    long getRealTankCapacity(int tank);
+
     long getTankStoredAmount(int tank);
 
     default boolean isFluidValid(int slot, FluidStack stack) {

@@ -52,6 +52,11 @@ public class FluidTanksHandler implements IFluidTanksHandler {
     }
 
     @Override
+    public long getRealTankCapacity(int tank) {
+        return fluids.get(tank).getRealCapacityLong();
+    }
+
+    @Override
     public long getTankStoredAmount(int tank) {
         return fluids.get(tank).getFluidAmountLong();
     }
