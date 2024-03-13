@@ -181,7 +181,7 @@ public class FluidSlotWidget extends SyncedWidget
                         Text.localised(
                                 "modularui.fluid.amount",
                                 handler.getTankStoredAmount(tank),
-                                handler.getTankCapacity(tank)));
+                                handler.getRealTankCapacity(tank)));
                 addAdditionalFluidInfo(tooltip, fluid);
             } else {
                 tooltip.add(Text.localised("modularui.fluid.empty").format(EnumChatFormatting.WHITE));

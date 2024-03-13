@@ -78,6 +78,11 @@ public class FluidTankLong implements IFluidTankLong {
         return capacity;
     }
 
+    @Override
+    public long getRealCapacityLong() {
+        return getCapacityLong();
+    }
+
     public long getFluidAmountLong() {
         return storedAmount;
     }
