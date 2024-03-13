@@ -48,6 +48,12 @@ public class ListFluidHandler implements IFluidTanksHandler {
     }
 
     @Override
+    public long getRealTankCapacity(int tank) {
+        Pair<? extends IFluidTanksHandler, Integer> result = findFluidHandler(tank);
+        return result.getLeft().getRealTankCapacity(result.getRight());
+    }
+
+    @Override
     public long getTankStoredAmount(int tank) {
         Pair<? extends IFluidTanksHandler, Integer> result = findFluidHandler(tank);
         return result.getLeft().getTankStoredAmount(result.getRight());

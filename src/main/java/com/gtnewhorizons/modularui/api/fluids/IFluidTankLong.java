@@ -21,6 +21,8 @@ public interface IFluidTankLong extends IFluidTank {
 
     long getCapacityLong();
 
+    long getRealCapacityLong();
+
     long getFluidAmountLong();
 
     FluidStack getFluidStack();

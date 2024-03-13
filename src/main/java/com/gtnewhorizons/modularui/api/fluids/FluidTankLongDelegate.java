@@ -31,6 +31,11 @@ public class FluidTankLongDelegate implements IFluidTankLong {
 
     @Override
     public long getCapacityLong() {
+        return tank.getCapacity();
+    }
+
+    @Override
+    public long getRealCapacityLong() {
         if (tank instanceof IOverflowableTank) {
             return ((IOverflowableTank) tank).getRealCapacity();
         }
