@@ -472,6 +472,8 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         boolean wasSuccess = false;
         boolean wasReject = false;
         doubleClick = isDoubleClick(lastFocusedClick, time);
+        ModularWindow mainWindow = context.getMainWindow();
+        ModularWindow window = mainWindow;
         loop: for (Object hovered : getCursor().getAllHovered()) {
             if (shouldSkipClick(hovered)) break;
             if (context.getCursor().onHoveredClick(mouseButton, hovered)) {
@@ -482,10 +484,12 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                 // if floating window is clicked (while holding item), widgets/slots below should not be interacted
                 probablyClicked = hovered;
                 wasReject = true;
+                window = (ModularWindow) hovered;
                 break;
             }
             if (hovered instanceof Widget) {
                 Widget widget = (Widget) hovered;
+                window = widget.getWindow();
                 if (widget.hasNEITransferRect()) {
                     if (mouseButton == 0) {
                         widget.handleTransferRectMouseClick(false);
@@ -531,8 +535,20 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
             getCursor().updateFocused(null);
         }
         if (probablyClicked == null && !wasReject) {
-            // NEI injects GuiContainerManager#mouseClicked there
-            super.mouseClicked(mouseX, mouseY, mouseButton);
+            if (window != mainWindow) {
+                // update gui bounds, so vanilla gui system and other mods listening for ui changes know the actual
+                // location of the clicked window
+                setMainWindowArea(window.getPos(), window.getSize());
+                try {
+                    // NEI injects GuiContainerManager#mouseClicked there
+                    super.mouseClicked(mouseX, mouseY, mouseButton);
+                } finally {
+                    setMainWindowArea(mainWindow.getPos(), mainWindow.getSize());
+                }
+            } else {
+                // NEI injects GuiContainerManager#mouseClicked there
+                super.mouseClicked(mouseX, mouseY, mouseButton);
+            }
         } else {
             if (shouldShowNEI()) {
                 for (IContainerInputHandler inputhander : GuiContainerManager.inputHandlers) {
