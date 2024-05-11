@@ -484,7 +484,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                 // if floating window is clicked (while holding item), widgets/slots below should not be interacted
                 probablyClicked = hovered;
                 wasReject = true;
-                window = mainWindow;
+                window = (ModularWindow) hovered;
                 break;
             }
             if (hovered instanceof Widget) {
