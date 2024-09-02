@@ -21,8 +21,8 @@ import com.gtnewhorizons.modularui.common.fluid.IOverflowableTank;
 
 import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.recipe.StackInfo;
-import gregtech.api.util.GT_Utility;
-import gregtech.common.items.GT_FluidDisplayItem;
+import gregtech.api.util.GTUtility;
+import gregtech.common.items.ItemFluidDisplay;
 
 /**
  * You can override these methods to have your own behavior for fluid manipulation with widgets.
@@ -34,7 +34,7 @@ public interface FluidInteractionUtil {
      */
     default FluidStack getFluidForRealItem(ItemStack itemStack) {
         if (isGT5ULoaded) {
-            return GT_Utility.getFluidForFilledItem(itemStack, true);
+            return GTUtility.getFluidForFilledItem(itemStack, true);
         } else {
             FluidStack fluidStack = FluidContainerRegistry.getFluidForFilledItem(itemStack);
             if (fluidStack == null && itemStack.getItem() instanceof IFluidContainerItem) {
@@ -49,7 +49,7 @@ public interface FluidInteractionUtil {
      */
     default FluidStack getFluidForPhantomItem(ItemStack itemStack) {
         if (isGT5ULoaded) {
-            return GT_Utility.getFluidFromContainerOrFluidDisplay(itemStack);
+            return GTUtility.getFluidFromContainerOrFluidDisplay(itemStack);
         } else {
             return StackInfo.getFluid(itemStack);
         }
@@ -65,7 +65,7 @@ public interface FluidInteractionUtil {
 
     default ItemStack fillFluidContainerWithoutIFluidContainerItem(FluidStack fluidStack, ItemStack itemStack) {
         if (isGT5ULoaded) {
-            return GT_Utility.fillFluidContainer(fluidStack, itemStack, true, false);
+            return GTUtility.fillFluidContainer(fluidStack, itemStack, true, false);
         }
         return null;
     }
@@ -84,7 +84,7 @@ public interface FluidInteractionUtil {
 
     default ItemStack getContainerForFilledItemWithoutIFluidContainerItem(ItemStack itemStack) {
         if (isGT5ULoaded) {
-            return GT_Utility.getContainerForFilledItem(itemStack, false);
+            return GTUtility.getContainerForFilledItem(itemStack, false);
         }
         return null;
     }
@@ -92,7 +92,7 @@ public interface FluidInteractionUtil {
     default void addFluidNameInfo(List<Text> tooltip, @NotNull FluidStack fluid) {
         tooltip.add(new Text(fluid.getLocalizedName()).format(EnumChatFormatting.WHITE));
         if (isGT5ULoaded) {
-            String formula = GT_FluidDisplayItem.getChemicalFormula(fluid);
+            String formula = ItemFluidDisplay.getChemicalFormula(fluid);
             if (!formula.isEmpty()) {
                 tooltip.add(new Text(formula).format(EnumChatFormatting.YELLOW));
             }

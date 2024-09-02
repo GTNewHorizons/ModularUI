@@ -50,7 +50,7 @@ import com.gtnewhorizons.modularui.common.internal.Theme;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 
-import gregtech.api.util.GT_Utility;
+import gregtech.api.util.GTUtility;
 
 @SuppressWarnings("unused")
 public class FluidSlotWidget extends SyncedWidget
@@ -643,7 +643,7 @@ public class FluidSlotWidget extends SyncedWidget
     @Override
     public ItemStack getStackUnderMouse() {
         if (isGT5ULoaded) {
-            return GT_Utility.getFluidDisplayStack(handler.getFluidStackInTank(tank), false);
+            return GTUtility.getFluidDisplayStack(handler.getFluidStackInTank(tank), false);
         }
         return null;
     }

@@ -26,7 +26,7 @@ import com.gtnewhorizons.modularui.api.widget.IHasStackUnderMouse;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 
-import gregtech.api.util.GT_Utility;
+import gregtech.api.util.GTUtility;
 
 /**
  * Holds fluid name and displays corresponding fluid. Can be useful for setting filter or locking fluid.
@@ -156,7 +156,7 @@ public class FluidNameHolderWidget extends SyncedWidget
     @Override
     public ItemStack getStackUnderMouse() {
         if (isGT5ULoaded) {
-            return GT_Utility.getFluidDisplayStack(createFluidStack(), false);
+            return GTUtility.getFluidDisplayStack(createFluidStack(), false);
         }
         return null;
     }
