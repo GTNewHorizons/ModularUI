@@ -37,7 +37,7 @@ import codechicken.nei.recipe.GuiUsageRecipe;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregtech.api.util.GT_TooltipDataCache;
+import gregtech.api.util.GTTooltipDataCache;
 
 /**
  * This class draws a functional element of ModularUI
@@ -899,7 +899,7 @@ public abstract class Widget {
     }
 
     @Optional.Method(modid = ModularUI.MODID_GT5U)
-    public Widget setGTTooltip(Supplier<GT_TooltipDataCache.TooltipData> tooltipDataGetter) {
+    public Widget setGTTooltip(Supplier<GTTooltipDataCache.TooltipData> tooltipDataGetter) {
         dynamicTooltip(() -> tooltipDataGetter.get().text);
         dynamicTooltipShift(() -> tooltipDataGetter.get().shiftText);
         return this;
