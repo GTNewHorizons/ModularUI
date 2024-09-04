@@ -74,8 +74,11 @@ public class AdaptableUITexture extends UITexture {
             super.draw(x, y, width, height);
             return;
         }
-        float borderU = borderWidthU * 1f / imageWidth;
-        float borderV = borderWidthV * 1f / imageHeight;
+        float rangeU = u1 - u0;
+        float rangeV = v1 - v0;
+
+        float borderU = borderWidthU * rangeU / imageWidth;
+        float borderV = borderWidthV * rangeV / imageHeight;
         // draw corners
         draw(location, x, y, borderWidthU, borderWidthV, u0, v0, u0 + borderU, v0 + borderV); // x0 y0
         draw(location, x + width - borderWidthU, y, borderWidthU, borderWidthV, u1 - borderU, v0, u1, v0 + borderV); // x1
