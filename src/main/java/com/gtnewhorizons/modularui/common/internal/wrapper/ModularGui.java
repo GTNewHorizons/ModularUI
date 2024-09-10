@@ -56,7 +56,6 @@ import codechicken.nei.api.TaggedInventoryArea;
 import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.guihook.IContainerDrawHandler;
 import codechicken.nei.guihook.IContainerInputHandler;
-import codechicken.nei.guihook.IContainerObjectHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -148,7 +147,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                 drawHandler.postRenderObjects(this, mouseX, mouseY);
             }
 
-            if (!shouldRenderOurTooltip() && shouldRenderNEITooltip() && GuiContainerManager.getManager() != null) {
+            if (!shouldRenderOurTooltip() && GuiContainerManager.getManager() != null) {
                 GuiContainerManager.getManager().renderToolTips(mouseX, mouseY);
             }
         }
@@ -331,17 +330,6 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
      */
     protected boolean shouldRenderOurTooltip() {
         return context.getCursor().getHovered() != null;
-    }
-
-    protected boolean shouldRenderNEITooltip() {
-        // taken from GuiContainerManager#getStackMouseOver but don't check #getSlotMouseOver
-        // as it sees our slot even if it's disabled
-        for (IContainerObjectHandler objectHandler : GuiContainerManager.objectHandlers) {
-            ItemStack item = objectHandler
-                    .getStackUnderMouse(this, context.getCursor().getPos().x, context.getCursor().getPos().y);
-            if (item != null) return true;
-        }
-        return false;
     }
 
     public void drawDebugScreen() {
