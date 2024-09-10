@@ -43,6 +43,7 @@ public class ItemDrawable implements IDrawable {
         final ItemStack item = this.item.get();
         if (item == null || item.getItem() == null) return;
         GlStateManager.pushMatrix();
+        GlStateManager.enableRescaleNormal();
         RenderHelper.enableGUIStandardItemLighting();
         GlStateManager.enableDepth();
         GlStateManager.scale(width / 16, height / 16, 1);
@@ -54,6 +55,7 @@ public class ItemDrawable implements IDrawable {
                 (int) y);
         GuiHelper.afterRenderItemAndEffectIntoGUI(item);
 
+        GlStateManager.disableRescaleNormal();
         GlStateManager.disableDepth();
         RenderHelper.enableStandardItemLighting();
         GlStateManager.disableLighting();
