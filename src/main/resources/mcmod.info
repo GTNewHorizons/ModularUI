@@ -8,7 +8,13 @@
 		"mcversion": "${minecraftVersion}",
 		"url": "https://github.com/GTNewHorizons/ModularUI",
 		"updateUrl": "",
-		"authorList": ["Quarri6343, miozune"],
+		"authorList": [
+      "brachy84",
+      "Rongmario",
+      "CleanroomMC",
+      "Quarri6343 (1.7.10 port)",
+      "miozune (1.7.10 port)"
+    ],
 		"credits": "CleanroomMC for implementing the original mod. Link: https://github.com/CleanroomMC/ModularUI",
 		"logoFile": "",
 		"screenshots": [],
