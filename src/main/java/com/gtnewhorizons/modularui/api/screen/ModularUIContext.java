@@ -154,11 +154,6 @@ public class ModularUIContext {
                 ModularWindow newWindow = openWindow(syncedWindowsCreators.get(windowId));
                 syncedWindows.put(windowId, newWindow);
                 newWindow.onResize(screenSize);
-                if (lastSyncedWindowPos.containsKey(windowId)) {
-                    Pos2d pos = lastSyncedWindowPos.get(windowId);
-                    lastSyncedWindowPos.remove(windowId);
-                    newWindow.setPos(pos);
-                }
                 newWindow.rebuild();
                 newWindow.onOpen();
                 newWindow.initialized = true;
@@ -289,11 +284,9 @@ public class ModularUIContext {
         return false;
     }
 
-    public void storeWindowPos(int id) {
-        if (isWindowOpen(id)) {
-            ModularWindow window = this.syncedWindows.get(id);
-            this.lastSyncedWindowPos.put(id, window.getPos());
-        }
+    public boolean tryApplyStoredPos(int windowId) {
+        ModularWindow window = syncedWindows.get(windowId);
+        return window != null && tryApplyStoredPos(window);
     }
 
     @SideOnly(Side.CLIENT)
