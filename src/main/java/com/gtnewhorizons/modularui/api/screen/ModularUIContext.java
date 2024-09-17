@@ -45,7 +45,6 @@ public class ModularUIContext {
     private final Deque<ModularWindow> windows = new LinkedList<>();
     private final BiMap<Integer, ModularWindow> syncedWindows = HashBiMap.create(4);
     private final Map<ModularWindow, Pos2d> lastWindowPos = new HashMap<>();
-    private final Map<Integer, Pos2d> lastSyncedWindowPos = new HashMap<>();
     private ModularWindow mainWindow;
 
     @SideOnly(Side.CLIENT)
