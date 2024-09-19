@@ -271,10 +271,11 @@ public class ModularUIContext {
 
     public void storeWindowPos(ModularWindow window, Pos2d pos) {
         if (windows.contains(window)) {
-            this.lastWindowPos.put(window, pos);
             Integer id = syncedWindows.inverse().get(window);
             if (id != null) {
                 this.lastSyncedWindowPos.put(id, pos);
+            } else {
+                this.lastWindowPos.put(window, pos);
             }
         }
     }
