@@ -1,4 +1,4 @@
-package com.gtnewhorizons.modularui.mixins;
+package com.gtnewhorizons.modularui.mixins.early;
 
 import java.util.Set;
 

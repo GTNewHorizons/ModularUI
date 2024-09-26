@@ -1,4 +1,4 @@
-package com.gtnewhorizons.modularui.mixins;
+package com.gtnewhorizons.modularui.mixins.late;
 
 import java.awt.Point;
 
