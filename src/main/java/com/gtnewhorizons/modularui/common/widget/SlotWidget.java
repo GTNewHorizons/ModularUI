@@ -43,7 +43,7 @@ import com.gtnewhorizons.modularui.common.internal.Theme;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.common.internal.wrapper.BaseSlot;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
-import com.gtnewhorizons.modularui.mixins.GuiContainerAccessor;
+import com.gtnewhorizons.modularui.mixins.early.GuiContainerAccessor;
 
 import codechicken.nei.guihook.GuiContainerManager;
 import cpw.mods.fml.relauncher.Side;

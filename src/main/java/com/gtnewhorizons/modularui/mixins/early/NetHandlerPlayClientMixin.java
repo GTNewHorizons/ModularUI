@@ -1,4 +1,4 @@
-package com.gtnewhorizons.modularui.mixins;
+package com.gtnewhorizons.modularui.mixins.early;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;

@@ -46,7 +46,7 @@ import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.config.Config;
-import com.gtnewhorizons.modularui.mixins.GuiContainerAccessor;
+import com.gtnewhorizons.modularui.mixins.early.GuiContainerAccessor;
 
 import codechicken.nei.ItemPanels;
 import codechicken.nei.NEIClientUtils;
