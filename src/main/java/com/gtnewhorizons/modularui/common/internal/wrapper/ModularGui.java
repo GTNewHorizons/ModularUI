@@ -147,7 +147,7 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
                 drawHandler.postRenderObjects(this, mouseX, mouseY);
             }
 
-            if (!shouldRenderOurTooltip() && GuiContainerManager.getManager() != null) {
+            if (!shouldRenderOurTooltip() && shouldRenderNEITooltip() && GuiContainerManager.getManager() != null) {
                 GuiContainerManager.getManager().renderToolTips(mouseX, mouseY);
             }
         }
@@ -330,6 +330,13 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
      */
     protected boolean shouldRenderOurTooltip() {
         return context.getCursor().getHovered() != null;
+    }
+
+    protected boolean shouldRenderNEITooltip() {
+        Slot slot = GuiContainerManager.getSlotMouseOver(this);
+        // NEI will see slots through popup panel, so block them.
+        // Other than this case, any element in NEI can have tooltip.
+        return !(slot instanceof BaseSlot);
     }
 
     public void drawDebugScreen() {
