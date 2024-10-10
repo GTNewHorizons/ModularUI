@@ -63,6 +63,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     protected boolean handlePhantomActionClient = false;
 
     protected boolean controlsAmount = false;
+    protected boolean renderStackSize = true;
     private Function<List<String>, List<String>> overwriteItemStackTooltip;
 
     protected Consumer<Widget> onDragAndDropComplete;
@@ -286,6 +287,11 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         return this;
     }
 
+    public SlotWidget setRenderStackSize(boolean renderStackSize) {
+        this.renderStackSize = renderStackSize;
+        return this;
+    }
+
     public SlotWidget setOverwriteItemStackTooltip(Function<List<String>, List<String>> overwriteItemStackTooltip) {
         this.overwriteItemStackTooltip = overwriteItemStackTooltip;
         return this;
@@ -462,7 +468,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
 
     @SideOnly(Side.CLIENT)
     protected void drawSlot(Slot slotIn) {
-        drawSlot(slotIn, true);
+        drawSlot(slotIn, renderStackSize);
     }
 
     @SideOnly(Side.CLIENT)
