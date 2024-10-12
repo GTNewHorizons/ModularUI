@@ -224,8 +224,10 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
     private void drawItemStack(ItemStack stack, int x, int y, String altText) {
         GlStateManager.translate(0.0F, 0.0F, 32.0F);
         GlStateManager.enableDepth();
-        this.zLevel = 200.0F;
-        itemRender.zLevel = 200.0F;
+        int windowLayer = getTopWindowLayer();
+        float renderDepth = 120.0F * (windowLayer + 1) + 60.0F;
+        this.zLevel = renderDepth;
+        itemRender.zLevel = renderDepth;
         FontRenderer font = GuiHelper.getFontRenderer(stack);
         itemRender.renderItemAndEffectIntoGUI(font, mc.getTextureManager(), stack, x, y);
         itemRender.renderItemOverlayIntoGUI(
@@ -239,6 +241,15 @@ public class ModularGui extends GuiContainer implements INEIGuiHandler {
         this.zLevel = 0.0F;
         itemRender.zLevel = 0.0F;
         GlStateManager.disableDepth();
+    }
+
+    private int getTopWindowLayer() {
+        int i = 0;
+        for (ModularWindow window : getContext().getOpenWindowsReversed()) {
+            if (window == context.getCurrentWindow()) return i;
+            i++;
+        }
+        return 0;
     }
 
     @Override
