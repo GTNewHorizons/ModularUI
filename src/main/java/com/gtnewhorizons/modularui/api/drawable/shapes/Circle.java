@@ -76,7 +76,6 @@ public class Circle implements IDrawable {
             float angle = incr * i;
             float x = (float) (Math.sin(angle) * (width / 2) + x_2);
             float y = (float) (Math.cos(angle) * (height / 2) + y_2);
-            tessellator.startDrawing(GL11.GL_TRIANGLE_FAN);
             tessellator.setColorRGBA(
                     Color.getRed(colorOuter),
                     Color.getGreen(colorOuter),
