@@ -1,5 +1,6 @@
 package com.gtnewhorizons.modularui.common.widget;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,6 +73,12 @@ public class Scrollable extends Widget
                 widget.setEnabled(intersects(widget));
             }
         }
+    }
+
+    @Override
+    protected void modifyConstraints(Dimension constraints) {
+        constraints.setSize(getVisibleWidth(), getVisibleHeight());
+        super.modifyConstraints(constraints);
     }
 
     @Override
