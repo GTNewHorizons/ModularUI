@@ -3,11 +3,11 @@
 dependencies {
     api("org.jetbrains:annotations:23.0.0")
 
-    api("com.github.GTNewHorizons:NotEnoughItems:2.6.44-GTNH:dev")
+    api("com.github.GTNewHorizons:NotEnoughItems:2.6.46-GTNH:dev")
 
     implementation("com.github.GTNewHorizons:GTNHLib:0.5.20:dev") { transitive = false }
-    compileOnly("com.github.GTNewHorizons:Hodgepodge:2.5.77:dev") { transitive = false }
-    compileOnly("com.github.GTNewHorizons:GT5-Unofficial:5.09.50.67:dev") {
+    compileOnly("com.github.GTNewHorizons:Hodgepodge:2.5.79:dev") { transitive = false }
+    compileOnly("com.github.GTNewHorizons:GT5-Unofficial:5.09.50.72:dev") {
         transitive = false
         exclude group:"com.github.GTNewHorizons", module:"ModularUI"
     }
