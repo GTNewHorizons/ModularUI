@@ -98,7 +98,7 @@ public class TestTile extends TileEntity implements ITileWithModularUI {
     public ModularWindow createWindow(UIBuildContext buildContext) {
         phantomInventory.setStackInSlot(1, new ItemStack(Items.diamond, Integer.MAX_VALUE));
         ModularWindow.Builder builder = ModularWindow.builder(new Size(176, 272));
-
+        buildContext.setValidator(() -> !isInvalid());
         List<Integer> nums = IntStream.range(1, 101).boxed().collect(Collectors.toList());
         builder.setBackground(ModularUITextures.VANILLA_BACKGROUND).bindPlayerInventory(buildContext.getPlayer());
         buildContext.addSyncedWindow(1, this::createAnotherWindow);
