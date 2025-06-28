@@ -21,7 +21,6 @@ public class FluidTankLong implements IFluidTankLong {
     private long capacity;
     private FluidStack internal;
     private boolean locked;
-    private int lastFluidAmountInStack;
     private NBTTagCompound tag;
 
     public FluidTankLong(Fluid fluid, long capacity, long amount) {
@@ -53,7 +52,6 @@ public class FluidTankLong implements IFluidTankLong {
             fluid = null;
             internal = null;
             storedAmount = 0;
-            lastFluidAmountInStack = 0;
             return null;
         }
 
@@ -61,12 +59,7 @@ public class FluidTankLong implements IFluidTankLong {
             internal = new FluidStack(fluid, 0);
         }
 
-        if (internal.amount != lastFluidAmountInStack) {
-            storedAmount -= lastFluidAmountInStack - internal.amount;
-        }
-
         internal.amount = saturatedCast(storedAmount);
-        lastFluidAmountInStack = internal.amount;
         return internal;
     }
 
@@ -135,11 +128,9 @@ public class FluidTankLong implements IFluidTankLong {
         storedAmount = amount;
         if (fluid == null) {
             internal = null;
-            lastFluidAmountInStack = 0;
             return;
         }
         internal = new FluidStack(this.fluid, saturatedCast(storedAmount));
-        lastFluidAmountInStack = saturatedCast(storedAmount);
     }
 
     public void setFluid(Fluid fluid) {
