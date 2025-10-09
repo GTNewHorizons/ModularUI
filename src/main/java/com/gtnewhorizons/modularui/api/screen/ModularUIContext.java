@@ -402,14 +402,22 @@ public class ModularUIContext {
     @SideOnly(Side.CLIENT)
     public void readServerPacket(PacketBuffer buf, int widgetId) throws IOException {
         int id = buf.readVarIntFromBuffer();
-        ModularWindow window = syncedWindows.get(buf.readVarIntFromBuffer());
+        int windowId = buf.readVarIntFromBuffer();
+        ModularWindow window = syncedWindows.get(windowId);
         if (widgetId == DataCodes.INTERNAL_SYNC) {
             if (id == DataCodes.SYNC_CURSOR_STACK) {
                 player.inventory.setItemStack(NetworkUtils.readItemStack(buf));
             } else if (id == DataCodes.OPEN_WINDOW) {
                 queuedOpenWindow.add(buf.readVarIntFromBuffer());
             } else if (id == DataCodes.CLOSE_WINDOW) {
-                window.tryClose();
+                if (window == null){
+                    // if the window that needs to be closed is not open yet but is in the queue to be opened,
+                    // simply remove it from the queue
+                    queuedOpenWindow.removeIf(queuedWindowId -> queuedWindowId == windowId);
+                }
+                else {
+                    window.tryClose();
+                }
             }
         } else if (window != null) {
             ISyncedWidget syncedWidget = window.getSyncedWidget(widgetId);
