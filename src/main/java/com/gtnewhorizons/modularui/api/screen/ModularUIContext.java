@@ -410,12 +410,11 @@ public class ModularUIContext {
             } else if (id == DataCodes.OPEN_WINDOW) {
                 queuedOpenWindow.add(buf.readVarIntFromBuffer());
             } else if (id == DataCodes.CLOSE_WINDOW) {
-                if (window == null){
+                if (window == null) {
                     // if the window that needs to be closed is not open yet but is in the queue to be opened,
                     // simply remove it from the queue
                     queuedOpenWindow.removeIf(queuedWindowId -> queuedWindowId == windowId);
-                }
-                else {
+                } else {
                     window.tryClose();
                 }
             }
