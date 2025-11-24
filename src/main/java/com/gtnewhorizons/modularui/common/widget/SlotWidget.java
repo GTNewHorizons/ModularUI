@@ -175,7 +175,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
     public List<String> getExtraTooltip() {
         List<String> extraLines = new ArrayList<>();
         if (slot.getStack().stackSize >= 1000) {
-            extraLines.add(I18n.format("modularui.amount", slot.getStack().stackSize));
+            extraLines.add(getAmountTooltip());
         }
         if (isPhantom()) {
             if (canControlAmount()) {
@@ -186,6 +186,10 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
             }
         }
         return extraLines.isEmpty() ? Collections.emptyList() : extraLines;
+    }
+
+    protected String getAmountTooltip() {
+        return I18n.format("modularui.amount", slot.getStack().stackSize);
     }
 
     public boolean isPhantom() {
@@ -559,8 +563,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
                     }
                     // render the amount overlay
                     if (amount > 1 || format != null) {
-                        String amountText = numberFormat
-                                .formatWithSuffix(amount, new StringBuffer(format == null ? "" : format)).toString();
+                        String amountText = getAmountText(amount, format);
                         float scale = 1f;
                         if (amountText.length() == 3) {
                             scale = 0.8f;
@@ -604,6 +607,10 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
         GL11.glDisable(GL11.GL_BLEND);
         ModularGui.getItemRenderer().zLevel = 0.0F;
         getScreen().setZ(0f);
+    }
+
+    protected @NotNull String getAmountText(int amount, String format) {
+        return numberFormat.formatWithSuffix(amount, new StringBuffer(format == null ? "" : format)).toString();
     }
 
     /**
