@@ -2,7 +2,9 @@ package com.gtnewhorizons.modularui.api.widget;
 
 import static com.gtnewhorizons.modularui.ModularUI.isGT5ULoaded;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -92,10 +94,9 @@ public interface FluidInteractionUtil {
     default void addFluidNameInfo(List<Text> tooltip, @NotNull FluidStack fluid) {
         tooltip.add(new Text(fluid.getLocalizedName()).format(EnumChatFormatting.WHITE));
         if (isGT5ULoaded) {
-            String formula = ItemFluidDisplay.getChemicalFormula(fluid);
-            if (!formula.isEmpty()) {
-                tooltip.add(new Text(formula).format(EnumChatFormatting.YELLOW));
-            }
+            List<String> materialTooltipList = new LinkedList<>();
+            ItemFluidDisplay.addTooltipForFluid(fluid.getFluid(), materialTooltipList);
+            tooltip.addAll(materialTooltipList.stream().map(Text::new).collect(Collectors.toList()));
         }
         if (Minecraft.getMinecraft().gameSettings.advancedItemTooltips) {
             tooltip.add(Text.localised("modularui.fluid.registry", fluid.getFluid().getName()));
