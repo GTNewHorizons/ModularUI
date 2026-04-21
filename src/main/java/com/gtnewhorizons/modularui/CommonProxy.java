@@ -3,6 +3,7 @@ package com.gtnewhorizons.modularui;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.gtnewhorizons.modularui.config.Config;
@@ -40,5 +41,9 @@ public class CommonProxy {
         if (event.modID.equals(ModularUI.MODID)) {
             Config.syncConfig();
         }
+    }
+
+    public EntityPlayer getClientPlayer() {
+        return null;
     }
 }
