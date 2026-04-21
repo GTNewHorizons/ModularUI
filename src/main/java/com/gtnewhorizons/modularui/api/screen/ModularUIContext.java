@@ -51,7 +51,7 @@ public class ModularUIContext {
     @SideOnly(Side.CLIENT)
     private ModularGui screen;
 
-    private final EntityPlayer player;
+    private final EntityPlayer playerMP;
     private final Cursor cursor;
     private final List<Integer> queuedOpenWindow = new ArrayList<>();
     public final boolean clientOnly;
@@ -72,10 +72,10 @@ public class ModularUIContext {
     }
 
     public ModularUIContext(UIBuildContext context, Runnable onWidgetUpdate, boolean clientOnly) {
-        this.player = context.player;
         if (!isClient() && clientOnly) {
             throw new IllegalArgumentException("Client only ModularUI can not be opened on server!");
         }
+        this.playerMP = context.player instanceof EntityPlayerMP ? context.player : null;
         this.clientOnly = clientOnly;
         this.syncedWindowsCreators = context.syncedWindows.build();
         this.cursor = new Cursor(this);
@@ -194,7 +194,7 @@ public class ModularUIContext {
     }
 
     public ModularWindow openWindow(IWindowCreator windowCreator) {
-        ModularWindow window = windowCreator.create(player);
+        ModularWindow window = windowCreator.create(this.getPlayer());
         pushWindow(window);
         return window;
     }
@@ -258,7 +258,7 @@ public class ModularUIContext {
     }
 
     public void close() {
-        player.closeScreen();
+        this.getPlayer().closeScreen();
     }
 
     public void closeAllButMain() {
@@ -305,7 +305,10 @@ public class ModularUIContext {
     }
 
     public EntityPlayer getPlayer() {
-        return player;
+        if (this.playerMP != null) {
+            return this.playerMP;
+        }
+        return ModularUI.proxy.getClientPlayer();
     }
 
     public ModularUIContainer getContainer() {
@@ -406,7 +409,7 @@ public class ModularUIContext {
         ModularWindow window = syncedWindows.get(windowId);
         if (widgetId == DataCodes.INTERNAL_SYNC) {
             if (id == DataCodes.SYNC_CURSOR_STACK) {
-                player.inventory.setItemStack(NetworkUtils.readItemStack(buf));
+                this.getPlayer().inventory.setItemStack(NetworkUtils.readItemStack(buf));
             } else if (id == DataCodes.OPEN_WINDOW) {
                 queuedOpenWindow.add(buf.readVarIntFromBuffer());
             } else if (id == DataCodes.CLOSE_WINDOW) {
@@ -457,7 +460,7 @@ public class ModularUIContext {
             buffer.writeVarIntToBuffer(syncedWindows.inverse().get(window));
             bufferConsumer.accept(buffer);
             SWidgetUpdate packet = new SWidgetUpdate(buffer, syncId);
-            NetworkHandler.sendToPlayer(packet, (EntityPlayerMP) player);
+            NetworkHandler.sendToPlayer(packet, (EntityPlayerMP) this.getPlayer());
         }
     }
 
