@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
+import net.minecraft.entity.player.EntityPlayer;
 
 import com.gtnewhorizons.modularui.api.drawable.FallbackableUITexture;
 import com.gtnewhorizons.modularui.common.internal.JsonLoader;
@@ -30,6 +31,11 @@ public class ClientProxy extends CommonProxy {
         super.postInit();
         ((SimpleReloadableResourceManager) Minecraft.getMinecraft().getResourceManager())
                 .registerReloadListener(new ResourceManagerReloadListener());
+    }
+
+    @Override
+    public EntityPlayer getClientPlayer() {
+        return Minecraft.getMinecraft().thePlayer;
     }
 
     private static class ResourceManagerReloadListener implements IResourceManagerReloadListener {
