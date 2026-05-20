@@ -18,6 +18,9 @@ public abstract class PacketBufferMixin {
     public abstract int readVarIntFromBuffer();
 
     @Shadow
+    public abstract int readableBytes();
+
+    @Shadow
     public abstract void writeVarIntToBuffer(int input);
 
     /**
@@ -44,6 +47,8 @@ public abstract class PacketBufferMixin {
                     shift = At.Shift.AFTER),
             locals = LocalCapture.CAPTURE_FAILEXCEPTION)
     public void modularui$readItemStackSizeInteger(CallbackInfoReturnable<ItemStack> cir, ItemStack itemstack) {
+        // Vanilla packets do not include ModularUI's extra stack size varint.
+        if (readableBytes() <= 0) return;
         itemstack.stackSize = readVarIntFromBuffer();
     }
 }
