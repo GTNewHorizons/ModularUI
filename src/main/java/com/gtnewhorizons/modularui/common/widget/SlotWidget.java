@@ -485,6 +485,7 @@ public class SlotWidget extends Widget implements IVanillaSlot, Interactable, IS
      */
     @SideOnly(Side.CLIENT)
     protected void drawSlot(Slot slotIn, boolean drawStackSize) {
+        if (getContext().getPlayer() == null) return;
         ItemStack itemstack = getItemStackForRendering(slotIn);
         boolean flag = false;
         boolean flag1 = slotIn == getGuiAccessor().getClickedSlot() && getGuiAccessor().getDraggedStack() != null
