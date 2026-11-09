@@ -20,6 +20,8 @@ import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 
 public class ModularUIContainer extends Container {
 
+    private static final int CLICK_TYPE_SWAP = 2;
+
     private final ModularUIContext context;
     private boolean initialisedContainer = false;
     private final List<BaseSlot> sortedShiftClickSlots = new ArrayList<>();
@@ -149,6 +151,20 @@ public class ModularUIContainer extends Container {
         if (slotId >= 0 && slotId < this.inventorySlots.size()) {
             Slot slot = (Slot) this.inventorySlots.get(slotId);
             if (slot instanceof BaseSlot && !((BaseSlot) slot).isEnabled()) return null;
+            if (clickTypeIn == CLICK_TYPE_SWAP && dragType >= 0 && dragType < 9 && slot instanceof BaseSlot) {
+                // vanilla would put the whole hotbar stack into the empty slot and ignore its stack limit
+                ItemStack hotbarStack = player.inventory.getStackInSlot(dragType);
+                if (slot.getStack() == null && hotbarStack != null
+                        && slot.canTakeStack(player)
+                        && slot.isItemValid(hotbarStack)) {
+                    int limit = Math.min(slot.getSlotStackLimit(), ((BaseSlot) slot).getItemStackLimit(hotbarStack));
+                    if (limit <= 0) return null;
+                    if (hotbarStack.stackSize > limit) {
+                        slot.putStack(hotbarStack.splitStack(limit));
+                        return null;
+                    }
+                }
+            }
         }
         return super.slotClick(slotId, dragType, clickTypeIn, player);
     }
