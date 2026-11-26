@@ -4,6 +4,7 @@ import static com.google.common.primitives.Ints.saturatedCast;
 import static com.gtnewhorizons.modularui.ModularUI.isGT5ULoaded;
 
 import java.io.IOException;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -24,10 +25,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
+import com.gtnewhorizon.gtnhlib.util.numberformatting.options.CompactOptions;
 import com.gtnewhorizons.modularui.ModularUI;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
-import com.gtnewhorizons.modularui.api.NumberFormatMUI;
 import com.gtnewhorizons.modularui.api.drawable.GuiHelper;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
@@ -83,7 +85,8 @@ public class FluidSlotWidget extends SyncedWidget
 
     private Consumer<FluidSlotWidget> onClickContainer;
     private Consumer<Widget> onDragAndDropComplete;
-    private static final NumberFormatMUI numberFormat = new NumberFormatMUI();
+    private static final CompactOptions AMOUNT_FORMAT = new CompactOptions().setCompactThreshold(10_000)
+            .setDecimalPlaces(1).setRoundingMode(RoundingMode.DOWN);
 
     public FluidSlotWidget(IFluidTanksHandler handler, int tank) {
         this.handler = handler;
@@ -160,7 +163,10 @@ public class FluidSlotWidget extends SyncedWidget
             if (fluid != null) {
                 addFluidNameInfo(tooltip, fluid);
                 if (controlsAmount) {
-                    tooltip.add(Text.localised("modularui.fluid.phantom.amount", handler.getTankStoredAmount(tank)));
+                    tooltip.add(
+                            Text.localised(
+                                    "modularui.fluid.phantom.amount",
+                                    NumberFormatUtil.formatFluid(handler.getTankStoredAmount(tank))));
                     addAdditionalFluidInfo(tooltip, fluid);
                     tooltip.add(Text.localised("modularui.fluid.phantom.control"));
                 } else {
@@ -180,12 +186,15 @@ public class FluidSlotWidget extends SyncedWidget
                 tooltip.add(
                         Text.localised(
                                 "modularui.fluid.amount",
-                                handler.getTankStoredAmount(tank),
-                                handler.getRealTankCapacity(tank)));
+                                NumberFormatUtil.formatNumber(handler.getTankStoredAmount(tank)),
+                                NumberFormatUtil.formatFluid(handler.getRealTankCapacity(tank))));
                 addAdditionalFluidInfo(tooltip, fluid);
             } else {
                 tooltip.add(Text.localised("modularui.fluid.empty").format(EnumChatFormatting.WHITE));
-                tooltip.add(Text.localised("modularui.fluid.capacity", handler.getTankCapacity(tank)));
+                tooltip.add(
+                        Text.localised(
+                                "modularui.fluid.capacity",
+                                NumberFormatUtil.formatFluid(handler.getTankCapacity(tank))));
             }
             if (canFillSlot || canDrainSlot) {
                 tooltip.add(Text.EMPTY); // Add an empty line to separate from the bottom material tooltips
@@ -226,8 +235,7 @@ public class FluidSlotWidget extends SyncedWidget
             overlayTexture.draw(Pos2d.ZERO, size, partialTicks);
         }
         if (content != null && (!phantom || controlsAmount)) {
-            String s = numberFormat.formatWithSuffix(handler.getTankStoredAmount(tank), new StringBuffer()).append('L')
-                    .toString();
+            String s = NumberFormatUtil.formatNumberCompact(handler.getTankStoredAmount(tank), AMOUNT_FORMAT);
             textRenderer.setAlignment(Alignment.CenterLeft, size.width - contentOffset.x - 1f);
             textRenderer.setPos((int) (contentOffset.x + 0.5f), (int) (size.height - 4.5f));
             textRenderer.draw(s);
